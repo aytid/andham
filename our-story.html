@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Story - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --color-primary: #1a1a1a;
+            --color-text: #333;
+            --color-text-light: #666;
+            --color-accent: #8b0000;
+            --color-border: #e5e5e5;
+            --color-bg: #fafafa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Announcement & Header (Same as previous pages) */
+        .announcement {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .header-right { justify-content: flex-end; }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover { opacity: 0.6; }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--color-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--color-primary);
+        }
+
+        #cartBadge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #8b0000;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Navigation & Cart Drawers */
+        .nav-overlay, .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .nav-overlay.active, .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer, .cart-drawer {
+            position: fixed;
+            top: 0;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 1002;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .nav-drawer { left: 0; transform: translateX(-100%); }
+        .cart-drawer { right: 0; transform: translateX(100%); }
+        
+        .nav-drawer.active, .cart-drawer.active { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-title {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover { color: #000; transform: rotate(90deg); }
+
+        .nav-content { padding: 20px 0; }
+        .nav-item { border-bottom: 1px solid var(--color-border); }
+        
+        .nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover { background: var(--color-bg); padding-left: 35px; }
+
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .cart-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--color-border);
+            background: #fafafa;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* Search Modal */
+        .search-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 150px;
+        }
+
+        .search-modal.active { opacity: 1; visibility: visible; }
+
+        .search-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Story Page Specific Styles */
+        .story-hero {
+            height: 70vh;
+            min-height: 500px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .story-hero__image {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1610189013074-9543c7f747c5?w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+        }
+
+        .story-hero__content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 40px;
+            max-width: 900px;
+        }
+
+        .story-hero__label {
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .story-hero__title {
+            font-family: var(--font-serif);
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .story-hero__text {
+            font-size: 18px;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: #000; }
+        .breadcrumb span { margin: 0 8px; color: #999; }
+
+        /* Introduction Section */
+        .intro-section {
+            padding: 100px 30px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .intro-text {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--color-primary);
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        .intro-subtext {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            background: var(--color-bg);
+            padding: 100px 30px;
+        }
+
+        .timeline-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .timeline-title {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .timeline-subtitle {
+            color: var(--color-text-light);
+            font-size: 16px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 100px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--color-border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 60px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -85px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            border: 4px solid var(--color-accent);
+            top: 5px;
+        }
+
+        .timeline-year {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            color: var(--color-accent);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .timeline-content h3 {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .timeline-content p {
+            color: var(--color-text-light);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        /* Values Section */
+        .values-section {
+            padding: 100px 30px;
+            background: #fff;
+        }
+
+        .values-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .values-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .values-title {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .value-card {
+            text-align: center;
+            padding: 40px 30px;
+            border: 1px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .value-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .value-title {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .value-text {
+            font-size: 14px;
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        /* Craftsmanship Section */
+        .craft-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+        }
+
+        .craft-image {
+            background-image: url('https://images.unsplash.com/photo-1720413390928-7077ba5def3a?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            min-height: 400px;
+        }
+
+        .craft-content {
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: var(--color-bg);
+        }
+
+        .craft-label {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 20px;
+        }
+
+        .craft-title {
+            font-family: var(--font-serif);
+            font-size: 42px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .craft-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            padding: 120px 30px;
+            background: #000;
+            text-align: center;
+        }
+
+        .quote-text {
+            font-family: var(--font-serif);
+            font-size: clamp(28px, 4vw, 48px);
+            color: #fff;
+            font-weight: 400;
+            max-width: 900px;
+            margin: 0 auto 40px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        .quote-author {
+            color: #999;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 80px 30px 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+        }
+
+        .footer-block h3 {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+        .footer-links a.active { color: #fff; }
+
+        .footer-text {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form { display: flex; border-bottom: 1px solid #444; }
+        
+        .newsletter-input {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter-input::placeholder { color: #666; }
+        
+        .newsletter-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-copyright { color: #666; font-size: 13px; }
+
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 20px; height: 60px; }
+            .logo { font-size: 18px; }
+            .story-hero { min-height: 400px; }
+            .story-hero__title { font-size: 36px; }
+            .intro-text { font-size: 22px; }
+            .timeline { padding-left: 60px; }
+            .timeline::before { left: 20px; }
+            .timeline-dot { left: -55px; width: 15px; height: 15px; border-width: 3px; }
+            .craft-section { grid-template-columns: 1fr; }
+            .craft-content { padding: 40px 30px; }
+            .craft-title { font-size: 32px; }
+            .values-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span id="cartBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">All Collections <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Kanjeevaram <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Soft Silk <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Tissue Linen <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Cotton <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products...">
+            </div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue Linen</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Hero -->
+    <section class="story-hero">
+        <div class="story-hero__image"></div>
+        <div class="story-hero__content">
+            <div class="story-hero__label">Est. 2018</div>
+            <h1 class="story-hero__title">Our Story</h1>
+            <p class="story-hero__text">Preserving the timeless art of handloom weaving, one saree at a time. We bridge the gap between ancient craftsmanship and modern elegance.</p>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span>Our Story</span>
+    </div>
+
+    <!-- Introduction -->
+    <section class="intro-section">
+        <p class="intro-text">"We believe that every saree tells a story — of the weaver's patience, the dyer's precision, and the wearer's grace."</p>
+        <p class="intro-subtext">Andham began with a simple mission: to bring authentic, handwoven sarees from the skilled artisans of South India to the modern woman who appreciates craftsmanship. What started as a small collection of 20 sarees has grown into a curated destination for those who seek quality over quantity.</p>
+    </section>
+
+    <!-- Timeline -->
+    <section class="timeline-section">
+        <div class="timeline-container">
+            <div class="timeline-header">
+                <h2 class="timeline-title">Our Journey</h2>
+                <p class="timeline-subtitle">From a small weaving cluster to your wardrobe</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2018</div>
+                    <div class="timeline-content">
+                        <h3>The Beginning</h3>
+                        <p>Founded in a small village near Kanchipuram, Andham started with a single weaving family. We began with 20 Kanjeevaram sarees, sold directly to customers who valued authenticity over mass production.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2019</div>
+                    <div class="timeline-content">
+                        <h3>Expanding the Family</h3>
+                        <p>We partnered with 15 more weaving families across Tamil Nadu and Andhra Pradesh, introducing Soft Silk and Gadwal collections while ensuring fair wages and ethical working conditions.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2021</div>
+                    <div class="timeline-content">
+                        <h3>Digital Presence</h3>
+                        <p>Launched our online store to reach saree lovers across India and abroad. We invested in photography and storytelling to help customers understand the value of handloom.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2023</div>
+                    <div class="timeline-content">
+                        <h3>Sustainability Focus</h3>
+                        <p>Introduced our "Weaver Direct" initiative, ensuring 70% of the price goes directly to artisans. We also launched our eco-friendly packaging and natural dye collections.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2026</div>
+                    <div class="timeline-content">
+                        <h3>Today & Beyond</h3>
+                        <p>Now working with 200+ artisan families, we continue to preserve traditional techniques while innovating for contemporary tastes. Every saree still carries the weaver's signature.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Craftsmanship Section -->
+    <section class="craft-section">
+        <div class="craft-image"></div>
+        <div class="craft-content">
+            <div class="craft-label">The Art of Weaving</div>
+            <h2 class="craft-title">Meticulous Craftsmanship</h2>
+            <p class="craft-text">Each Andham saree represents anywhere from 15 days to 6 months of dedicated work. Our weavers use techniques passed down through generations, often using handlooms that are over 50 years old.</p>
+            <p class="craft-text">The process begins with selecting the finest silk threads, which are then dyed using traditional methods. The warp and weft are carefully set up on the loom, and the magic begins. A single Kanjeevaram saree can contain up to 2,000 threads, each placed by hand.</p>
+            <p class="craft-text">We don't just sell sarees; we preserve stories, support families, and keep alive an art form that is slowly disappearing in the age of machines.</p>
+        </div>
+    </section>
+
+    <!-- Values -->
+    <section class="values-section">
+        <div class="values-container">
+            <div class="values-header">
+                <h2 class="values-title">What We Stand For</h2>
+            </div>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">🧵</div>
+                    <h3 class="value-title">Authenticity</h3>
+                    <p class="value-text">Every saree is certified handloom, sourced directly from weavers. We guarantee genuine silk and traditional techniques.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🤝</div>
+                    <h3 class="value-title">Fair Trade</h3>
+                    <p class="value-text">Our weavers earn 70% of the price. No middlemen. No exploitation. Just fair wages for incredible skill.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">🌿</div>
+                    <h3 class="value-title">Sustainability</h3>
+                    <p class="value-text">Natural dyes, eco-friendly packaging, and zero-waste weaving practices. Fashion that doesn't cost the earth.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">💎</div>
+                    <h3 class="value-title">Quality</h3>
+                    <p class="value-text">We inspect every saree personally. If it doesn't meet our standards, it doesn't reach you. Period.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">📚</div>
+                    <h3 class="value-title">Education</h3>
+                    <p class="value-text">We believe in teaching our customers about handloom, so they can make informed choices and appreciate the value.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">❤️</div>
+                    <h3 class="value-title">Community</h3>
+                    <p class="value-text">We support weaver education, healthcare, and financial literacy programs in our partner villages.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section -->
+    <section class="quote-section">
+        <p class="quote-text">"A handloom saree is not just fabric; it is months of someone's life, hours of patience, and generations of tradition wrapped in six yards of elegance."</p>
+        <p class="quote-author">— The Andham Philosophy</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Toggle Functions
+        function toggleNav() {
+            document.getElementById('navOverlay').classList.toggle('active');
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('navDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('active');
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('cartDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('searchModal').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Timeline Animation on Scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.nav-overlay, .cart-overlay, .nav-drawer, .cart-drawer, .search-modal').forEach(el => {
+                    el.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

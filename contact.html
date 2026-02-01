@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .contact-container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+        }
+        
+        .contact-info h1 {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 30px;
+        }
+        
+        .contact-info p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            margin-bottom: 40px;
+        }
+        
+        .contact-detail {
+            margin-bottom: 30px;
+        }
+        
+        .contact-detail h3 {
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 10px;
+            font-weight: 400;
+        }
+        
+        .contact-detail p, .contact-detail a {
+            font-size: 16px;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+        
+        .contact-detail a:hover {
+            color: var(--color-accent);
+        }
+        
+        .contact-form {
+            background: var(--color-bg);
+            padding: 50px;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-form {
+                padding: 30px;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: var(--color-text);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--color-border);
+            font-family: var(--font-sans);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--color-primary);
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .submit-btn:hover {
+            background: #333;
+        }
+        
+        .map-container {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 30px;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 400px;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span id="cartBadge" style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="index.html#featured" class="nav-link">Shop All <span>›</span></a></div>
+            <div class="nav-item"><a href="our-story.html" class="nav-link">Our Story <span>›</span></a></div>
+            <div class="nav-item"><a href="contact.html" class="nav-link">Contact <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput">
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        <div class="breadcrumb" style="max-width: 1200px; margin: 20px auto; padding: 0 30px; font-size: 13px; color: #666;">
+            <a href="index.html">Home</a> <span>/</span> Contact Us
+        </div>
+
+        <div class="contact-container">
+            <div class="contact-info">
+                <h1>Contact Us</h1>
+                <p>We'd love to hear from you. Whether you have a question about our products, need assistance with an order, or just want to say hello, our team is here to help.</p>
+                
+                <div class="contact-detail">
+                    <h3>Email</h3>
+                    <a href="mailto:info@andham.com">info@andham.com</a>
+                </div>
+                
+                <div class="contact-detail">
+                    <h3>Phone</h3>
+                    <p>+91 98765 43210</p>
+                    <p style="font-size: 13px; color: #999; margin-top: 5px;">Mon-Sat, 10am - 7pm IST</p>
+                </div>
+                
+                <div class="contact-detail">
+                    <h3>Visit Us</h3>
+                    <p>123 Textile Market<br>Hyderabad, Telangana 500001<br>India</p>
+                </div>
+                
+                <div class="contact-detail">
+                    <h3>Follow Us</h3>
+                    <p style="display: flex; gap: 15px;">
+                        <a href="#">Instagram</a> / 
+                        <a href="#">Facebook</a> / 
+                        <a href="#">Pinterest</a>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <form onsubmit="event.preventDefault(); showToast('Message sent successfully!');">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" required placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone (Optional)</label>
+                        <input type="tel" placeholder="+91">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea required placeholder="How can we help you?"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="map-container">
+            <div class="map-placeholder">
+                [ Google Map Integration ]
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function toggleNav() {
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.getElementById('navOverlay').classList.toggle('active');
+        }
+        
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+        }
+        
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Size Guide - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --color-primary: #1a1a1a;
+            --color-text: #333;
+            --color-text-light: #666;
+            --color-accent: #8b0000;
+            --color-border: #e5e5e5;
+            --color-bg: #fafafa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Announcement Bar */
+        .announcement {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Header */
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .header-right { justify-content: flex-end; }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover { opacity: 0.6; }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--color-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--color-primary);
+        }
+
+        #cartBadge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #8b0000;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Navigation Drawer */
+        .nav-overlay, .cart-overlay, .search-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .nav-overlay.active, .cart-overlay.active, .search-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer, .cart-drawer {
+            position: fixed;
+            top: 0;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 1002;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .nav-drawer { left: 0; transform: translateX(-100%); }
+        .cart-drawer { right: 0; transform: translateX(100%); }
+        
+        .nav-drawer.active, .cart-drawer.active { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-title {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover { color: #000; transform: rotate(90deg); }
+
+        .nav-content { padding: 20px 0; }
+        
+        .nav-item { border-bottom: 1px solid var(--color-border); }
+        
+        .nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover { background: var(--color-bg); padding-left: 35px; }
+
+        /* Cart Styles */
+        .cart-items { padding: 20px 30px; min-height: 300px; }
+        
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item-image { width: 80px; height: 100px; object-fit: cover; background: #f5f5f5; }
+        .cart-item-details { flex: 1; }
+        .cart-item-title { font-family: var(--font-serif); font-size: 15px; margin-bottom: 5px; }
+        .cart-item-price { color: var(--color-accent); font-size: 14px; font-weight: 600; }
+        
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .cart-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--color-border);
+            background: #fafafa;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover { background: #333; }
+
+        /* Search Modal */
+        .search-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 150px;
+        }
+
+        .search-modal.active { opacity: 1; visibility: visible; }
+
+        .search-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 0 30px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            border-bottom: 2px solid var(--color-primary);
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 40px 15px 0;
+            border: none;
+            font-size: 24px;
+            outline: none;
+        }
+
+        /* Main Content */
+        .page-content {
+            min-height: calc(100vh - 400px);
+        }
+
+        /* Page Header */
+        .page-header {
+            background: var(--color-bg);
+            padding: 80px 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 42px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .page-subtitle {
+            color: var(--color-text-light);
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: #000; }
+        .breadcrumb span { margin: 0 8px; color: #999; }
+
+        /* Size Guide Content */
+        .size-guide-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            padding: 0 30px;
+        }
+
+        .guide-section {
+            margin-bottom: 80px;
+        }
+
+        .guide-title {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-primary);
+            display: inline-block;
+        }
+
+        .guide-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        /* Saree Measurements Table */
+        .measurement-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+            background: #fff;
+            border: 1px solid var(--color-border);
+        }
+
+        .measurement-table th,
+        .measurement-table td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            font-size: 14px;
+        }
+
+        .measurement-table th {
+            background: var(--color-bg);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 12px;
+            color: var(--color-primary);
+        }
+
+        .measurement-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .measurement-table td {
+            color: var(--color-text);
+        }
+
+        .note-box {
+            background: var(--color-bg);
+            border-left: 4px solid var(--color-accent);
+            padding: 25px 30px;
+            margin: 40px 0;
+        }
+
+        .note-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .note-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--color-text-light);
+        }
+
+        /* Blouse Size Chart */
+        .size-chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .size-card {
+            border: 1px solid var(--color-border);
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .size-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .size-label {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--color-primary);
+        }
+
+        .size-detail {
+            font-size: 13px;
+            color: var(--color-text-light);
+            margin-bottom: 8px;
+        }
+
+        .size-chest {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* Measurement Guide Images */
+        .measure-guide {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 40px 0;
+        }
+
+        .guide-step {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 400;
+        }
+
+        .step-content p {
+            font-size: 14px;
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        /* FAQ Section within Size Guide */
+        .size-faq {
+            margin-top: 60px;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--color-border);
+            padding: 25px 0;
+        }
+
+        .faq-question {
+            font-family: var(--font-serif);
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--color-primary);
+        }
+
+        .faq-answer {
+            font-size: 15px;
+            color: var(--color-text-light);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 80px 30px 40px;
+            margin-top: 100px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+        }
+
+        .footer-block h3 {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+        .footer-links a.active { color: #fff; }
+
+        .footer-text {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form { display: flex; border-bottom: 1px solid #444; }
+        
+        .newsletter-input {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter-input::placeholder { color: #666; }
+        
+        .newsletter-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-copyright { color: #666; font-size: 13px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 20px; height: 60px; }
+            .logo { font-size: 18px; }
+            .page-title { font-size: 32px; }
+            .page-header { padding: 60px 20px; }
+            .size-guide-container { padding: 0 20px; margin: 40px auto; }
+            .measurement-table th, .measurement-table td { padding: 15px; font-size: 13px; }
+            .guide-title { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span id="cartBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">All Collections <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Kanjeevaram <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Soft Silk <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Tissue Linen <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Cotton <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products...">
+            </div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue Linen</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Size Guide</h1>
+            <p class="page-subtitle">Find your perfect fit for sarees and blouses. Our traditional garments are designed to flatter every body type with adjustable features.</p>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>Size Guide</span>
+        </div>
+
+        <!-- Size Guide Content -->
+        <div class="size-guide-container">
+
+            <!-- Saree Measurements -->
+            <section class="guide-section">
+                <h2 class="guide-title">Saree Measurements</h2>
+                <p class="guide-text">All our sarees come in standard lengths suitable for most heights. The blouse piece included is unstitched, allowing for customized fitting.</p>
+                
+                <table class="measurement-table">
+                    <thead>
+                        <tr>
+                            <th>Measurement</th>
+                            <th>Standard Size</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Saree Length</td>
+                            <td>6.3 meters (including blouse)</td>
+                            <td>Suitable for heights 5'2" to 5'10"</td>
+                        </tr>
+                        <tr>
+                            <td>Saree Width</td>
+                            <td>45-48 inches</td>
+                            <td>Standard kanjeevaram width</td>
+                        </tr>
+                        <tr>
+                            <td>Blouse Piece</td>
+                            <td>0.8 - 1 meter</td>
+                            <td>Unstitched, attached to saree</td>
+                        </tr>
+                        <tr>
+                            <td>Border Width</td>
+                            <td>3-6 inches</td>
+                            <td>Varies by design</td>
+                        </tr>
+                        <tr>
+                            <td>Pallu Length</td>
+                            <td>1.2 meters approx.</td>
+                            <td>Decorative end piece</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="note-box">
+                    <div class="note-title">Important Note</div>
+                    <div class="note-text">Our sarees are handcrafted and measurements may vary slightly (±2 inches). The unstitched blouse piece allows your tailor to create a perfect custom fit.</div>
+                </div>
+            </section>
+
+            <!-- Blouse Size Chart -->
+            <section class="guide-section">
+                <h2 class="guide-title">Ready-Made Blouse Sizes</h2>
+                <p class="guide-text">For ready-made blouses, please refer to the chart below. If you're between sizes, we recommend sizing up for comfort.</p>
+                
+                <div class="size-chart-grid">
+                    <div class="size-card">
+                        <div class="size-label">XS</div>
+                        <div class="size-detail">Bust: 32-33 inches</div>
+                        <div class="size-detail">Waist: 26-27 inches</div>
+                        <div class="size-detail">Shoulder: 13.5 inches</div>
+                        <div class="size-chest">Chest: 32-33"</div>
+                    </div>
+                    
+                    <div class="size-card">
+                        <div class="size-label">S</div>
+                        <div class="size-detail">Bust: 34-35 inches</div>
+                        <div class="size-detail">Waist: 28-29 inches</div>
+                        <div class="size-detail">Shoulder: 14 inches</div>
+                        <div class="size-chest">Chest: 34-35"</div>
+                    </div>
+                    
+                    <div class="size-card">
+                        <div class="size-label">M</div>
+                        <div class="size-detail">Bust: 36-37 inches</div>
+                        <div class="size-detail">Waist: 30-31 inches</div>
+                        <div class="size-detail">Shoulder: 14.5 inches</div>
+                        <div class="size-chest">Chest: 36-37"</div>
+                    </div>
+                    
+                    <div class="size-card">
+                        <div class="size-label">L</div>
+                        <div class="size-detail">Bust: 38-40 inches</div>
+                        <div class="size-detail">Waist: 32-34 inches</div>
+                        <div class="size-detail">Shoulder: 15 inches</div>
+                        <div class="size-chest">Chest: 38-40"</div>
+                    </div>
+                    
+                    <div class="size-card">
+                        <div class="size-label">XL</div>
+                        <div class="size-detail">Bust: 40-42 inches</div>
+                        <div class="size-detail">Waist: 34-36 inches</div>
+                        <div class="size-detail">Shoulder: 15.5 inches</div>
+                        <div class="size-chest">Chest: 40-42"</div>
+                    </div>
+                    
+                    <div class="size-card">
+                        <div class="size-label">XXL</div>
+                        <div class="size-detail">Bust: 42-44 inches</div>
+                        <div class="size-detail">Waist: 36-38 inches</div>
+                        <div class="size-detail">Shoulder: 16 inches</div>
+                        <div class="size-chest">Chest: 42-44"</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How to Measure -->
+            <section class="guide-section">
+                <h2 class="guide-title">How to Measure</h2>
+                <p class="guide-text">For the perfect blouse fit, take these measurements while wearing a well-fitted garment. Keep the measuring tape snug but not tight.</p>
+                
+                <div class="measure-guide">
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Bust/Chest</h4>
+                            <p>Measure around the fullest part of your bust, keeping the tape parallel to the floor. Ensure the tape isn't too tight - you should be able to breathe comfortably.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>Waist</h4>
+                            <p>Measure around your natural waistline, which is the narrowest part of your torso (usually 1-2 inches above your navel). Stand naturally without sucking in.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Shoulder Width</h4>
+                            <p>Measure from the edge of one shoulder bone to the other, across your upper back. This ensures the blouse sits correctly on your frame.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4>Blouse Length</h4>
+                            <p>Measure from the shoulder bone down to where you want the blouse to end (typically mid-back or lower back, depending on style preference).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h4>Sleeve Length</h4>
+                            <p>Measure from the shoulder bone to your desired sleeve end - elbow for half sleeves, or wrist for full sleeves.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="guide-step">
+                        <div class="step-number">6</div>
+                        <div class="step-content">
+                            <h4>Armhole</h4>
+                            <p>Measure around your shoulder and underarm, ensuring the tape goes over the shoulder bone and under the armpit comfortably.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Size FAQs -->
+            <section class="guide-section size-faq">
+                <h2 class="guide-title">Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Do sarees come in different lengths?</h3>
+                    <p class="faq-answer">Most of our sarees are 6.3 meters in length including the blouse piece, which is the standard length suitable for most women (5'2" to 5'10"). If you need a longer saree (6.5+ meters), please contact us for custom orders.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">What if I'm between sizes for ready-made blouses?</h3>
+                    <p class="faq-answer">We recommend sizing up if you're between sizes. It's easier to take in a slightly larger blouse than to let out a tight one. Alternatively, opt for the attached unstitched blouse piece for a perfect custom fit.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">How much fabric do I need for a custom blouse?</h3>
+                    <p class="faq-answer">The 0.8-1 meter blouse piece attached to our sarees is sufficient for most blouse designs up to size XXL. For heavily embellished blouses or sizes above XXL, you may need additional fabric.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Can I return a saree if the fit isn't right?</h3>
+                    <p class="faq-answer">Yes, we offer easy 7-day returns for unused sarees in original condition. However, since sarees are draped garments with standard lengths, fit issues are rare. Please check our return policy for details.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3 class="faq-question">Do you offer plus sizes?</h3>
+                    <p class="faq-answer">Yes, we offer ready-made blouses in sizes up to 4XL (48-50 inch bust). For larger sizes or custom measurements, please contact our customer service for personalized assistance.</p>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+        
+        function toggleNav() {
+            document.getElementById('navOverlay').classList.toggle('active');
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('navDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('active');
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('cartDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('searchModal').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.nav-overlay, .cart-overlay, .nav-drawer, .cart-drawer, .search-modal').forEach(el => {
+                    el.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Craftsmanship - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --color-primary: #1a1a1a;
+            --color-text: #333;
+            --color-text-light: #666;
+            --color-accent: #8b0000;
+            --color-border: #e5e5e5;
+            --color-bg: #fafafa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Announcement & Header */
+        .announcement {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .header-right { justify-content: flex-end; }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover { opacity: 0.6; }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--color-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--color-primary);
+        }
+
+        #cartBadge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #8b0000;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Navigation & Overlays */
+        .nav-overlay, .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .nav-overlay.active, .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer, .cart-drawer {
+            position: fixed;
+            top: 0;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 1002;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .nav-drawer { left: 0; transform: translateX(-100%); }
+        .cart-drawer { right: 0; transform: translateX(100%); }
+        
+        .nav-drawer.active, .cart-drawer.active { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-title {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover { color: #000; transform: rotate(90deg); }
+
+        .nav-content { padding: 20px 0; }
+        .nav-item { border-bottom: 1px solid var(--color-border); }
+        
+        .nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover { background: var(--color-bg); padding-left: 35px; }
+
+        .cart-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--color-border);
+            background: #fafafa;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .search-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 150px;
+        }
+
+        .search-modal.active { opacity: 1; visibility: visible; }
+
+        .search-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Page Content */
+        .craft-hero {
+            height: 60vh;
+            min-height: 400px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://images.unsplash.com/photo-1583391733950-7c46d6d42c56?w=2000&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .craft-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .craft-hero__content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #fff;
+            padding: 40px;
+        }
+
+        .craft-hero__title {
+            font-family: var(--font-serif);
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 400;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .craft-hero__subtitle {
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: #000; }
+        .breadcrumb span { margin: 0 8px; color: #999; }
+
+        /* Process Section */
+        .process-section {
+            padding: 100px 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .process-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .process-title {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        .process-intro {
+            color: var(--color-text-light);
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            gap: 60px;
+        }
+
+        .process-step {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .process-step:nth-child(even) .process-image {
+            order: 2;
+        }
+
+        .process-image {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+
+        .process-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .process-number {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-serif);
+            font-size: 20px;
+            color: var(--color-accent);
+        }
+
+        .process-content h3 {
+            font-family: var(--font-serif);
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: 400;
+        }
+
+        .process-content p {
+            color: var(--color-text-light);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .process-details {
+            list-style: none;
+            margin-top: 20px;
+        }
+
+        .process-details li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .process-details li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+            font-weight: bold;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        /* Techniques Section */
+        .techniques-section {
+            background: var(--color-bg);
+            padding: 100px 30px;
+        }
+
+        .techniques-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .techniques-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .techniques-title {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .technique-card {
+            background: #fff;
+            padding: 40px;
+            border: 1px solid var(--color-border);
+            transition: all 0.3s ease;
+        }
+
+        .technique-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .technique-name {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--color-accent);
+        }
+
+        .technique-desc {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--color-text-light);
+            margin-bottom: 20px;
+        }
+
+        .technique-time {
+            font-size: 13px;
+            color: var(--color-primary);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Artisan Spotlight */
+        .artisan-section {
+            padding: 100px 30px;
+            background: #fff;
+        }
+
+        .artisan-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .artisan-label {
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 20px;
+        }
+
+        .artisan-title {
+            font-family: var(--font-serif);
+            font-size: 42px;
+            font-weight: 400;
+            margin-bottom: 60px;
+        }
+
+        .artisan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .artisan-card {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+        }
+
+        .artisan-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .artisan-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .artisan-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: #fff;
+            text-align: left;
+        }
+
+        .artisan-name {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .artisan-role {
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Quality Promise */
+        .quality-section {
+            background: #000;
+            color: #fff;
+            padding: 100px 30px;
+            text-align: center;
+        }
+
+        .quality-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .quality-icon {
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+
+        .quality-title {
+            font-family: var(--font-serif);
+            font-size: 36px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .quality-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #999;
+            margin-bottom: 40px;
+        }
+
+        .quality-badges {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .quality-badge {
+            text-align: center;
+        }
+
+        .badge-icon {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 28px;
+        }
+
+        .badge-text {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 80px 30px 40px;
+            border-top: 1px solid #333;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+        }
+
+        .footer-block h3 {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+        .footer-links a.active { color: #fff; }
+
+        .footer-text {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form { display: flex; border-bottom: 1px solid #444; }
+        
+        .newsletter-input {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter-input::placeholder { color: #666; }
+        
+        .newsletter-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-copyright { color: #666; font-size: 13px; }
+
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 20px; height: 60px; }
+            .logo { font-size: 18px; }
+            .process-step {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            .process-step:nth-child(even) .process-image { order: 0; }
+            .techniques-grid { grid-template-columns: 1fr; }
+            .craft-hero__title { font-size: 32px; }
+            .quality-badges { gap: 20px; }
+            .badge-icon { width: 60px; height: 60px; font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span id="cartBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">All Collections <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Kanjeevaram <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Soft Silk <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Tissue Linen <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Cotton <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Cart -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty" style="text-align: center; padding: 60px 20px; color: #999;">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div style="width: 100%; max-width: 600px; padding: 0 30px;">
+            <div style="position: relative; border-bottom: 2px solid var(--color-primary); margin-bottom: 40px;">
+                <input type="text" style="width: 100%; padding: 15px 40px 15px 0; border: none; font-size: 24px; outline: none;" placeholder="Search products...">
+            </div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue Linen</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <section class="craft-hero">
+        <div class="craft-hero__content">
+            <div class="craft-hero__subtitle">The Art of Handloom</div>
+            <h1 class="craft-hero__title">Craftsmanship</h1>
+        </div>
+    </section>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span>/</span>
+        <span>Craftsmanship</span>
+    </div>
+
+    <!-- Process Section -->
+    <section class="process-section">
+        <div class="process-header">
+            <h2 class="process-title">From Thread to Treasure</h2>
+            <p class="process-intro">Every Andham saree undergoes a meticulous journey spanning weeks to months. Understanding this process helps you appreciate the true value of handloom.</p>
+        </div>
+
+        <div class="process-steps">
+            <!-- Step 1 -->
+            <div class="process-step">
+                <div class="process-image">
+                    <img src="https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&auto=format&fit=crop" alt="Yarn Selection">
+                    <div class="process-number">01</div>
+                </div>
+                <div class="process-content">
+                    <h3>Yarn Selection</h3>
+                    <p>The journey begins with selecting the finest mulberry silk threads. We source our silk from verified suppliers in Karnataka and Tamil Nadu, ensuring each strand meets our standards for sheen, strength, and softness.</p>
+                    <p>Each batch is tested for purity—genuine silk burns to ash and smells like burnt hair, while synthetic fibers melt. This traditional test is still our first quality check.</p>
+                    <ul class="process-details">
+                        <li>Mulberry silk grade A and above</li>
+                        <li>Denier count: 20/22D for warp, 2-ply for weft</li>
+                        <li>Natural protein fiber with 18 amino acids</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="process-step">
+                <div class="process-image">
+                    <img src="https://images.unsplash.com/photo-1610189013074-9543c7f747c5?w=800&auto=format&fit=crop" alt="Dyeing">
+                    <div class="process-number">02</div>
+                </div>
+                <div class="process-content">
+                    <h3>Natural Dyeing</h3>
+                    <p>We use both traditional natural dyes and certified azo-free chemical dyes. Natural dyes come from plants—indigo for blue, madder root for red, turmeric for yellow, and pomegranate rinds for greens.</p>
+                    <p>The yarn is boiled in dye baths for hours, then cooled, washed, and dried naturally in shade. This process is repeated for rich, deep colors that don't fade.</p>
+                    <ul class="process-details">
+                        <li>100% color fastness testing</li>
+                        <li>Natural dyes for specialty collections</li>
+                        <li>Shade matching done by master dyers</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="process-step">
+                <div class="process-image">
+                    <img src="https://images.unsplash.com/photo-1583391733950-7c46d6d42c56?w=800&auto=format&fit=crop" alt="Warping">
+                    <div class="process-number">03</div>
+                </div>
+                <div class="process-content">
+                    <h3>Warping & Winding</h3>
+                    <p>Thousands of threads are measured and wound onto beams. For a standard Kanjeevaram, this means 2,000-3,000 warp threads, each 6.5 meters long, arranged with mathematical precision.</p>
+                    <p>The warp threads determine the length of the saree, while weft threads create the width and pattern. This setup alone takes 2-3 days for complex designs.</p>
+                    <ul class="process-details">
+                        <li>Hand-operated warping mills</li>
+                        <li>Tension controlled manually</li>
+                        <li>Sectional warping for complex patterns</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="process-step">
+                <div class="process-image">
+                    <img src="https://images.unsplash.com/photo-1610030469983-98e606365f46?w=800&auto=format&fit=crop" alt="Weaving">
+                    <div class="process-number">04</div>
+                </div>
+                <div class="process-content">
+                    <h3>The Weaving</h3>
+                    <p>The actual weaving happens on pit looms or frame looms, many over 50 years old. The weaver pedals with their feet, throws the shuttle by hand, and beats each weft thread into place.</p>
+                    <p>A skilled weaver produces 4-6 inches per day for complex Kanjeevarams with zari work. Simple cotton sarees may progress 1-2 feet daily. The sound of the loom—thak-thak-thak—is the heartbeat of our craft.</p>
+                    <ul class="process-details">
+                        <li>Interlocking weft technique</li>
+                        <li>Manual zari interlacing</li>
+                        <li>3-ply silk for durability</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="process-step">
+                <div class="process-image">
+                    <img src="https://images.unsplash.com/photo-1609245340409-cad2474ab1d5?w=800&auto=format&fit=crop" alt="Finishing">
+                    <div class="process-number">05</div>
+                </div>
+                <div class="process-content">
+                    <h3>Finishing & Quality Check</h3>
+                    <p>The woven fabric is washed in plain water to remove starch, then dried in shade. It's ironed using traditional coal-heated irons or modern steam presses for delicate silks.</p>
+                    <p>Every saree undergoes three inspections: for weaving defects, color consistency, and overall finish. Only then is it folded, packed with neem leaves for protection, and prepared for you.</p>
+                    <ul class="process-details">
+                        <li>Manual defect checking</li>
+                        <li>Steam pressing for sheen</li>
+                        <li>Neem leaf packaging (natural moth repellent)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Techniques Section -->
+    <section class="techniques-section">
+        <div class="techniques-container">
+            <div class="techniques-header">
+                <h2 class="techniques-title">Weaving Techniques</h2>
+            </div>
+            
+            <div class="techniques-grid">
+                <div class="technique-card">
+                    <h3 class="technique-name">Korvai Technique</h3>
+                    <p class="technique-desc">A traditional method where the body and border are woven separately and then interlocked with extra weft threads. This creates the signature "temple" or "thazhampoo" border that doesn't separate even after decades of wear.</p>
+                    <div class="technique-time">Time: 15-20 days</div>
+                </div>
+
+                <div class="technique-card">
+                    <h3 class="technique-name">Petni</h3>
+                    <p class="technique-desc">The joining technique where three shuttles are used simultaneously—two for the border and one for the body. This creates the distinct double-shaded borders in Kanjeevaram sarees.</p>
+                    <div class="technique-time">Time: 20-25 days</div>
+                </div>
+
+                <div class="technique-card">
+                    <h3 class="technique-name">Jacquard Weaving</h3>
+                    <p class="technique-desc">Using perforated cards that control individual warp threads, creating complex motifs like peacocks, parrots, and floral patterns. Each card represents one row of the design.</p>
+                    <div class="technique-time">Time: 25-30 days</div>
+                </div>
+
+                <div class="technique-card">
+                    <h3 class="technique-name">Zari Work</h3>
+                    <p class="technique-desc">Pure silver threads coated in gold are interwoven to create shimmering borders and motifs. The percentage of zari varies—tested zari contains 57% silver and 0.6% gold.</p>
+                    <div class="technique-time">Time: 30-45 days</div>
+                </div>
+
+                <div class="technique-card">
+                    <h3 class="technique-name">Kadwa</h3>
+                    <p class="technique-desc">A painstaking technique where each motif is woven individually with small shuttles, allowing for intricate designs without floating threads on the reverse. Used in Banarasi and high-end Kanjeevarams.</p>
+                    <div class="technique-time">Time: 45-60 days</div>
+                </div>
+
+                <div class="technique-card">
+                    <h3 class="technique-name">Hand Spinning</h3>
+                    <p class="technique-desc">For our Khadi and cotton collections, yarn is still spun by hand on charkhas (spinning wheels), creating a texture that machine-spun yarn cannot replicate.</p>
+                    <div class="technique-time">Time: 7-10 days</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Artisan Spotlight -->
+    <section class="artisan-section">
+        <div class="artisan-container">
+            <div class="artisan-label">Meet the Makers</div>
+            <h2 class="artisan-title">The Hands Behind the Loom</h2>
+            
+            <div class="artisan-grid">
+                <div class="artisan-card">
+                    <img src="https://images.unsplash.com/photo-1595407753234-0882f1e77954?w=600&auto=format&fit=crop" alt="Artisan">
+                    <div class="artisan-info">
+                        <div class="artisan-name">Palanisamy</div>
+                        <div class="artisan-role">Master Weaver, Kanchipuram</div>
+                    </div>
+                </div>
+                
+                <div class="artisan-card">
+                    <img src="https://images.unsplash.com/photo-1606293926075-69a00dbfde81?w=600&auto=format&fit=crop" alt="Artisan">
+                    <div class="artisan-info">
+                        <div class="artisan-name">Lakshmi Devi</div>
+                        <div class="artisan-role">Master Dyer, Kanchipuram</div>
+                    </div>
+                </div>
+                
+                <div class="artisan-card">
+                    <img src="https://images.unsplash.com/photo-1606293925975-90d15b833c3b?w=600&auto=format&fit=crop" alt="Artisan">
+                    <div class="artisan-info">
+                        <div class="artisan-name">Ramaswamy</div>
+                        <div class="artisan-role">Zari Specialist, Kanchipuram</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quality Promise -->
+    <section class="quality-section">
+        <div class="quality-container">
+            <div class="quality-icon">✦</div>
+            <h2 class="quality-title">Our Quality Promise</h2>
+            <p class="quality-text">Every saree bearing the Andham name has passed rigorous testing. We provide certificates of authenticity for pure silk and zari content. If a saree doesn't meet our standards, it doesn't reach you.</p>
+            
+            <div class="quality-badges">
+                <div class="quality-badge">
+                    <div class="badge-icon">☵</div>
+                    <div class="badge-text">Silk Mark Certified</div>
+                </div>
+                <div class="quality-badge">
+                    <div class="badge-icon">✓</div>
+                    <div class="badge-text">Handloom Certified</div>
+                </div>
+                <div class="quality-badge">
+                    <div class="badge-icon">⚡</div>
+                    <div class="badge-text">Zari Tested</div>
+                </div>
+                <div class="quality-badge">
+                    <div class="badge-icon">♥</div>
+                    <div class="badge-text">Ethically Made</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleNav() {
+            document.getElementById('navOverlay').classList.toggle('active');
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('navDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('active');
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('cartDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('searchModal').classList.contains('active') ? 'hidden' : '';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.nav-overlay, .cart-overlay, .nav-drawer, .cart-drawer, .search-modal').forEach(el => {
+                    el.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

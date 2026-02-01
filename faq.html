@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --color-primary: #1a1a1a;
+            --color-text: #333;
+            --color-text-light: #666;
+            --color-accent: #8b0000;
+            --color-border: #e5e5e5;
+            --color-bg: #fafafa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Announcement & Header (Same as Size Guide) */
+        .announcement {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            border-bottom: 1px solid var(--color-border);
+            z-index: 1000;
+        }
+
+        .header-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            flex: 1;
+        }
+
+        .header-right { justify-content: flex-end; }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover { opacity: 0.6; }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--color-primary);
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--color-primary);
+        }
+
+        #cartBadge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #8b0000;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Navigation & Cart Drawers */
+        .nav-overlay, .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .nav-overlay.active, .cart-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .nav-drawer, .cart-drawer {
+            position: fixed;
+            top: 0;
+            width: 400px;
+            max-width: 90vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 1002;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .nav-drawer { left: 0; transform: translateX(-100%); }
+        .cart-drawer { right: 0; transform: translateX(100%); }
+        
+        .nav-drawer.active, .cart-drawer.active { transform: translateX(0); }
+
+        .drawer-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .drawer-title {
+            font-family: var(--font-serif);
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-btn:hover { color: #000; transform: rotate(90deg); }
+
+        .nav-content { padding: 20px 0; }
+        .nav-item { border-bottom: 1px solid var(--color-border); }
+        
+        .nav-link {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 30px;
+            text-decoration: none;
+            color: var(--color-primary);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover { background: var(--color-bg); padding-left: 35px; }
+
+        .cart-items { padding: 20px 30px; min-height: 300px; }
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .cart-footer {
+            padding: 25px 30px;
+            border-top: 1px solid var(--color-border);
+            background: #fafafa;
+            position: sticky;
+            bottom: 0;
+        }
+
+        .cart-subtotal {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 16px;
+            background: #000;
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        /* Search Modal */
+        .search-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            z-index: 1003;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 150px;
+        }
+
+        .search-modal.active { opacity: 1; visibility: visible; }
+
+        .search-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Main Content */
+        .page-content { min-height: calc(100vh - 400px); }
+
+        .page-header {
+            background: var(--color-bg);
+            padding: 80px 30px;
+            text-align: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .page-title {
+            font-family: var(--font-serif);
+            font-size: 42px;
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+
+        .page-subtitle {
+            color: var(--color-text-light);
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover { color: #000; }
+        .breadcrumb span { margin: 0 8px; color: #999; }
+
+        /* FAQ Search */
+        .faq-search {
+            max-width: 600px;
+            margin: -30px auto 60px;
+            padding: 0 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box {
+            display: flex;
+            background: #fff;
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 5px;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            outline: none;
+            font-family: var(--font-sans);
+        }
+
+        .search-btn {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 0 30px;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover { background: #333; }
+
+        /* FAQ Categories */
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto 100px;
+            padding: 0 30px;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: 20px;
+        }
+
+        .category-tab {
+            padding: 12px 24px;
+            border: 1px solid var(--color-border);
+            background: #fff;
+            cursor: pointer;
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            font-family: var(--font-sans);
+        }
+
+        .category-tab:hover {
+            border-color: var(--color-primary);
+        }
+
+        .category-tab.active {
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+        }
+
+        /* FAQ Accordion */
+        .faq-section {
+            display: none;
+        }
+
+        .faq-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 0;
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            font-family: var(--font-serif);
+            font-size: 20px;
+            font-weight: 400;
+            color: var(--color-primary);
+            transition: color 0.3s;
+        }
+
+        .faq-question:hover {
+            color: var(--color-accent);
+        }
+
+        .faq-icon {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+            margin-left: 20px;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+            background: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding-bottom: 25px;
+        }
+
+        .faq-answer-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--color-text-light);
+            max-width: 90%;
+        }
+
+        .faq-answer-content p {
+            margin-bottom: 15px;
+        }
+
+        .faq-answer-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .faq-answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .faq-answer-content a {
+            color: var(--color-accent);
+            text-decoration: underline;
+        }
+
+        /* Contact CTA */
+        .contact-cta {
+            background: var(--color-bg);
+            padding: 80px 30px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .cta-title {
+            font-family: var(--font-serif);
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .cta-text {
+            color: var(--color-text-light);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: #000;
+            color: #fff;
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        .cta-button:hover {
+            background: #333;
+        }
+
+        /* Footer */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 80px 30px 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 60px;
+        }
+
+        .footer-block h3 {
+            font-family: var(--font-serif);
+            font-size: 16px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        
+        .footer-links a {
+            color: #999;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: #fff; }
+        .footer-links a.active { color: #fff; }
+
+        .footer-text {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .newsletter-form { display: flex; border-bottom: 1px solid #444; }
+        
+        .newsletter-input {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            color: #fff;
+            outline: none;
+        }
+
+        .newsletter-input::placeholder { color: #666; }
+        
+        .newsletter-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-copyright { color: #666; font-size: 13px; }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            display: none;
+        }
+
+        .no-results.show { display: block; }
+
+        @media (max-width: 768px) {
+            .header-inner { padding: 0 20px; height: 60px; }
+            .logo { font-size: 18px; }
+            .page-title { font-size: 32px; }
+            .page-header { padding: 60px 20px; }
+            .faq-question { font-size: 18px; padding: 20px 0; }
+            .category-tab { padding: 10px 16px; font-size: 12px; }
+            .faq-container { padding: 0 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span id="cartBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">All Collections <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Kanjeevaram <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Soft Silk <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Tissue Linen <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link">Cotton <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products..." id="globalSearchInput">
+            </div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue Linen</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="page-content">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Frequently Asked Questions</h1>
+            <p class="page-subtitle">Find answers to common questions about orders, shipping, returns, and our products.</p>
+        </div>
+
+        <!-- Search -->
+        <div class="faq-search">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="Search for answers..." id="faqSearchInput">
+                <button class="search-btn" onclick="searchFAQs()">Search</button>
+            </div>
+        </div>
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <span>FAQs</span>
+        </div>
+
+        <!-- FAQ Content -->
+        <div class="faq-container">
+            
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="showCategory('orders')">Orders</button>
+                <button class="category-tab" onclick="showCategory('shipping')">Shipping</button>
+                <button class="category-tab" onclick="showCategory('returns')">Returns</button>
+                <button class="category-tab" onclick="showCategory('products')">Products</button>
+                <button class="category-tab" onclick="showCategory('care')">Care Guide</button>
+                <button class="category-tab" onclick="showCategory('account')">Account</button>
+            </div>
+
+            <!-- Orders Category -->
+            <div class="faq-section active" id="orders">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I place an order?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Placing an order is simple:</p>
+                            <ul>
+                                <li>Browse our collections and select your desired saree</li>
+                                <li>Choose any available options (if applicable)</li>
+                                <li>Click "Add to Cart"</li>
+                                <li>Review your items in the cart and click "Checkout"</li>
+                                <li>Enter your shipping and payment details</li>
+                                <li>Confirm your order</li>
+                            </ul>
+                            <p>You'll receive an order confirmation email within minutes. If you need assistance, please <a href="#">contact us</a>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I modify or cancel my order after placing it?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>We process orders quickly to ensure fast delivery. You can modify or cancel your order within 2 hours of placing it by contacting our customer service team immediately at <strong>+91 98765 43210</strong> or emailing <strong>info@andham.com</strong>.</p>
+                            <p>Once the order has been shipped, modifications are not possible, but you can return the item once received (subject to our return policy).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What payment methods do you accept?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>We accept the following payment methods:</p>
+                            <ul>
+                                <li>Credit/Debit Cards (Visa, Mastercard, American Express, RuPay)</li>
+                                <li>Net Banking (all major Indian banks)</li>
+                                <li>UPI (Google Pay, PhonePe, Paytm, BHIM)</li>
+                                <li>Cash on Delivery (available for orders below Rs. 20,000)</li>
+                                <li>Wallet payments</li>
+                            </ul>
+                            <p>All transactions are secured with 256-bit SSL encryption for your safety.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I know if my order was successful?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>After completing your purchase, you will:</p>
+                            <ul>
+                                <li>See an order confirmation page with your order number</li>
+                                <li>Receive a confirmation email within 5 minutes</li>
+                                <li>Receive an SMS confirmation to your registered mobile number</li>
+                            </ul>
+                            <p>If you don't receive these confirmations, please check your spam folder or contact our support team.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Category -->
+            <div class="faq-section" id="shipping">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How long will it take to receive my order?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Delivery times vary by location:</p>
+                            <ul>
+                                <li><strong>Metro Cities:</strong> 3-5 business days</li>
+                                <li><strong>Tier 2 Cities:</strong> 5-7 business days</li>
+                                <li><strong>Remote Areas:</strong> 7-10 business days</li>
+                            </ul>
+                            <p>Custom or pre-order items may take 10-15 business days. You'll receive tracking details via email once your order ships.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do you offer free shipping?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes! We offer free standard shipping on all orders above <strong>Rs. 5,000</strong>. For orders below this amount, a flat shipping fee of Rs. 150 applies.</p>
+                            <p>Express shipping (1-2 days) is available for an additional Rs. 300 for metro cities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do you ship internationally?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, we ship worldwide! International shipping times range from 7-21 business days depending on the destination. Shipping costs are calculated at checkout based on weight and destination.</p>
+                            <p>Please note that international orders may be subject to customs duties and taxes, which are the responsibility of the customer.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How can I track my order?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Once your order ships, you'll receive an email with a tracking number and link. You can also track your order by:</p>
+                            <ul>
+                                <li>Logging into your account and visiting "My Orders"</li>
+                                <li>Clicking the tracking link in your shipping confirmation email</li>
+                                <li>Contacting our customer service with your order number</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Returns Category -->
+            <div class="faq-section" id="returns">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What is your return policy?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>We offer a hassle-free <strong>7-day return policy</strong> for unused items in original condition with all tags attached. Items must be:</p>
+                            <ul>
+                                <li>Unworn and unwashed</li>
+                                <li>In original packaging</li>
+                                <li>Free from any damage or alterations</li>
+                                <li>Accompanied by the original invoice</li>
+                            </ul>
+                            <p>Custom orders, blouses, and sale items (marked final sale) are not eligible for return.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I initiate a return?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>To initiate a return:</p>
+                            <ol style="margin: 15px 0; padding-left: 20px;">
+                                <li>Log into your account and go to "My Orders"</li>
+                                <li>Select the order and click "Return Item"</li>
+                                <li>Choose your return reason and preferred refund method</li>
+                                <li>Pack the item securely in original packaging</li>
+                                <li>Our courier will pick up the item within 2-3 business days</li>
+                            </ol>
+                            <p>Alternatively, you can email us at <strong>returns@andham.com</strong> with your order number.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>When will I receive my refund?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Refunds are processed within 5-7 business days after we receive and inspect the returned item. The refund will be credited to your original payment method:</p>
+                            <ul>
+                                <li><strong>Credit/Debit Cards:</strong> 5-10 business days</li>
+                                <li><strong>UPI/Net Banking:</strong> 3-5 business days</li>
+                                <li><strong>Cash on Delivery:</strong> Bank transfer within 7 days or store credit immediately</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I exchange an item instead of returning it?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>We currently do not offer direct exchanges. If you'd like a different item, please return the original item for a refund and place a new order. This ensures faster processing and availability of your desired item.</p>
+                            <p>Store credit is issued immediately upon return approval, allowing you to reorder right away.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Products Category -->
+            <div class="faq-section" id="products">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Are your sarees authentic handloom?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes! All our Kanjeevaram, Banarasi, and traditional silk sarees are certified handloom products sourced directly from weavers' cooperatives. Each piece comes with a Silk Mark certificate of authenticity.</p>
+                            <p>We work directly with artisan families to ensure fair wages and preserve traditional weaving techniques. Your purchase supports these artisan communities.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>What is the difference between Kanjeevaram and Soft Silk?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p><strong>Kanjeevaram Silk:</strong> Heavier, more luxurious silk with gold/silver zari work. Traditional bridal choice. Stiffer drape. Weight: 700g-1.2kg.</p>
+                            <p><strong>Soft Silk:</strong> Lighter, more fluid silk that's easier to drape and carry. Suitable for daily wear and office. More affordable. Weight: 400-600g.</p>
+                            <p>Both use pure mulberry silk, but Kanjeevaram has a higher silk density and traditional temple border designs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do sarees come with blouse pieces?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, all our sarees come with an attached unstitched blouse piece (0.8-1 meter). The blouse fabric matches the saree border or body design.</p>
+                            <p>Some sarees come with "running blouse" (same fabric as saree body), while others have contrast blouses. This is mentioned in each product description.</p>
+                            <p>Ready-made blouses are available separately in our Blouses section.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Will the color match what I see online?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>We make every effort to display colors accurately, but slight variations may occur due to:</p>
+                            <ul>
+                                <li>Screen calibration differences</li>
+                                <li>Photography lighting</li>
+                                <li>Dye lot variations in handloom fabrics</li>
+                            </ul>
+                            <p>Handloom sarees may have slight irregularities in weaving or color, which are characteristic of authentic craftsmanship and not defects. We mention any significant variations in the product description.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Care Category -->
+            <div class="faq-section" id="care">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How should I care for my silk saree?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <ul>
+                                <li><strong>Dry Clean Only:</strong> Never machine wash silk sarees</li>
+                                <li><strong>Storage:</strong> Store in a cotton/muslin cloth, not plastic</li>
+                                <li><strong>Refolding:</strong> Refold every 3 months to prevent crease marks</li>
+                                <li><strong>Sunlight:</strong> Avoid direct sunlight to prevent color fading</li>
+                                <li><strong>Perfume:</strong> Apply perfume before wearing, not after</li>
+                            </ul>
+                            <p>Use neem leaves or sandalwood sachets in storage to prevent moth damage naturally.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Can I iron my saree?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, but with caution:</p>
+                            <ul>
+                                <li>Use low heat (silk setting)</li>
+                                <li>Always iron on the reverse side</li>
+                                <li>Use a thin cotton cloth between iron and saree</li>
+                                <li>Never iron zari/gold borders directly</li>
+                                <li>Steam ironing is preferable to dry ironing</li>
+                            </ul>
+                            <p>For heavily embellished sarees, we recommend professional steam pressing only.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I remove stains from my saree?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p><strong>Do not attempt home washing.</strong> For stains:</p>
+                            <ul>
+                                <li>Blot (don't rub) fresh stains immediately with clean dry cloth</li>
+                                <li>Sprinkle talcum powder on oil stains before dry cleaning</li>
+                                <li>For water spots, let it dry naturally and take to dry cleaner</li>
+                                <li>Never use bleach or harsh chemicals</li>
+                            </ul>
+                            <p>Take stained sarees to a specialist dry cleaner experienced with silk and zari work.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Category -->
+            <div class="faq-section" id="account">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>How do I create an account?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Click the person icon in the header or "Account" at checkout. You can register using:</p>
+                            <ul>
+                                <li>Email and password</li>
+                                <li>Google account</li>
+                                <li>Phone number with OTP</li>
+                            </ul>
+                            <p>Having an account lets you track orders, save wishlists, and check out faster.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>I forgot my password. What should I do?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Click "Forgot Password" on the login page. Enter your registered email address, and we'll send you a password reset link valid for 24 hours.</p>
+                            <p>If you don't receive the email within 5 minutes, check your spam folder. For further assistance, contact <strong>support@andham.com</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Do you offer wholesale or bulk orders?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, we offer special pricing for bulk orders (5+ sarees) for weddings, corporate gifting, or retail. Benefits include:</p>
+                            <ul>
+                                <li>10-25% discount depending on quantity</li>
+                                <li>Custom bulk packaging</li>
+                                <li>Personalized service from our team</li>
+                                <li>Priority processing</li>
+                            </ul>
+                            <p>Email <strong>wholesale@andham.com</strong> with your requirements for a custom quote.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-results" id="noResults">
+                <div style="font-size: 48px; margin-bottom: 20px;">🔍</div>
+                <h3 style="font-family: var(--font-serif); margin-bottom: 10px;">No results found</h3>
+                <p>Try searching with different keywords or browse categories above.</p>
+            </div>
+
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="contact-cta">
+            <h2 class="cta-title">Still have questions?</h2>
+            <p class="cta-text">Can't find the answer you're looking for? Our customer care team is here to help.</p>
+            <a href="#" class="cta-button">Contact Us</a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle Functions
+        function toggleNav() {
+            document.getElementById('navOverlay').classList.toggle('active');
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('navDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('active');
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('cartDrawer').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('searchModal').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // FAQ Accordion
+        function toggleFAQ(button) {
+            const item = button.parentElement;
+            const isActive = item.classList.contains('active');
+            
+            // Close all in same section
+            const section = item.parentElement;
+            section.querySelectorAll('.faq-item').forEach(faq => {
+                faq.classList.remove('active');
+            });
+            
+            // Toggle current
+            if (!isActive) {
+                item.classList.add('active');
+            }
+        }
+
+        // Category Tabs
+        function showCategory(category) {
+            // Update tabs
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show section
+            document.querySelectorAll('.faq-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(category).classList.add('active');
+            
+            // Hide no results
+            document.getElementById('noResults').classList.remove('show');
+        }
+
+        // Search Functionality
+        function searchFAQs() {
+            const searchTerm = document.getElementById('faqSearchInput').value.toLowerCase();
+            const allItems = document.querySelectorAll('.faq-item');
+            let hasResults = false;
+            
+            // Show all sections for search
+            document.querySelectorAll('.faq-section').forEach(section => {
+                section.classList.add('active');
+            });
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            allItems.forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // Show/hide no results message
+            const noResults = document.getElementById('noResults');
+            if (!hasResults && searchTerm !== '') {
+                noResults.classList.add('show');
+            } else {
+                noResults.classList.remove('show');
+            }
+        }
+
+        // Search on Enter key
+        document.getElementById('faqSearchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchFAQs();
+            }
+        });
+
+        // Close on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.nav-overlay, .cart-overlay, .nav-drawer, .cart-drawer, .search-modal').forEach(el => {
+                    el.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>
