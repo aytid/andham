@@ -1,1887 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Andham | Luxury Handcrafted Sarees</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --royal-maroon: #6B0F1A;
-            --deep-burgundy: #8B2131;
-            --antique-gold: #C9A961;
-            --soft-gold: #E8D5A3;
-            --cream: #F9F6F0;
-            --ivory: #FFFBF5;
-            --charcoal: #2C2C2C;
-            --text-gray: #5A5A5A;
-            --shadow-sm: 0 2px 8px rgba(107, 15, 26, 0.08);
-            --shadow-md: 0 8px 24px rgba(107, 15, 26, 0.12);
-            --shadow-lg: 0 20px 50px rgba(107, 15, 26, 0.15);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--ivory);
-            color: var(--charcoal);
-            line-height: 1.6;
-        }
-
-        h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif; }
-
-        /* Loading Screen */
-        .loader {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--royal-maroon);
-            z-index: 10000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-        .loader.hidden { opacity: 0; visibility: hidden; }
-        .loader-logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 3rem;
-            color: var(--antique-gold);
-            letter-spacing: 0.5rem;
-            animation: pulse 2s infinite;
-        }
-        .loader-line {
-            width: 200px; height: 2px;
-            background: rgba(255,255,255,0.2);
-            margin-top: 2rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .loader-progress {
-            position: absolute;
-            left: 0; top: 0; height: 100%; width: 0%;
-            background: var(--antique-gold);
-            animation: load 2s ease forwards;
-        }
-        @keyframes load { to { width: 100%; } }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 1000;
-            padding: 1.2rem 0;
-            transition: all 0.4s ease;
-            background: transparent;
-        }
-        header.scrolled {
-            background: rgba(255, 251, 245, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-sm);
-            padding: 1rem 0;
-        }
-        nav {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
-            color: var(--royal-maroon);
-            font-weight: 400;
-            letter-spacing: 0.3rem;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .nav-links {
-            display: flex;
-            gap: 3rem;
-            list-style: none;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--charcoal);
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
-            position: relative;
-            padding: 0.5rem 0;
-        }
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 0; height: 1px;
-            background: var(--royal-maroon);
-            transition: width 0.4s ease;
-        }
-        .nav-links a:hover::after { width: 100%; }
-
-        .nav-icons {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        .icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            color: var(--charcoal);
-            font-size: 1.2rem;
-            transition: all 0.3s;
-            width: 45px; height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .icon-btn:hover {
-            background: rgba(201, 169, 97, 0.1);
-            color: var(--royal-maroon);
-            transform: translateY(-2px);
-        }
-        .badge {
-            position: absolute;
-            top: -5px; right: -5px;
-            background: var(--royal-maroon);
-            color: white;
-            font-size: 0.65rem;
-            width: 18px; height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transform: scale(0);
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-        .badge.show { opacity: 1; transform: scale(1); }
-        .mobile-menu-btn { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
-        .mobile-menu-btn span { width: 25px; height: 2px; background: var(--charcoal); }
-
-        /* Main Content Sections */
-        .page-section { display: none; animation: fadeIn 0.5s ease; }
-        .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 0 2rem;
-            padding-top: 80px;
-            background: linear-gradient(135deg, var(--ivory) 0%, var(--cream) 100%);
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-bg {
-            position: absolute;
-            top: 0; right: 0;
-            width: 60%; height: 100%;
-            background: linear-gradient(135deg, var(--cream) 0%, var(--soft-gold) 100%);
-            clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
-            z-index: 0;
-        }
-        .hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-        }
-        .hero-text h1 {
-            font-size: clamp(3rem, 6vw, 5rem);
-            color: var(--royal-maroon);
-            margin-bottom: 1.5rem;
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-        }
-        .hero-text h1 span { font-style: italic; color: var(--antique-gold); display: block; }
-        .hero-text p { font-size: 1.1rem; color: var(--text-gray); margin-bottom: 2.5rem; max-width: 500px; line-height: 1.8; }
-        .hero-buttons { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-        
-        .btn {
-            padding: 1rem 2.5rem;
-            border: none;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.1rem;
-            text-transform: uppercase;
-            transition: all 0.4s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .btn-primary {
-            background: var(--royal-maroon);
-            color: white;
-            box-shadow: 0 4px 15px rgba(107, 15, 26, 0.3);
-        }
-        .btn-primary:hover { background: var(--deep-burgundy); transform: translateY(-2px); }
-        .btn-outline {
-            background: transparent;
-            color: var(--royal-maroon);
-            border: 2px solid var(--royal-maroon);
-        }
-        .btn-outline:hover { background: var(--royal-maroon); color: white; }
-        .btn-gold { background: var(--antique-gold); color: var(--charcoal); }
-        .btn-gold:hover { background: #b8983d; transform: translateY(-2px); }
-
-        .hero-image { position: relative; }
-        .hero-image img {
-            width: 100%; height: 600px;
-            object-fit: cover;
-            border-radius: 200px 200px 0 0;
-            box-shadow: var(--shadow-lg);
-            display: block;
-        }
-        .floating-tag {
-            position: absolute;
-            background: white;
-            padding: 1.2rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow-md);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            animation: float 6s ease-in-out infinite;
-        }
-        .floating-tag.one { top: 10%; left: -30px; }
-        .floating-tag.two { bottom: 20%; right: -20px; animation-delay: 3s; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-        .tag-icon {
-            width: 45px; height: 45px;
-            background: var(--soft-gold);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--royal-maroon);
-            font-size: 1.1rem;
-        }
-
-        /* Marquee */
-        .marquee {
-            background: var(--royal-maroon);
-            color: var(--antique-gold);
-            padding: 1.2rem 0;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 25s linear infinite;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
-            letter-spacing: 0.2rem;
-            text-transform: uppercase;
-        }
-        .marquee-content span { margin: 0 3rem; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* Section Headers */
-        section { padding: 5rem 2rem; }
-        .section-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        .section-header h2 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            color: var(--royal-maroon);
-            margin-bottom: 1rem;
-            position: relative;
-            display: inline-block;
-        }
-        .section-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px; left: 50%;
-            transform: translateX(-50%);
-            width: 60px; height: 2px;
-            background: var(--antique-gold);
-        }
-        .section-header p { color: var(--text-gray); font-size: 1.1rem; margin-top: 1.5rem; }
-
-        /* Categories */
-        .categories { background: var(--cream); }
-        .category-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-        .category-card {
-            position: relative;
-            height: 400px;
-            border-radius: 20px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.4s ease;
-        }
-        .category-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); }
-        .category-card img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transition: transform 0.8s ease;
-        }
-        .category-card:hover img { transform: scale(1.1); }
-        .category-overlay {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            padding: 2rem;
-            background: linear-gradient(to top, rgba(107, 15, 26, 0.95), transparent);
-            color: white;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all 0.4s ease;
-        }
-        .category-card:hover .category-overlay { transform: translateY(0); opacity: 1; }
-        .category-overlay h3 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-
-        /* Products Grid */
-        .products-section { max-width: 1400px; margin: 0 auto; }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2.5rem;
-        }
-        .product-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-        }
-        .product-card:hover {
-            transform: translateY(-12px);
-            box-shadow: var(--shadow-lg);
-        }
-        .product-image-wrapper {
-            position: relative;
-            aspect-ratio: 3/4;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-        }
-        .product-image {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-        .product-card:hover .product-image { transform: scale(1.08); }
-        .product-badge {
-            position: absolute;
-            top: 1rem; left: 1rem;
-            background: var(--antique-gold);
-            color: var(--charcoal);
-            padding: 0.4rem 1rem;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            z-index: 2;
-        }
-        .wishlist-btn {
-            position: absolute;
-            top: 1rem; right: 1rem;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            z-index: 2;
-            transition: all 0.3s;
-        }
-        .wishlist-btn:hover, .wishlist-btn.active {
-            background: var(--royal-maroon);
-            color: white;
-            transform: scale(1.1);
-        }
-        .view-details-btn {
-            position: absolute;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            color: var(--royal-maroon);
-            padding: 1rem 2rem;
-            border-radius: 30px;
-            border: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: bottom 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            white-space: nowrap;
-        }
-        .product-card:hover .view-details-btn { bottom: 1.5rem; }
-        .view-details-btn:hover { background: var(--royal-maroon); color: white; }
-        
-        .product-info { padding: 1.5rem; text-align: center; }
-        .product-category {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15rem;
-            color: var(--antique-gold);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        .product-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: var(--charcoal);
-            line-height: 1.3;
-            min-height: 3.5rem;
-        }
-        .product-price {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-        .current-price { font-size: 1.2rem; font-weight: 700; color: var(--royal-maroon); }
-        .original-price { font-size: 0.95rem; color: #999; text-decoration: line-through; }
-
-        /* PRODUCT DETAIL PAGE */
-        .product-detail-section {
-            padding-top: 100px;
-            min-height: 100vh;
-            background: var(--ivory);
-        }
-        .breadcrumb {
-            max-width: 1400px;
-            margin: 0 auto 2rem;
-            padding: 0 2rem;
-            font-size: 0.9rem;
-            color: var(--text-gray);
-        }
-        .breadcrumb span { cursor: pointer; transition: color 0.3s; }
-        .breadcrumb span:hover { color: var(--royal-maroon); }
-        .breadcrumb i { margin: 0 0.5rem; font-size: 0.8rem; }
-        
-        .product-detail-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-        }
-        
-        /* Image Gallery */
-        .product-gallery {
-            display: flex;
-            gap: 1rem;
-        }
-        .gallery-thumbnails {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            width: 80px;
-        }
-        .gallery-thumb {
-            width: 80px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-            opacity: 0.7;
-        }
-        .gallery-thumb:hover, .gallery-thumb.active {
-            border-color: var(--royal-maroon);
-            opacity: 1;
-        }
-        .gallery-thumb img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-        .gallery-main {
-            flex: 1;
-            border-radius: 16px;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-            position: relative;
-        }
-        .gallery-main img {
-            width: 100%; height: 600px;
-            object-fit: cover;
-            display: block;
-        }
-        .gallery-zoom-hint {
-            position: absolute;
-            bottom: 1rem; right: 1rem;
-            background: rgba(255,255,255,0.9);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            color: var(--charcoal);
-        }
-
-        /* Product Info Detail */
-        .product-detail-info h1 {
-            font-size: 2.5rem;
-            color: var(--royal-maroon);
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-        }
-        .product-detail-meta {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-        .product-detail-meta span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .product-detail-price {
-            font-size: 2rem;
-            color: var(--royal-maroon);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .product-detail-price .original {
-            font-size: 1.2rem;
-            color: #999;
-            text-decoration: line-through;
-            font-weight: 400;
-        }
-        .discount-badge {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .product-description {
-            color: var(--text-gray);
-            line-height: 1.8;
-            margin: 1.5rem 0;
-            font-size: 1.05rem;
-        }
-
-        /* Product Details Table */
-        .details-table {
-            width: 100%;
-            margin: 1.5rem 0;
-            border-collapse: collapse;
-        }
-        .details-table td {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.95rem;
-        }
-        .details-table td:first-child {
-            color: var(--text-gray);
-            width: 40%;
-        }
-        .details-table td:last-child {
-            font-weight: 500;
-            color: var(--charcoal);
-        }
-
-        /* Size/Blouse Selection */
-        .selection-group {
-            margin: 1.5rem 0;
-        }
-        .selection-label {
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-            display: block;
-            color: var(--charcoal);
-        }
-        .size-options {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
-        .size-btn {
-            padding: 0.8rem 1.5rem;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 500;
-            min-width: 60px;
-        }
-        .size-btn:hover, .size-btn.active {
-            border-color: var(--royal-maroon);
-            background: var(--royal-maroon);
-            color: white;
-        }
-
-        /* Quantity */
-        .quantity-selector {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-        .quantity-btn {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            border: 2px solid #ddd;
-            background: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-        .quantity-btn:hover {
-            border-color: var(--royal-maroon);
-            background: var(--royal-maroon);
-            color: white;
-        }
-        .quantity-value {
-            font-size: 1.2rem;
-            font-weight: 600;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        /* Action Buttons */
-        .product-actions-row {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-        .product-actions-row .btn {
-            flex: 1;
-            justify-content: center;
-            padding: 1.2rem;
-        }
-
-        /* Trust Badges */
-        .trust-badges {
-            display: flex;
-            gap: 2rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid #eee;
-        }
-        .trust-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: var(--text-gray);
-        }
-        .trust-badge i {
-            color: var(--antique-gold);
-            font-size: 1.2rem;
-        }
-
-        /* Sidebars */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -450px;
-            width: 450px;
-            max-width: 100%;
-            height: 100%;
-            background: var(--ivory);
-            z-index: 2000;
-            transition: right 0.5s ease;
-            box-shadow: -10px 0 50px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar.active { right: 0; }
-        .sidebar-header {
-            padding: 1.5rem 2rem;
-            background: var(--cream);
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .sidebar-header h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.6rem;
-            color: var(--royal-maroon);
-        }
-        .close-sidebar {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: white;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.3s;
-        }
-        .close-sidebar:hover {
-            background: var(--royal-maroon);
-            color: white;
-            transform: rotate(90deg);
-        }
-        .sidebar-content { flex: 1; overflow-y: auto; padding: 1.5rem; }
-        .cart-item {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            box-shadow: var(--shadow-sm);
-        }
-        .cart-item img { width: 80px; height: 100px; object-fit: cover; border-radius: 8px; }
-        .cart-item-details { flex: 1; }
-        .cart-item-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 0.3rem; }
-        .cart-item-price { color: var(--royal-maroon); font-weight: 700; }
-        .quantity-control { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.5rem; }
-        .qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #ddd; background: white; cursor: pointer; }
-        .remove-btn { color: #999; font-size: 0.85rem; cursor: pointer; margin-top: 0.5rem; }
-        .remove-btn:hover { color: #dc3545; }
-        .sidebar-footer {
-            padding: 1.5rem 2rem;
-            background: var(--cream);
-            border-top: 1px solid rgba(0,0,0,0.05);
-        }
-        .cart-total { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 1.2rem; font-weight: 700; }
-        .checkout-btn {
-            width: 100%;
-            padding: 1.1rem;
-            background: var(--royal-maroon);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.05rem;
-        }
-        .checkout-btn:hover { background: var(--deep-burgundy); }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 3000;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.4s;
-            padding: 1rem;
-        }
-        .modal.active { display: flex; opacity: 1; }
-        .modal-content {
-            background: white;
-            width: 100%;
-            max-width: 550px;
-            border-radius: 20px;
-            padding: 2.5rem;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.4s;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal.active .modal-content { transform: scale(1); }
-        .modal-close { position: absolute; top: 1.5rem; right: 1.5rem; width: 40px; height: 40px; border-radius: 50%; background: var(--cream); border: none; cursor: pointer; }
-        .modal-close:hover { background: var(--royal-maroon); color: white; }
-        .modal h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: var(--royal-maroon); text-align: center; margin-bottom: 1.5rem; }
-        .form-group { margin-bottom: 1.2rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 1rem;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: var(--antique-gold);
-            box-shadow: 0 0 0 4px rgba(201, 169, 97, 0.1);
-        }
-        .payment-option {
-            border: 2px solid #e0e0e0;
-            padding: 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 0.8rem;
-            transition: all 0.3s;
-        }
-        .payment-option:hover, .payment-option.selected { border-color: var(--royal-maroon); background: rgba(107, 15, 26, 0.02); }
-        .payment-option i { font-size: 1.3rem; color: var(--antique-gold); }
-        .pay-btn {
-            width: 100%; padding: 1.2rem;
-            background: linear-gradient(135deg, var(--royal-maroon), var(--deep-burgundy));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        /* Overlay */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1500;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-        }
-        .overlay.active { opacity: 1; visibility: visible; }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: var(--royal-maroon);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 50px;
-            z-index: 5000;
-            opacity: 0;
-            transition: all 0.4s;
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        /* Footer */
-        footer {
-            background: var(--charcoal);
-            color: white;
-            padding: 5rem 2rem 2rem;
-        }
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 3rem;
-        }
-        .footer-brand h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.2rem;
-            color: var(--antique-gold);
-            margin-bottom: 1rem;
-            letter-spacing: 0.2rem;
-        }
-        .footer-brand p { color: #999; line-height: 1.8; margin-bottom: 1.5rem; }
-        .social-links { display: flex; gap: 1rem; }
-        .social-links a {
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s;
-        }
-        .social-links a:hover { background: var(--antique-gold); color: var(--charcoal); transform: translateY(-3px); }
-        .footer-section h4 { color: var(--antique-gold); margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.1rem; font-size: 1rem; }
-        .footer-section ul li { margin-bottom: 0.8rem; }
-        .footer-section a { color: #999; text-decoration: none; transition: all 0.3s; }
-        .footer-section a:hover { color: var(--antique-gold); padding-left: 5px; }
-        .footer-bottom {
-            max-width: 1400px;
-            margin: 4rem auto 0;
-            padding-top: 2rem;
-            border-top: 1px solid #444;
-            text-align: center;
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-content { grid-template-columns: 1fr; text-align: center; }
-            .hero-image { display: none; }
-            .product-detail-container { grid-template-columns: 1fr; gap: 2rem; }
-            .product-gallery { flex-direction: column-reverse; }
-            .gallery-thumbnails { flex-direction: row; width: 100%; overflow-x: auto; }
-            .gallery-main img { height: 400px; }
-            .footer-content { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                position: fixed;
-                top: 0; left: -100%;
-                width: 80%; height: 100vh;
-                background: var(--ivory);
-                flex-direction: column;
-                padding: 6rem 2rem 2rem;
-                transition: left 0.4s;
-                display: flex;
-                gap: 2rem;
-            }
-            .nav-links.active { left: 0; }
-            .mobile-menu-btn { display: flex; }
-            .products-grid { grid-template-columns: 1fr; }
-            .sidebar { width: 100%; right: -100%; }
-            .footer-content { grid-template-columns: 1fr; }
-            .product-actions-row { flex-direction: column; }
-            .trust-badges { flex-direction: column; gap: 1rem; }
-        }
-    </style>
+    <title>Andham - Traditional Silk Sarees</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js"></script>
 </head>
+
 <body>
 
-    <!-- Loading Screen -->
-    <div class="loader" id="loader">
-        <div class="loader-logo">ANDHAM</div>
-        <div class="loader-line"><div class="loader-progress"></div></div>
-        <p style="color: var(--antique-gold); margin-top: 1rem; letter-spacing: 0.2rem; font-size: 0.85rem;">LOADING LUXURY</p>
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
     </div>
 
     <!-- Header -->
-    <header id="header">
-        <nav>
-            <div class="logo" onclick="showHome()">ANDHAM</div>
-            
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#" onclick="showHome()">Home</a></li>
-                <li><a href="#categories" onclick="showHome()">Collections</a></li>
-                <li><a href="#products" onclick="showHome()">Shop</a></li>
-                <li><a href="#about" onclick="showHome()">Our Story</a></li>
-                <li><a href="#contact" onclick="showHome()">Contact</a></li>
-            </ul>
-
-            <div class="nav-icons">
-                <button class="icon-btn" onclick="toggleWishlist()">
-                    <i class="far fa-heart"></i>
-                    <span class="badge" id="wishlistBadge">0</span>
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
                 </button>
-                <button class="icon-btn" onclick="toggleCart()">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="badge" id="cartBadge">0</span>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
                 </button>
-                <div class="mobile-menu-btn" onclick="toggleNav()">
-                    <span></span><span></span><span></span>
-                </div>
             </div>
-        </nav>
+
+            <a href="#" class="logo" onclick="showHome()">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span id="cartBadge"
+                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
+                </button>
+            </div>
+        </div>
     </header>
 
-    <!-- HOME PAGE -->
-    <div id="homePage" class="page-section active">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="hero-bg"></div>
-            <div class="hero-content">
-                <div class="hero-text">
-                    <h1>Drape in <span>Divinity</span></h1>
-                    <p>Experience the artistry of Indian heritage. Each saree at Andham is a masterpiece, woven with tradition and designed for the modern muse.</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="scrollToProducts()">Explore Collection</button>
-                        <button class="btn btn-outline" onclick="scrollToCategories()">View Lookbook</button>
-                    </div>
-                </div>
-                <div class="hero-image">
-                    <img src="https://images.pexels.com/photos/6981714/pexels-photo-6981714.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Luxury Saree">
-                    <div class="floating-tag one">
-                        <div class="tag-icon"><i class="fas fa-gem"></i></div>
-                        <div>
-                            <strong style="color: var(--royal-maroon); display: block; font-size: 0.9rem;">Premium Silk</strong>
-                            <span style="font-size: 0.8rem; color: #666;">Handwoven with gold zari</span>
-                        </div>
-                    </div>
-                    <div class="floating-tag two">
-                        <div class="tag-icon"><i class="fas fa-shipping-fast"></i></div>
-                        <div>
-                            <strong style="color: var(--royal-maroon); display: block; font-size: 0.9rem;">Free Shipping</strong>
-                            <span style="font-size: 0.8rem; color: #666;">On orders above ₹999</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('all')">All Collections
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('kanjeevaram')">Kanjeevaram
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('soft-silk')">Soft Silk
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('tissue-linen')">Tissue Linen
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('cotton')">Cotton
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="#" class="nav-link" onclick="filterCollection('new')">New Arrivals
+                    <span>›</span></a></div>
+        </div>
+    </div>
 
-        <!-- Marquee -->
-        <div class="marquee">
-            <div class="marquee-content">
-                <span>Free Shipping on Orders Above ₹999</span><span>•</span>
-                <span>Handcrafted with Love</span><span>•</span>
-                <span>Authentic Weaves</span><span>•</span>
-                <span>Global Delivery</span><span>•</span>
-                <span>Free Shipping on Orders Above ₹999</span><span>•</span>
-                <span>Handcrafted with Love</span><span>•</span>
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
+            </div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="quickSearch('kanjeevaram')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button onclick="quickSearch('tissue')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue
+                    Linen</button>
+                <button onclick="quickSearch('cotton')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- HOME PAGE VIEW -->
+    <div id="homeView" class="page-view active">
+        <!-- Hero -->
+        <div
+            style="position: relative; height: calc(100vh - 120px); min-height: 600px; display: flex; align-items: center; justify-content: center; background: #000;">
+            <div
+                style="position: absolute; inset: 0; background-image: url('https://rudhvivastraa.vercel.app/pusa.jpg'); background-size: cover; background-position: center; opacity: 0.9;">
+            </div>
+            <div style="position: relative; z-index: 2; text-align: center; color: #fff;">
+                <h1
+                    style="font-family: var(--font-serif); font-size: clamp(36px, 6vw, 64px); font-weight: 400; letter-spacing: 8px; text-transform: uppercase; margin-bottom: 30px;">
+                    Andham</h1>
+                <a href="#featured"
+                    style="display: inline-block; padding: 14px 35px; border: 1px solid rgba(255,255,255,0.4); color: #fff; text-decoration: none; font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;">Visit
+                    Store</a>
             </div>
         </div>
 
-        <!-- Categories -->
-        <section class="categories" id="categories">
-            <div class="section-header">
-                <h2>Curated Collections</h2>
-                <p>Discover sarees for every occasion, woven with precision and passion</p>
-            </div>
-            <div class="category-grid">
-                <div class="category-card" onclick="filterByCategory('Silk Heritage')">
-                    <img src="https://images.pexels.com/photos/6339358/pexels-photo-6339358.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Silk">
-                    <div class="category-overlay">
-                        <h3>Silk Heritage</h3>
-                        <p>Kanjivaram • Banarasi • Paithani</p>
-                    </div>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Cotton Classics')">
-                    <img src="https://images.pexels.com/photos/6339116/pexels-photo-6339116.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Cotton">
-                    <div class="category-overlay">
-                        <h3>Cotton Classics</h3>
-                        <p>Handloom • Block Print • Chanderi</p>
-                    </div>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Contemporary')">
-                    <img src="https://images.pexels.com/photos/6981707/pexels-photo-6981707.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Linen">
-                    <div class="category-overlay">
-                        <h3>Contemporary Linen</h3>
-                        <p>Modern Drapes • Office Wear</p>
-                    </div>
-                </div>
-                <div class="category-card" onclick="filterByCategory('Bridal Trousseau')">
-                    <img src="https://images.pexels.com/photos/6981788/pexels-photo-6981788.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Bridal">
-                    <div class="category-overlay">
-                        <h3>Bridal Trousseau</h3>
-                        <p>Wedding Edit • Reception Glam</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <!-- Welcome -->
+        <div class="welcome">
+            <h2 class="welcome__title">Welcome to Andham</h2>
+            <p class="welcome__text">Thank you for visiting us, we are happy to share our exclusive designs with you.
+                Explore and feel free to contact us for any queries</p>
+        </div>
 
-        <!-- Products -->
-        <section class="products-section" id="products">
+        <!-- Featured -->
+        <div class="home-section" id="featured" style="background: var(--color-bg);">
             <div class="section-header">
-                <h2>The Boutique</h2>
-                <p>Handpicked pieces for the discerning woman</p>
+                <h2 class="section-title">Featured products</h2>
             </div>
             <div class="products-grid" id="productsGrid">
-                <!-- Products injected by JS -->
+                <!-- Products rendered here -->
             </div>
-        </section>
-
-        <!-- About / Story Section -->
-        <section id="about" style="background: var(--cream);">
+        </div>
+        <!-- Collections Section -->
+        <div class="home-section" style="background:#fff;">
             <div class="section-header">
-                <h2>Our Story</h2>
-                <p>Preserving the art of Indian handloom since 2020</p>
+                <h2 class="section-title">Shop by Collection</h2>
             </div>
-            <div style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-gray); line-height: 1.8;">
-                <p style="margin-bottom: 1.5rem;">Andham brings you the finest handcrafted sarees from the weaving clusters of India. Each piece tells a story of tradition, craftsmanship, and timeless elegance.</p>
-                <p>We work directly with artisan families across Kanchipuram, Varanasi, Bengal, and Gujarat to bring you authentic weaves at fair prices.</p>
-            </div>
-        </section>
-    </div>
 
-    <!-- PRODUCT DETAIL PAGE -->
-    <div id="productDetailPage" class="page-section" style="display: none;">
-        <div class="product-detail-section">
-            <div class="breadcrumb">
-                <span onclick="showHome()">Home</span>
-                <i class="fas fa-chevron-right"></i>
-                <span onclick="showHome()">Shop</span>
-                <i class="fas fa-chevron-right"></i>
-                <span id="breadcrumbCategory">Category</span>
-            </div>
-            
-            <div class="product-detail-container">
-                <!-- Image Gallery -->
-                <div class="product-gallery">
-                    <div class="gallery-thumbnails" id="galleryThumbnails">
-                        <!-- Thumbnails injected by JS -->
-                    </div>
-                    <div class="gallery-main">
-                        <img id="mainImage" src="" alt="Product">
-                        <div class="gallery-zoom-hint"><i class="fas fa-search-plus"></i> Hover to zoom</div>
+            <div class="collections-grid">
+                <div class="collection-card" onclick="filterCollection('kanjeevaram')">
+                    <img src="https://media.samyakk.in/pub/media/catalog/product/o/f/off-white-gold-dual-tone-floral-motif-zari-woven-kanchipuram-tissue-silk-saree-sr27343.jpg">
+                    <div class="collection-overlay">
+                        <span>Kanchivaram</span>
                     </div>
                 </div>
 
-                <!-- Product Info -->
-                <div class="product-detail-info">
-                    <div id="detailBadge" class="product-category" style="display: inline-block; margin-bottom: 0.5rem;"></div>
-                    <h1 id="detailTitle">Product Title</h1>
-                    
-                    <div class="product-detail-meta">
-                        <span><i class="fas fa-star" style="color: var(--antique-gold);"></i> 4.9 (128 reviews)</span>
-                        <span><i class="fas fa-check-circle" style="color: green;"></i> In Stock</span>
-                        <span><i class="fas fa-truck"></i> Free Shipping</span>
+                <div class="collection-card" onclick="filterCollection('gadwal')">
+                    <img src="https://assets.ajio.com/medias/sys_master/root/20230808/z8t4/64d243eaa9b42d15c99895fa/-473Wx593H-466291886-green-MODEL.jpg">
+                    <div class="collection-overlay">
+                        <span>Gadwal</span>
                     </div>
+                </div>
 
-                    <div class="product-detail-price">
-                        <span id="detailPrice">₹0</span>
-                        <span class="original" id="detailOriginalPrice">₹0</span>
-                        <span class="discount-badge" id="detailDiscount">20% OFF</span>
+                <div class="collection-card" onclick="filterCollection('all')">
+                    <img src="https://images.unsplash.com/photo-1745482036066-5d215ed6b910?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8">
+                    <div class="collection-overlay">
+                        <span>View All</span>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <p class="product-description" id="detailDescription">
-                        Description goes here...
-                    </p>
+    </div>
 
-                    <table class="details-table">
-                        <tr>
-                            <td>Material</td>
-                            <td id="detailMaterial">Pure Silk</td>
-                        </tr>
-                        <tr>
-                            <td>Dimensions</td>
-                            <td>6.3 meters (with blouse piece)</td>
-                        </tr>
-                        <tr>
-                            <td>Care</td>
-                            <td>Dry clean only</td>
-                        </tr>
-                        <tr>
-                            <td>Occasion</td>
-                            <td id="detailOccasion">Wedding, Festive</td>
-                        </tr>
-                        <tr>
-                            <td>Ships In</td>
-                            <td>2-3 business days</td>
-                        </tr>
-                    </table>
+    <!-- PRODUCT DETAIL VIEW -->
+    <div id="productView" class="page-view">
+        <div class="breadcrumb">
+            <a href="#" onclick="showHome()">Home</a>
+            <span>/</span>
+            <a href="#" id="breadcrumbCollection">Tissue Linen</a>
+            <span>/</span>
+            <span id="breadcrumbProduct">Product Name</span>
+        </div>
 
-                    <!-- Size Selection for Blouse -->
-                    <div class="selection-group">
-                        <label class="selection-label">Blouse Size (Unstitched)</label>
-                        <div class="size-options">
-                            <button class="size-btn active" onclick="selectSize(this)">Unstitched</button>
-                            <button class="size-btn" onclick="selectSize(this)">34"</button>
-                            <button class="size-btn" onclick="selectSize(this)">36"</button>
-                            <button class="size-btn" onclick="selectSize(this)">38"</button>
-                            <button class="size-btn" onclick="selectSize(this)">40"</button>
-                            <button class="size-btn" onclick="selectSize(this)">42"</button>
+        <div class="product-detail">
+            <div class="product-gallery">
+                <img src="" alt="" class="main-image" id="mainImage">
+                <div class="thumbnail-list" id="thumbnailList">
+                    <!-- Thumbnails rendered here -->
+                </div>
+            </div>
+
+            <div class="product-info-detail">
+                <div class="product-vendor">Andham</div>
+                <h1 class="product-name" id="detailTitle">Premium Tissue Linen Sarees with heavy blouse - Peach</h1>
+
+                <div class="product-price-detail" id="detailPrice">Rs. 3,550.00</div>
+                <div class="product-tax">Tax included. <a href="#">Shipping</a> calculated at checkout.</div>
+
+                <div class="product-actions">
+                    <div class="quantity-row">
+                        <span class="quantity-label">Quantity</span>
+                        <div class="qty-selector large">
+                            <button class="qty-btn" onclick="updateDetailQty(-1)">−</button>
+                            <span class="qty-value" id="detailQty">1</span>
+                            <button class="qty-btn" onclick="updateDetailQty(1)">+</button>
                         </div>
                     </div>
 
-                    <!-- Quantity -->
-                    <div class="quantity-selector">
-                        <span class="selection-label" style="margin: 0; margin-right: 1rem;">Quantity:</span>
-                        <button class="quantity-btn" onclick="updateDetailQuantity(-1)">-</button>
-                        <span class="quantity-value" id="detailQuantity">1</span>
-                        <button class="quantity-btn" onclick="updateDetailQuantity(1)">+</button>
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="addToCartFromDetail()">Add to cart</button>
+                        <button class="btn-secondary">Buy it now</button>
                     </div>
+                </div>
 
-                    <!-- Actions -->
-                    <div class="product-actions-row">
-                        <button class="btn btn-primary" onclick="addToCartFromDetail()">
-                            <i class="fas fa-shopping-bag"></i> Add to Cart
+                <button class="share-btn" onclick="shareProduct()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="vertical-align: middle;">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share
+                </button>
+
+                <div class="product-description" id="detailDescription">
+                    <em>A timeless blend of elegance and ease</em> — these Soft Tissue Linen Sarees are minimal,
+                    refined, and perfect for effortless summer dressing.
+                </div>
+
+                <ul class="bullet-list" id="detailBullets">
+                    <li>Crafted from premium soft tissue linen — feather-light, breathable, and luxe to the touch</li>
+                    <li>Paired with a running blouse that features a fully embroidered pattern</li>
+                    <li>Features a statement pallu, hand-embroidered with intricate French knots</li>
+                </ul>
+
+                <div class="note-text" id="detailNote">
+                    <strong>Please note:</strong> Slight color variations may occur due to digital photography and
+                    individual phone screens.
+                </div>
+
+                <div class="accordions">
+                    <div class="accordion-item active">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Materials</span>
+                            <span class="accordion-icon">▼</span>
                         </button>
-                        <button class="btn btn-outline" onclick="toggleWishlistFromDetail()">
-                            <i class="far fa-heart"></i> Wishlist
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Premium tissue linen fabric with intricate hand embroidery. Running blouse piece
+                                included (0.8 meters).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Shipping & Returns</span>
+                            <span class="accordion-icon">▼</span>
                         </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Free shipping on orders above Rs. 5000. Delivered within 5-7 business days. Easy 7-day
+                                returns available.
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Trust Badges -->
-                    <div class="trust-badges">
-                        <div class="trust-badge">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure Payment</span>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Dimensions</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Saree length: 6.3 meters (including blouse)<br>
+                                Width: 45 inches<br>
+                                Blouse piece: 0.8 meters unstitched
+                            </div>
                         </div>
-                        <div class="trust-badge">
-                            <i class="fas fa-undo"></i>
-                            <span>7 Day Returns</span>
-                        </div>
-                        <div class="trust-badge">
-                            <i class="fas fa-certificate"></i>
-                            <span>Authentic Product</span>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Care Instructions</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Dry clean only. Storing in a cool, dry place helps maintain the fabric's texture and the
+                                delicacy of the embroidery.
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Cart Sidebar -->
-    <aside class="sidebar" id="cartSidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-shopping-bag"></i> Your Cart</h3>
-            <button class="close-sidebar" onclick="toggleCart()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="sidebar-content" id="cartItems"></div>
-        <div class="sidebar-footer" id="cartFooter" style="display: none;">
-            <div class="cart-total">
-                <span>Subtotal</span>
-                <span id="cartTotal">₹0</span>
-            </div>
-            <button class="checkout-btn" onclick="openCheckout()">Proceed to Checkout</button>
-        </div>
-    </aside>
-
-    <!-- Wishlist Sidebar -->
-    <aside class="sidebar" id="wishlistSidebar">
-        <div class="sidebar-header">
-            <h3><i class="fas fa-heart"></i> Wishlist</h3>
-            <button class="close-sidebar" onclick="toggleWishlist()"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="sidebar-content" id="wishlistItems"></div>
-    </aside>
-
-    <!-- Checkout Modal -->
-    <div class="modal" id="checkoutModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeCheckout()"><i class="fas fa-times"></i></button>
-            <h2>Complete Your Order</h2>
-            <form id="orderForm" onsubmit="submitOrder(event)">
-                <div class="form-group">
-                    <label>Full Name *</label>
-                    <input type="text" name="user_name" required>
-                </div>
-                <div class="form-group">
-                    <label>Email Address *</label>
-                    <input type="email" name="user_email" required>
-                </div>
-                <div class="form-group">
-                    <label>Phone Number *</label>
-                    <input type="tel" name="user_phone" required>
-                </div>
-                <div class="form-group">
-                    <label>Delivery Address *</label>
-                    <textarea name="user_address" rows="3" required></textarea>
-                </div>
-                <div class="payment-option selected" onclick="selectPayment(this, 'cod')">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <div><strong>Cash on Delivery</strong><p style="font-size: 0.85rem; color: #999; margin: 0;">Pay when you receive</p></div>
-                </div>
-                <div class="payment-option" onclick="selectPayment(this, 'online')">
-                    <i class="fas fa-credit-card"></i>
-                    <div><strong>Online Payment</strong><p style="font-size: 0.85rem; color: #999; margin: 0;">UPI / Card / Netbanking</p></div>
-                </div>
-                <button type="submit" class="pay-btn" id="payBtn"><i class="fas fa-lock"></i> Place Order</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Overlay -->
-    <div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-    <!-- Toast -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage">Success!</span>
     </div>
 
     <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <h3>ANDHAM</h3>
-                <p>Crafting elegance since 2020. We bring you the finest handcrafted sarees from the weaving clusters of India.</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h4>Shop</h4>
-                <ul>
-                    <li><a href="#">New Arrivals</a></li>
-                    <li><a href="#">Best Sellers</a></li>
-                    <li><a href="#">Silk Collection</a></li>
-                    <li><a href="#">Sale</a></li>
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Kanjeevaram Silk</a></li>
+                    <li><a href="#">Soft Silk</a></li>
+                    <li><a href="#">Tissue Linen</a></li>
+                    <li><a href="#">Cotton Sarees</a></li>
                 </ul>
             </div>
-            <div class="footer-section">
-                <h4>Help</h4>
-                <ul>
-                    <li><a href="#">Track Order</a></li>
-                    <li><a href="#">Shipping Info</a></li>
-                    <li><a href="#">Returns</a></li>
-                    <li><a href="#">FAQ</a></li>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping & Returns</a></li>
+                    <li><a href="#">Size Guide</a></li>
+                    <li><a href="#">FAQs</a></li>
                 </ul>
             </div>
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <ul>
-                    <li><i class="fas fa-envelope"></i> care@andham.com</li>
-                    <li><i class="fas fa-phone"></i> +91 98765 43210</li>
-                    <li><i class="fas fa-map-marker-alt"></i> Hyderabad, India</li>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Craftsmanship</a></li>
+                    <li><a href="#">Blog</a></li>
                 </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Andham. Crafted with <i class="fas fa-heart" style="color: var(--antique-gold);"></i> in India</p>
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
         </div>
     </footer>
 
-    <script>
-        // ==========================================
-        // PRODUCT DATA WITH MULTIPLE IMAGES
-        // ==========================================
-        const products = [
-            {
-                id: 1,
-                title: "Kanjivaram Pure Silk - Temple Border Red",
-                category: "Silk Heritage",
-                price: 8999,
-                originalPrice: 12000,
-                images: [
-                    "https://images.pexels.com/photos/6339225/pexels-photo-6339225.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339358/pexels-photo-6339358.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/15937622/pexels-photo-15937622.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981571/pexels-photo-6981571.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                badge: "Bestseller",
-                description: "Authentic Kanjivaram silk with intricate gold zari temple border. Handwoven by master weavers in Kanchipuram using pure mulberry silk. Features traditional peacock motifs and a rich contrast pallu. Includes matching blouse piece (unstitched).",
-                material: "Pure Mulberry Silk",
-                occasion: "Wedding, Bridal, Festive",
-                care: "Dry clean only. Store in silk bag."
-            },
-            {
-                id: 2,
-                title: "Banarasi Brocade - Royal Blue",
-                category: "Silk Heritage",
-                price: 7599,
-                originalPrice: 9999,
-                images: [
-                    "https://images.pexels.com/photos/7633683/pexels-photo-7633683.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/1583391733955-5522949ca5f6?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981788/pexels-photo-6981788.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/15937622/pexels-photo-15937622.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                badge: "Premium",
-                description: "Pure Banarasi silk brocade featuring silver and gold zari work. Traditional mughal motifs inspired by Varanasi's rich weaving heritage. The intricate floral jaal design makes it perfect for special occasions.",
-                material: "Pure Silk Brocade",
-                occasion: "Reception, Party, Festivals",
-                care: "Dry clean recommended"
-            },
-            {
-                id: 3,
-                title: "Handloom Cotton - Indigo Dabu Print",
-                category: "Cotton Classics",
-                price: 1899,
-                originalPrice: 2499,
-                images: [
-                    "https://images.pexels.com/photos/6339276/pexels-photo-6339276.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339116/pexels-photo-6339116.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981707/pexels-photo-6981707.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339422/pexels-photo-6339422.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                badge: "New",
-                description: "Natural indigo dyed handloom cotton with traditional Dabu hand block prints from Rajasthan. Eco-friendly dyes, breathable fabric perfect for daily wear and summer occasions.",
-                material: "100% Handloom Cotton",
-                occasion: "Daily Wear, Office, Casual",
-                care: "Hand wash separately in cold water"
-            },
-            {
-                id: 4,
-                title: "Linen Jamdani - Olive Green",
-                category: "Contemporary",
-                price: 3299,
-                originalPrice: 4299,
-                images: [
-                    "https://images.pexels.com/photos/6981707/pexels-photo-6981707.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339279/pexels-photo-6339279.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/7633712/pexels-photo-7633712.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981742/pexels-photo-6981742.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                description: "Premium European linen with handwoven Jamdani motifs. Contemporary design meets traditional craftsmanship. Lightweight, breathable, and perfect for the modern professional woman.",
-                material: "Belgian Linen",
-                occasion: "Corporate, Formal, Brunch",
-                care: "Gentle machine wash or dry clean"
-            },
-            {
-                id: 5,
-                title: "Chanderi Silk-Cotton - Peach Blossom",
-                category: "Cotton Classics",
-                price: 2499,
-                originalPrice: 3199,
-                images: [
-                    "https://images.pexels.com/photos/6980974/pexels-photo-6980974.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981742/pexels-photo-6981742.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/15937622/pexels-photo-15937622.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339225/pexels-photo-6339225.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                description: "Sheer Chanderi weave with delicate floral motifs and subtle zari border from Madhya Pradesh. The translucent texture and lightweight feel make it perfect for festive occasions.",
-                material: "Silk-Cotton Blend (70:30)",
-                occasion: "Festive, Pujas, Family Gatherings",
-                care: "Dry clean only"
-            },
-            {
-                id: 6,
-                title: "Georgette Embroidered - Blush Pink",
-                category: "Contemporary",
-                price: 2899,
-                originalPrice: 3599,
-                images: [
-                    "https://images.pexels.com/photos/6981742/pexels-photo-6981742.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/7633712/pexels-photo-7633712.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6981571/pexels-photo-6981571.jpeg?auto=compress&cs=tinysrgb&w=800",
-                    "https://images.pexels.com/photos/6339358/pexels-photo-6339358.jpeg?auto=compress&cs=tinysrgb&w=800"
-                ],
-                badge: "Trending",
-                description: "Lightweight georgette with intricate pearl and sequin hand embroidery. Soft blush pink shade perfect for evening parties and receptions. Features scalloped edges and designer blouse piece.",
-                material: "Pure Georgette with Embroidery",
-                occasion: "Party, Reception, Evening Wear",
-                care: "Dry clean only"
-            }
-        ];
-
-        let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
-        let wishlist = JSON.parse(localStorage.getItem('andham_wishlist')) || [];
-        let currentProduct = null;
-        let currentDetailQuantity = 1;
-        let selectedDetailSize = 'Unstitched';
-
-        // ==========================================
-        // INITIALIZATION
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('loader').classList.add('hidden');
-            }, 2000);
-
-            window.addEventListener('scroll', () => {
-                const header = document.getElementById('header');
-                if (window.scrollY > 100) header.classList.add('scrolled');
-                else header.classList.remove('scrolled');
-            });
-
-            renderProducts();
-            updateCartUI();
-            updateWishlistUI();
-        });
-
-        // ==========================================
-        // PAGE NAVIGATION
-        // ==========================================
-        function showHome() {
-            document.getElementById('homePage').style.display = 'block';
-            document.getElementById('homePage').classList.add('active');
-            document.getElementById('productDetailPage').style.display = 'none';
-            document.getElementById('productDetailPage').classList.remove('active');
-            window.scrollTo(0, 0);
-        }
-
-        function showProductDetail(productId) {
-            currentProduct = products.find(p => p.id === productId);
-            if (!currentProduct) return;
-            
-            currentDetailQuantity = 1;
-            
-            // Update breadcrumb
-            document.getElementById('breadcrumbCategory').textContent = currentProduct.category;
-            
-            // Update images
-            const mainImage = document.getElementById('mainImage');
-            mainImage.src = currentProduct.images[0];
-            
-            // Generate thumbnails
-            const thumbsContainer = document.getElementById('galleryThumbnails');
-            thumbsContainer.innerHTML = currentProduct.images.map((img, idx) => `
-                <div class="gallery-thumb ${idx === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)">
-                    <img src="${img}" alt="View ${idx + 1}">
-                </div>
-            `).join('');
-            
-            // Update details
-            document.getElementById('detailTitle').textContent = currentProduct.title;
-            document.getElementById('detailPrice').textContent = '₹' + currentProduct.price.toLocaleString();
-            document.getElementById('detailOriginalPrice').textContent = '₹' + currentProduct.originalPrice.toLocaleString();
-            document.getElementById('detailDescription').textContent = currentProduct.description;
-            document.getElementById('detailCategory').textContent = currentProduct.category;
-            document.getElementById('detailMaterial').textContent = currentProduct.material;
-            document.getElementById('detailOccasion').textContent = currentProduct.occasion;
-            document.getElementById('detailQuantity').textContent = currentDetailQuantity;
-            
-            // Calculate discount
-            const discount = Math.round(((currentProduct.originalPrice - currentProduct.price) / currentProduct.originalPrice) * 100);
-            document.getElementById('detailDiscount').textContent = discount + '% OFF';
-            
-            // Update wishlist button state
-            const isWishlisted = wishlist.includes(productId);
-            const wishlistBtn = document.querySelector('.product-detail-info .btn-outline');
-            if (wishlistBtn) {
-                wishlistBtn.innerHTML = `<i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i> ${isWishlisted ? 'In Wishlist' : 'Wishlist'}`;
-                if (isWishlisted) wishlistBtn.classList.add('active');
-                else wishlistBtn.classList.remove('active');
-            }
-            
-            // Show page
-            document.getElementById('homePage').style.display = 'none';
-            document.getElementById('homePage').classList.remove('active');
-            document.getElementById('productDetailPage').style.display = 'block';
-            document.getElementById('productDetailPage').classList.add('active');
-            window.scrollTo(0, 0);
-        }
-
-        function changeImage(src, thumb) {
-            document.getElementById('mainImage').src = src;
-            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-        }
-
-        function scrollToProducts() {
-            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function scrollToCategories() {
-            document.getElementById('categories').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function filterByCategory(category) {
-            scrollToProducts();
-            // In a full implementation, this would filter the grid
-            showToast(`Showing ${category} collection`);
-        }
-
-        // ==========================================
-        // PRODUCT GRID RENDERING
-        // ==========================================
-        function renderProducts() {
-            const grid = document.getElementById('productsGrid');
-            
-            grid.innerHTML = products.map(product => {
-                const isWishlisted = wishlist.includes(product.id);
-                return `
-                    <div class="product-card" onclick="showProductDetail(${product.id})">
-                        <div class="product-image-wrapper">
-                            ${product.badge ? `<span class="product-badge">${product.badge}</span>` : ''}
-                            <img src="${product.images[0]}" alt="${product.title}" class="product-image" loading="lazy">
-                            
-                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" 
-                                    onclick="event.stopPropagation(); toggleWishlistItem(${product.id})">
-                                <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
-                            </button>
-                            
-                            <button class="view-details-btn" onclick="event.stopPropagation(); showProductDetail(${product.id})">
-                                Quick View
-                            </button>
-                        </div>
-                        <div class="product-info">
-                            <div class="product-category">${product.category}</div>
-                            <h3 class="product-title">${product.title}</h3>
-                            <div class="product-price">
-                                <span class="current-price">₹${product.price.toLocaleString()}</span>
-                                <span class="original-price">₹${product.originalPrice.toLocaleString()}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // ==========================================
-        // PRODUCT DETAIL FUNCTIONS
-        // ==========================================
-        function selectSize(btn) {
-            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedDetailSize = btn.textContent;
-        }
-
-        function updateDetailQuantity(change) {
-            currentDetailQuantity += change;
-            if (currentDetailQuantity < 1) currentDetailQuantity = 1;
-            if (currentDetailQuantity > 5) currentDetailQuantity = 5;
-            document.getElementById('detailQuantity').textContent = currentDetailQuantity;
-        }
-
-        function addToCartFromDetail() {
-            if (!currentProduct) return;
-            
-            const existingItem = cart.find(item => item.id === currentProduct.id);
-            
-            if (existingItem) {
-                existingItem.quantity += currentDetailQuantity;
-            } else {
-                cart.push({
-                    ...currentProduct,
-                    quantity: currentDetailQuantity,
-                    size: selectedDetailSize
-                });
-            }
-            
-            saveCart();
-            updateCartUI();
-            showToast(`Added ${currentDetailQuantity} item(s) to cart!`);
-            
-            // Animate badge
-            const badge = document.getElementById('cartBadge');
-            badge.style.transform = 'scale(1.3)';
-            setTimeout(() => badge.style.transform = 'scale(1)', 200);
-        }
-
-        function toggleWishlistFromDetail() {
-            if (!currentProduct) return;
-            toggleWishlistItem(currentProduct.id);
-            
-            // Update button
-            setTimeout(() => {
-                const isWishlisted = wishlist.includes(currentProduct.id);
-                const btn = document.querySelector('.product-detail-info .btn-outline');
-                btn.innerHTML = `<i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i> ${isWishlisted ? 'In Wishlist' : 'Wishlist'}`;
-            }, 100);
-        }
-
-        // ==========================================
-        // CART & WISHLIST (Same as before)
-        // ==========================================
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existingItem = cart.find(item => item.id === productId);
-            
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            
-            saveCart();
-            updateCartUI();
-            showToast(`${product.title} added to cart!`);
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            saveCart();
-            updateCartUI();
-        }
-
-        function updateQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) removeFromCart(productId);
-                else {
-                    saveCart();
-                    updateCartUI();
-                }
-            }
-        }
-
-        function saveCart() {
-            localStorage.setItem('andham_cart', JSON.stringify(cart));
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const footer = document.getElementById('cartFooter');
-            const badge = document.getElementById('cartBadge');
-            const totalEl = document.getElementById('cartTotal');
-            
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            badge.textContent = totalItems;
-            badge.classList.toggle('show', totalItems > 0);
-            
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-shopping-bag" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                        <p>Your cart is empty</p>
-                        <button class="btn btn-primary" style="margin-top: 1rem;" onclick="toggleCart(); showHome();">Start Shopping</button>
-                    </div>
-                `;
-                footer.style.display = 'none';
-            } else {
-                container.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <img src="${item.images ? item.images[0] : item.image}" alt="${item.title}">
-                        <div class="cart-item-details">
-                            <div class="cart-item-title">${item.title}</div>
-                            <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.3rem;">${item.size || 'Unstitched'}</div>
-                            <div class="cart-item-price">₹${item.price.toLocaleString()}</div>
-                            <div class="quantity-control">
-                                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
-                                <span>${item.quantity}</span>
-                                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                            </div>
-                            <span class="remove-btn" onclick="removeFromCart(${item.id})"><i class="fas fa-trash"></i> Remove</span>
-                        </div>
-                    </div>
-                `).join('');
-                footer.style.display = 'block';
-                totalEl.textContent = '₹' + totalAmount.toLocaleString();
-            }
-        }
-
-        function toggleWishlistItem(productId) {
-            const index = wishlist.indexOf(productId);
-            const product = products.find(p => p.id === productId);
-            
-            if (index > -1) {
-                wishlist.splice(index, 1);
-                showToast('Removed from wishlist');
-            } else {
-                wishlist.push(productId);
-                showToast('Added to wishlist!');
-            }
-            
-            localStorage.setItem('andham_wishlist', JSON.stringify(wishlist));
-            updateWishlistUI();
-            renderProducts();
-        }
-
-        function updateWishlistUI() {
-            const container = document.getElementById('wishlistItems');
-            const badge = document.getElementById('wishlistBadge');
-            
-            badge.textContent = wishlist.length;
-            badge.classList.toggle('show', wishlist.length > 0);
-            
-            if (wishlist.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-heart" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
-                        <p>Your wishlist is empty</p>
-                    </div>
-                `;
-            } else {
-                const items = products.filter(p => wishlist.includes(p.id));
-                container.innerHTML = items.map(product => `
-                    <div class="cart-item">
-                        <img src="${product.images[0]}" alt="${product.title}">
-                        <div class="cart-item-details">
-                            <div class="cart-item-title">${product.title}</div>
-                            <div class="cart-item-price">₹${product.price.toLocaleString()}</div>
-                            <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-top: 0.5rem;" 
-                                    onclick="addToCart(${product.id}); toggleWishlistItem(${product.id})">
-                                Move to Cart
-                            </button>
-                        </div>
-                        <button class="close-sidebar" style="position: static; width: 35px; height: 35px;" 
-                                onclick="toggleWishlistItem(${product.id})">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `).join('');
-            }
-        }
-
-        // ==========================================
-        // CHECKOUT & UI
-        // ==========================================
-        let currentPaymentMethod = 'cod';
-
-        function openCheckout() {
-            toggleCart();
-            document.getElementById('checkoutModal').classList.add('active');
-            document.getElementById('overlay').classList.add('active');
-        }
-
-        function closeCheckout() {
-            document.getElementById('checkoutModal').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function selectPayment(element, method) {
-            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-            currentPaymentMethod = method;
-        }
-
-        function submitOrder(event) {
-            event.preventDefault();
-            const btn = document.getElementById('payBtn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            btn.disabled = true;
-            
-            setTimeout(() => {
-                cart = [];
-                saveCart();
-                updateCartUI();
-                closeCheckout();
-                showToast('Order placed successfully!');
-                alert(`Thank you for your order!\nOrder ID: AND-${Date.now()}\nYou will receive an email confirmation shortly.`);
-                btn.innerHTML = '<i class="fas fa-lock"></i> Place Order';
-                btn.disabled = false;
-            }, 2000);
-        }
-
-        function toggleCart() {
-            const sidebar = document.getElementById('cartSidebar');
-            const isActive = sidebar.classList.contains('active');
-            if (isActive) {
-                sidebar.classList.remove('active');
-                document.getElementById('overlay').classList.remove('active');
-            } else {
-                document.getElementById('wishlistSidebar').classList.remove('active');
-                sidebar.classList.add('active');
-                document.getElementById('overlay').classList.add('active');
-            }
-        }
-
-        function toggleWishlist() {
-            const sidebar = document.getElementById('wishlistSidebar');
-            const isActive = sidebar.classList.contains('active');
-            if (isActive) {
-                sidebar.classList.remove('active');
-                document.getElementById('overlay').classList.remove('active');
-            } else {
-                document.getElementById('cartSidebar').classList.remove('active');
-                sidebar.classList.add('active');
-                document.getElementById('overlay').classList.add('active');
-            }
-        }
-
-        function closeAll() {
-            document.getElementById('cartSidebar').classList.remove('active');
-            document.getElementById('wishlistSidebar').classList.remove('active');
-            document.getElementById('checkoutModal').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        function toggleNav() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMessage').textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-    </script>
-
+    <div class="toast" id="toast"></div>
 </body>
+
 </html>
