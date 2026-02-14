@@ -1066,3 +1066,12 @@
     z-index: 2;
     margin-top: 20px;
 }
+
+.product-card a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-card a:hover {
+    text-decoration: none;
+}

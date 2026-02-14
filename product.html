@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Andham</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <base target="_self">
+</head>
+
+<body>
+
+    <!-- Announcement -->
+    <div class="announcement">
+        Welcome to our store! We are humbled to tailor your fashion needs.
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span id="cartBadge"
+                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search by ID, name, or category..."
+                    id="searchInput" onkeyup="handleSearch(event)">
+            </div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Plains')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL VIEW -->
+    <div id="productView" class="page-view active" style="padding-top: 80px;">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <a href="collection.html" id="breadcrumbCollection">Shop</a>
+            <span>/</span>
+            <span id="breadcrumbProduct">Product Name</span>
+        </div>
+
+        <div class="product-detail">
+            <div class="product-gallery">
+                <img src="" alt="" class="main-image" id="mainImage">
+                <div class="thumbnail-list" id="thumbnailList">
+                    <!-- Thumbnails rendered here -->
+                </div>
+            </div>
+
+            <div class="product-info-detail">
+                <div class="product-vendor">Andham</div>
+                <h1 class="product-name" id="detailTitle">Premium Tissue Linen Sarees with heavy blouse - Peach</h1>
+
+<!-- Replace your existing price div with this -->
+<div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+    <div class="product-price-detail" id="detailOriginalPrice" style="text-decoration: line-through; color: #999; font-size: 0.85em; display: none;">Rs. 0.00</div>
+    <div class="product-price-detail" id="detailPrice" style="color: #8b0000;">Rs. 3,550.00</div>
+    <span id="discountBadge" style="background: #8b0000; color: white; padding: 4px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: none;">0% OFF</span>
+</div>
+                <!-- Product ID Display -->
+                <div class="product-id" id="productIdDisplay"
+                    style="margin: 10px 0; font-size: 12px; color: #666; letter-spacing: 1px;">
+                    <span id="productId">ADM00000</span>
+                </div>
+
+                <div class="product-tax">Tax included. <a href="#">Shipping</a> calculated at checkout.</div>
+
+                <div class="product-actions">
+                    <div class="quantity-row">
+                        <span class="quantity-label">Quantity</span>
+                        <div class="qty-selector large">
+                            <button class="qty-btn" onclick="updateDetailQty(-1)">−</button>
+                            <span class="qty-value" id="detailQty">1</span>
+                            <button class="qty-btn" onclick="updateDetailQty(1)">+</button>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-primary" onclick="addToCartFromDetail()">Add to cart</button>
+                        <button class="btn-secondary">Buy it now</button>
+                    </div>
+                </div>
+
+                <button class="share-btn" onclick="shareProduct()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="vertical-align: middle;">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                    </svg>
+                    Share
+                </button>
+
+                <div class="product-description" id="detailDescription">
+                    <em>A timeless blend of elegance and ease</em> — these Soft Tissue Linen Sarees are minimal,
+                    refined, and perfect for effortless summer dressing.
+                </div>
+
+                <ul class="bullet-list" id="detailBullets">
+                    <li>Crafted from premium soft tissue linen — feather-light, breathable, and luxe to the touch</li>
+                    <li>Paired with a running blouse that features a fully embroidered pattern</li>
+                    <li>Features a statement pallu, hand-embroidered with intricate French knots</li>
+                </ul>
+
+                <div class="note-text" id="detailNote">
+                    <strong>Please note:</strong> Slight color variations may occur due to digital photography and
+                    individual phone screens.
+                </div>
+
+                <div class="accordions">
+                    <div class="accordion-item active">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Materials</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Premium tissue linen fabric with intricate hand embroidery. Running blouse piece
+                                included (0.8 meters).
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Shipping & Returns</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Free shipping on orders above Rs. 5000. Delivered within 5-7 business days. Easy 7-day
+                                returns available.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Dimensions</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Saree length: 6.3 meters (including blouse)<br>
+                                Width: 45 inches<br>
+                                Blouse piece: 0.8 meters unstitched
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>Care Instructions</span>
+                            <span class="accordion-icon">▼</span>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="accordion-body">
+                                Dry clean only. Storing in a cool, dry place helps maintain the fabric's texture and the
+                                delicacy of the embroidery.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Plains">Plains</a></li>
+                    <li><a href="collection.html?filter=Semi+Kanchipattu">Semi Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Pure+Kanchipattu">Pure Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Semi+Gadwal">Semi Gadwal</a></li>
+                    <li><a href="collection.html?filter=Pure+Gadwal">Pure Gadwal</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+</body>
+
+</html>
