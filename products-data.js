@@ -1,4 +1,4 @@
-[
+const products = [
   {
     "id": "ADM00001",
     "title": "Premium Tissue Linen Sarees with heavy blouse - Peach",
