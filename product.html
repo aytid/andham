@@ -266,7 +266,7 @@
                         style="text-decoration: line-through; color: #999; font-size: 0.85em; display: none;">Rs. 0.00
                     </div>
                     <div class="product-price-detail" id="detailPrice"
-                        style="color: #8b0000; font-size: 24px; font-weight: 600;">Rs. 0.00</div>
+                        style="color: #8b0000; font-size: 23px; font-weight: 600;">Rs. 0.00</div>
                     <span id="discountBadge"
                         style="background: #8b0000; color: white; padding: 4px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: none; border-radius: 4px;">0%
                         OFF</span>
@@ -384,63 +384,46 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer" style="background: #1a1a1a; color: white; padding: 60px 40px 20px; margin-top: 80px;">
-        <div class="footer-inner"
-            style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;">
+    <footer class="footer">
+        <div class="footer-inner">
             <div class="footer-block">
-                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Shop
-                </h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Plains"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Plains</a></li>
-                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Semi+Kanchipattu"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Semi Kanchipattu</a></li>
-                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Pure+Kanchipattu"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Pure Kanchipattu</a></li>
-                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Semi+Gadwal"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Semi Gadwal</a></li>
-                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Pure+Gadwal"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Pure Gadwal</a></li>
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Plains">Plains</a></li>
+                    <li><a href="collection.html?filter=Semi+Kanchipattu">Semi Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Pure+Kanchipattu">Pure Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Semi+Gadwal">Semi Gadwal</a></li>
+                    <li><a href="collection.html?filter=Pure+Gadwal">Pure Gadwal</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Help
-                </h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><a href="contact.html"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Contact Us</a></li>
-                    <li style="margin-bottom: 10px;"><a href="shipping.html"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Shipping & Returns</a></li>
-                    <li style="margin-bottom: 10px;"><a href="faq.html"
-                            style="color: #999; text-decoration: none; font-size: 14px;">FAQs</a></li>
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">About
-                </h3>
-                <ul style="list-style: none; padding: 0;">
-                    <li style="margin-bottom: 10px;"><a href="our-story.html"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Our Story</a></li>
-                    <li style="margin-bottom: 10px;"><a href="craftsmanship.html"
-                            style="color: #999; text-decoration: none; font-size: 14px;">Craftsmanship</a></li>
+                <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">
-                    Newsletter</h3>
-                <p style="color: #999; font-size: 14px; margin-bottom: 15px;">Subscribe for exclusive updates and
-                    offers.</p>
-                <form onsubmit="event.preventDefault(); showToast('Subscribed!')" style="display: flex;">
-                    <input type="email" placeholder="Email address" required
-                        style="flex: 1; padding: 12px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 14px;">
-                    <button type="submit"
-                        style="padding: 12px 20px; background: #8b0000; color: white; border: none; cursor: pointer; font-size: 14px;">Subscribe</button>
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
                 </form>
             </div>
         </div>
-        <div class="footer-bottom"
-            style="max-width: 1400px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 13px;">
-            © 2026 Andham. All rights reserved.
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
         </div>
     </footer>
 
