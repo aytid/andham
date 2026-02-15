@@ -10,7 +10,122 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-    <base target="_self">
+    <script src="products-data.js"></script>
+    <style>
+        /* Product Gallery Styles */
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .main-image-container {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: #f5f5f5;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .thumbnail-list {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 5px;
+        }
+
+        .thumbnail-wrapper {
+            flex-shrink: 0;
+            width: 80px;
+            height: 100px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f5f5f5;
+        }
+
+        .thumbnail-wrapper:hover {
+            border-color: #ccc;
+        }
+
+        .thumbnail-wrapper.active {
+            border-color: #8b0000;
+            box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Hide scrollbar for thumbnails */
+        .thumbnail-list::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .thumbnail-list::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .product-gallery {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        /* Loading state */
+        .image-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -25,16 +140,16 @@
         <div class="header-inner">
             <div class="header-left">
                 <button class="icon-btn" onclick="toggleNav()">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
                     </svg>
                 </button>
                 <button class="icon-btn" onclick="toggleSearch()">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
             </div>
@@ -42,14 +157,14 @@
             <a href="index.html" class="logo">Andham</a>
 
             <div class="header-right">
-                <button class="icon-btn" onclick="toggleCart()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <path d="M16 10a4 4 0 0 1-8 0" />
+                <button class="icon-btn" onclick="toggleCart()" style="position: relative;">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
                     </svg>
                     <span id="cartBadge"
-                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
+                        style="display: none; position: absolute; top: -5px; right: -5px; background: #8b0000; color: white; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
                 </button>
             </div>
         </div>
@@ -63,20 +178,18 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
-            </div>
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+            <div class="nav-item"><a href="index.html" onclick="toggleNav()">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html" onclick="toggleNav()">All Products <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Plains" onclick="toggleNav()">Plains
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" onclick="toggleNav()">Semi
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" onclick="toggleNav()">Pure
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" onclick="toggleNav()">Semi Gadwal
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" onclick="toggleNav()">Pure Gadwal
+                    <span>›</span></a></div>
         </div>
     </div>
 
@@ -112,7 +225,7 @@
         <div class="cart-items" id="cartItems">
             <div class="cart-empty">
                 <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
-                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+                <div style="font-family: 'Playfair Display', serif; font-style: italic;">Your cart is empty</div>
             </div>
         </div>
         <div class="cart-footer">
@@ -136,7 +249,9 @@
 
         <div class="product-detail">
             <div class="product-gallery">
-                <img src="" alt="" class="main-image" id="mainImage">
+                <div class="main-image-container">
+                    <img src="" alt="" class="main-image" id="mainImage">
+                </div>
                 <div class="thumbnail-list" id="thumbnailList">
                     <!-- Thumbnails rendered here -->
                 </div>
@@ -144,111 +259,120 @@
 
             <div class="product-info-detail">
                 <div class="product-vendor">Andham</div>
-                <h1 class="product-name" id="detailTitle">Premium Tissue Linen Sarees with heavy blouse - Peach</h1>
+                <h1 class="product-name" id="detailTitle">Loading...</h1>
 
-<!-- Replace your existing price div with this -->
-<div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
-    <div class="product-price-detail" id="detailOriginalPrice" style="text-decoration: line-through; color: #999; font-size: 0.85em; display: none;">Rs. 0.00</div>
-    <div class="product-price-detail" id="detailPrice" style="color: #8b0000;">Rs. 3,550.00</div>
-    <span id="discountBadge" style="background: #8b0000; color: white; padding: 4px 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; display: none;">0% OFF</span>
-</div>
-                <!-- Product ID Display -->
-                <div class="product-id" id="productIdDisplay"
-                    style="margin: 10px 0; font-size: 12px; color: #666; letter-spacing: 1px;">
-                    <span id="productId">ADM00000</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+                    <div class="product-price-detail" id="detailOriginalPrice"
+                        style="text-decoration: line-through; color: #999; font-size: 0.85em; display: none;">Rs. 0.00
+                    </div>
+                    <div class="product-price-detail" id="detailPrice"
+                        style="color: #8b0000; font-size: 24px; font-weight: 600;">Rs. 0.00</div>
+                    <span id="discountBadge"
+                        style="background: #8b0000; color: white; padding: 4px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: none; border-radius: 4px;">0%
+                        OFF</span>
                 </div>
 
-                <div class="product-tax">Tax included. <a href="#">Shipping</a> calculated at checkout.</div>
+                <div class="product-id"
+                    style="margin: 10px 0; font-size: 13px; color: #666; letter-spacing: 1px; font-family: monospace;">
+                    ID: <span id="productId">---</span>
+                </div>
+
+                <div class="product-tax" style="font-size: 13px; color: #666; margin-bottom: 20px;">Tax included. <a
+                        href="#" style="color: #8b0000; text-decoration: underline;">Shipping</a> calculated at
+                    checkout.</div>
 
                 <div class="product-actions">
-                    <div class="quantity-row">
-                        <span class="quantity-label">Quantity</span>
-                        <div class="qty-selector large">
-                            <button class="qty-btn" onclick="updateDetailQty(-1)">−</button>
-                            <span class="qty-value" id="detailQty">1</span>
-                            <button class="qty-btn" onclick="updateDetailQty(1)">+</button>
+                    <div class="quantity-row"
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <span class="quantity-label"
+                            style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">Quantity</span>
+                        <div class="qty-selector"
+                            style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px;">
+                            <button class="qty-btn" onclick="updateDetailQty(-1)"
+                                style="width: 40px; height: 40px; border: none; background: none; cursor: pointer; font-size: 18px;">−</button>
+                            <span class="qty-value" id="detailQty"
+                                style="width: 50px; text-align: center; font-weight: 500;">1</span>
+                            <button class="qty-btn" onclick="updateDetailQty(1)"
+                                style="width: 40px; height: 40px; border: none; background: none; cursor: pointer; font-size: 18px;">+</button>
                         </div>
                     </div>
 
-                    <div class="action-buttons">
-                        <button class="btn-primary" onclick="addToCartFromDetail()">Add to cart</button>
-                        <button class="btn-secondary">Buy it now</button>
+                    <div class="action-buttons" style="display: flex; flex-direction: column; gap: 12px;">
+                        <button class="btn-primary" onclick="addToCartFromDetail()"
+                            style="width: 100%; padding: 16px; background: #8b0000; color: white; border: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; border-radius: 4px; transition: background 0.3s;">Add
+                            to cart</button>
+                        <button class="btn-secondary"
+                            style="width: 100%; padding: 16px; background: transparent; color: #333; border: 1px solid #333; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; border-radius: 4px;">Buy
+                            it now</button>
                     </div>
                 </div>
 
-                <button class="share-btn" onclick="shareProduct()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        style="vertical-align: middle;">
-                        <circle cx="18" cy="5" r="3" />
-                        <circle cx="6" cy="12" r="3" />
-                        <circle cx="18" cy="19" r="3" />
-                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                <button class="share-btn" onclick="shareProduct()"
+                    style="margin: 20px 0; padding: 10px 20px; background: none; border: 1px solid #ddd; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px; border-radius: 4px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="18" cy="5" r="3"></circle>
+                        <circle cx="6" cy="12" r="3"></circle>
+                        <circle cx="18" cy="19" r="3"></circle>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                     </svg>
                     Share
                 </button>
 
-                <div class="product-description" id="detailDescription">
-                    <em>A timeless blend of elegance and ease</em> — these Soft Tissue Linen Sarees are minimal,
-                    refined, and perfect for effortless summer dressing.
+                <div class="product-description" id="detailDescription"
+                    style="margin: 20px 0; line-height: 1.8; color: #555;">
+                    Loading description...
                 </div>
 
-                <ul class="bullet-list" id="detailBullets">
-                    <li>Crafted from premium soft tissue linen — feather-light, breathable, and luxe to the touch</li>
-                    <li>Paired with a running blouse that features a fully embroidered pattern</li>
-                    <li>Features a statement pallu, hand-embroidered with intricate French knots</li>
+                <ul class="bullet-list" id="detailBullets"
+                    style="margin: 20px 0; padding-left: 20px; line-height: 2; color: #555;">
+                    <!-- Bullets rendered here -->
                 </ul>
 
-                <div class="note-text" id="detailNote">
+                <div class="note-text" id="detailNote"
+                    style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 3px solid #8b0000; font-size: 13px; color: #666;">
                     <strong>Please note:</strong> Slight color variations may occur due to digital photography and
                     individual phone screens.
                 </div>
 
-                <div class="accordions">
-                    <div class="accordion-item active">
-                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                <div class="accordions" style="margin-top: 30px; border-top: 1px solid #eee;">
+                    <div class="accordion-item" style="border-bottom: 1px solid #eee;">
+                        <button class="accordion-header" onclick="toggleAccordion(this)"
+                            style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                             <span>Materials</span>
                             <span class="accordion-icon">▼</span>
                         </button>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
+                        <div class="accordion-content"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
+                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
                                 Premium tissue linen fabric with intricate hand embroidery. Running blouse piece
                                 included (0.8 meters).
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-item" style="border-bottom: 1px solid #eee;">
+                        <button class="accordion-header" onclick="toggleAccordion(this)"
+                            style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                             <span>Shipping & Returns</span>
                             <span class="accordion-icon">▼</span>
                         </button>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
+                        <div class="accordion-content"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
+                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
                                 Free shipping on orders above Rs. 5000. Delivered within 5-7 business days. Easy 7-day
                                 returns available.
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <button class="accordion-header" onclick="toggleAccordion(this)">
-                            <span>Dimensions</span>
-                            <span class="accordion-icon">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
-                                Saree length: 6.3 meters (including blouse)<br>
-                                Width: 45 inches<br>
-                                Blouse piece: 0.8 meters unstitched
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <button class="accordion-header" onclick="toggleAccordion(this)">
+                    <div class="accordion-item" style="border-bottom: 1px solid #eee;">
+                        <button class="accordion-header" onclick="toggleAccordion(this)"
+                            style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
                             <span>Care Instructions</span>
                             <span class="accordion-icon">▼</span>
                         </button>
-                        <div class="accordion-content">
-                            <div class="accordion-body">
+                        <div class="accordion-content"
+                            style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
+                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
                                 Dry clean only. Storing in a cool, dry place helps maintain the fabric's texture and the
                                 delicacy of the embroidery.
                             </div>
@@ -260,50 +384,358 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-inner">
+    <footer class="footer" style="background: #1a1a1a; color: white; padding: 60px 40px 20px; margin-top: 80px;">
+        <div class="footer-inner"
+            style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;">
             <div class="footer-block">
-                <h3>Shop</h3>
-                <ul class="footer-links">
-                    <li><a href="collection.html?filter=Plains">Plains</a></li>
-                    <li><a href="collection.html?filter=Semi+Kanchipattu">Semi Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Pure+Kanchipattu">Pure Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Semi+Gadwal">Semi Gadwal</a></li>
-                    <li><a href="collection.html?filter=Pure+Gadwal">Pure Gadwal</a></li>
+                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Shop
+                </h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Plains"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Plains</a></li>
+                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Semi+Kanchipattu"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Semi Kanchipattu</a></li>
+                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Pure+Kanchipattu"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Pure Kanchipattu</a></li>
+                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Semi+Gadwal"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Semi Gadwal</a></li>
+                    <li style="margin-bottom: 10px;"><a href="collection.html?filter=Pure+Gadwal"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Pure Gadwal</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3>Help</h3>
-                <ul class="footer-links">
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="shipping.html">Shipping & Returns</a></li>
-                    <li><a href="sizeguide.html">Size Guide</a></li>
-                    <li><a href="faq.html">FAQs</a></li>
+                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">Help
+                </h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="contact.html"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Contact Us</a></li>
+                    <li style="margin-bottom: 10px;"><a href="shipping.html"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Shipping & Returns</a></li>
+                    <li style="margin-bottom: 10px;"><a href="faq.html"
+                            style="color: #999; text-decoration: none; font-size: 14px;">FAQs</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3>About</h3>
-                <ul class="footer-links">
-                    <li><a href="our-story.html">Our Story</a></li>
-                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
-                    <li><a href="blog.html">Blog</a></li>
+                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">About
+                </h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin-bottom: 10px;"><a href="our-story.html"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Our Story</a></li>
+                    <li style="margin-bottom: 10px;"><a href="craftsmanship.html"
+                            style="color: #999; text-decoration: none; font-size: 14px;">Craftsmanship</a></li>
                 </ul>
             </div>
             <div class="footer-block">
-                <h3>Newsletter</h3>
-                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
-                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
-                    <input type="email" class="newsletter-input" placeholder="Email address" required>
-                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                <h3 style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px;">
+                    Newsletter</h3>
+                <p style="color: #999; font-size: 14px; margin-bottom: 15px;">Subscribe for exclusive updates and
+                    offers.</p>
+                <form onsubmit="event.preventDefault(); showToast('Subscribed!')" style="display: flex;">
+                    <input type="email" placeholder="Email address" required
+                        style="flex: 1; padding: 12px; border: 1px solid #333; background: #2a2a2a; color: white; font-size: 14px;">
+                    <button type="submit"
+                        style="padding: 12px 20px; background: #8b0000; color: white; border: none; cursor: pointer; font-size: 14px;">Subscribe</button>
                 </form>
             </div>
         </div>
-        <div class="footer-bottom">
-            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        <div class="footer-bottom"
+            style="max-width: 1400px; margin: 40px auto 0; padding-top: 20px; border-top: 1px solid #333; text-align: center; color: #666; font-size: 13px;">
+            © 2026 Andham. All rights reserved.
         </div>
     </footer>
 
-    <div class="toast" id="toast"></div>
+    <div class="toast" id="toast"
+        style="position: fixed; bottom: 30px; right: 30px; background: #1a1a1a; color: white; padding: 16px 24px; border-radius: 4px; display: none; z-index: 1000; font-size: 14px;">
+    </div>
+
+    <script>
+    // Product Detail Page Logic
+    let currentQty = 1;
+
+    // Initialize when DOM is loaded - SINGLE EVENT LISTENER
+    document.addEventListener('DOMContentLoaded', function () {
+        // Clean product data first
+        cleanProductData();
+        
+        // Get product ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (productId && typeof products !== 'undefined') {
+            loadProductDetail(productId);
+        } else {
+            showToast('Product not found');
+            setTimeout(() => window.location.href = 'collection.html', 2000);
+        }
+    });
+
+    // Clean all product URLs
+    function cleanProductData() {
+        if (typeof products === 'undefined') return;
+        
+        products.forEach(p => {
+            if (p.image) p.image = p.image.trim();
+            if (p.images && Array.isArray(p.images)) {
+                p.images = p.images.map(img => img ? img.trim() : '').filter(img => img);
+            }
+        });
+    }
+
+    // Load product details
+    function loadProductDetail(productId) {
+        // Use window.currentProduct to make it globally accessible
+        window.currentProduct = products.find(p => p.id === productId);
+
+        if (!window.currentProduct) {
+            showToast('Product not found');
+            return;
+        }
+
+        const product = window.currentProduct;
+
+        // Update breadcrumb
+        document.getElementById('breadcrumbProduct').textContent = product.title;
+
+        // Update product info
+        document.getElementById('detailTitle').textContent = product.title;
+        document.getElementById('productId').textContent = product.id;
+        document.getElementById('detailPrice').textContent = 'Rs. ' + (product.price || 0).toLocaleString();
+
+        // Handle original price and discount
+        const originalPriceEl = document.getElementById('detailOriginalPrice');
+        const discountBadge = document.getElementById('discountBadge');
+
+        if (product.originalPrice && product.originalPrice > product.price) {
+            originalPriceEl.textContent = 'Rs. ' + product.originalPrice.toLocaleString();
+            originalPriceEl.style.display = 'block';
+
+            const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+            discountBadge.textContent = discount + '% OFF';
+            discountBadge.style.display = 'inline-block';
+        } else {
+            originalPriceEl.style.display = 'none';
+            discountBadge.style.display = 'none';
+        }
+
+        // Setup gallery
+        setupGallery();
+
+        // Update description
+        document.getElementById('detailDescription').innerHTML = product.description ||
+            '<em>A timeless blend of elegance and ease</em> — these sarees are minimal, refined, and perfect for effortless dressing.';
+
+        // Update bullets
+        const bulletsContainer = document.getElementById('detailBullets');
+        if (product.bullets && product.bullets.length > 0) {
+            bulletsContainer.innerHTML = product.bullets.map(b => `<li>${b}</li>`).join('');
+        } else {
+            bulletsContainer.innerHTML = `
+                <li>Crafted from premium quality fabric</li>
+                <li>Paired with a running blouse piece</li>
+                <li>Perfect for special occasions</li>
+            `;
+        }
+    }
+
+    // Setup image gallery
+    function setupGallery() {
+        const mainImage = document.getElementById('mainImage');
+        const thumbnailList = document.getElementById('thumbnailList');
+        const product = window.currentProduct;
+
+        if (!product) return;
+
+        // Collect all images
+        let allImages = [];
+
+        // Add main image
+        if (product.image) {
+            allImages.push(product.image);
+        }
+
+        // Add additional images
+        if (product.images && Array.isArray(product.images)) {
+            product.images.forEach(img => {
+                if (img && !allImages.includes(img)) {
+                    allImages.push(img);
+                }
+            });
+        }
+
+        // If no images, use placeholder
+        if (allImages.length === 0) {
+            allImages.push('https://via.placeholder.com/600x800?text=No+Image');
+        }
+
+        // Set main image
+        mainImage.src = allImages[0];
+        mainImage.alt = product.title;
+
+        // Generate thumbnails
+        thumbnailList.innerHTML = allImages.map((img, index) => `
+            <div class="thumbnail-wrapper ${index === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
+                <img src="${img}" alt="${product.title} - ${index + 1}" class="thumbnail" onerror="this.style.display='none'; this.parentElement.style.display='none'">
+            </div>
+        `).join('');
+
+        thumbnailList.style.display = allImages.length > 1 ? 'flex' : 'none';
+    }
+
+    // Switch main image
+    function switchImage(src, thumbnailEl) {
+        const mainImage = document.getElementById('mainImage');
+        mainImage.src = src;
+
+        document.querySelectorAll('.thumbnail-wrapper').forEach(el => {
+            el.classList.remove('active');
+        });
+        thumbnailEl.classList.add('active');
+    }
+
+    // Quantity updater
+    function updateDetailQty(change) {
+        currentQty += change;
+        if (currentQty < 1) currentQty = 1;
+        if (currentQty > 10) currentQty = 10;
+        document.getElementById('detailQty').textContent = currentQty;
+    }
+
+    // FIXED: Add to cart from detail page
+    // function addToCartFromDetail() {
+    //     const product = window.currentProduct;
+    //     if (!product) {
+    //         showToast('Error: Product not loaded');
+    //         return;
+    //     }
+
+    //     // Check if addToCart function exists (from script.js)
+    //     if (typeof addToCart !== 'function') {
+    //         // If not, implement basic cart functionality
+    //         addToCartBasic(product.id, currentQty);
+    //     } else {
+    //         // Use the existing addToCart function multiple times
+    //         for (let i = 0; i < currentQty; i++) {
+    //             addToCart(product.id);
+    //         }
+    //     }
+
+    //     showToast(`Added ${currentQty} item(s) to cart`);
+    //     currentQty = 1;
+    //     document.getElementById('detailQty').textContent = 1;
+        
+    //     // Update cart badge if function exists
+    //     if (typeof updateCartBadge === 'function') {
+    //         updateCartBadge();
+    //     }
+    // }
+
+    // Basic cart implementation (if script.js doesn't have it)
+    function addToCartBasic(productId, quantity) {
+        let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
+        const product = products.find(p => p.id === productId);
+        
+        if (!product) return;
+
+        // Check if already in cart
+        const existingItem = cart.find(item => item.id === productId);
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
+        } else {
+            cart.push({
+                id: productId,
+                title: product.title,
+                price: product.price,
+                image: product.image,
+                quantity: quantity
+            });
+        }
+
+        localStorage.setItem('andham_cart', JSON.stringify(cart));
+        updateCartBadgeBasic();
+    }
+
+    // Basic cart badge update
+    function updateCartBadgeBasic() {
+        const cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
+        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const badge = document.getElementById('cartBadge');
+        
+        if (badge) {
+            badge.textContent = totalItems;
+            badge.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+    }
+
+    // Accordion toggle
+    function toggleAccordion(header) {
+        const content = header.nextElementSibling;
+        const icon = header.querySelector('.accordion-icon');
+
+        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+            content.style.maxHeight = '0px';
+            icon.textContent = '▼';
+        } else {
+            content.style.maxHeight = content.scrollHeight + 'px';
+            icon.textContent = '▲';
+        }
+    }
+
+    // Share product
+    function shareProduct() {
+        const product = window.currentProduct;
+        if (navigator.share) {
+            navigator.share({
+                title: product ? product.title : 'Andham Product',
+                url: window.location.href
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            showToast('Link copied to clipboard!');
+        }
+    }
+
+    // Toast notification
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+
+    // Search functions
+    function toggleSearch() {
+        const modal = document.getElementById('searchModal');
+        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        if (modal.style.display === 'flex') {
+            document.getElementById('searchInput').focus();
+        }
+    }
+
+    function handleSearch(e) {
+        if (e.key === 'Enter') {
+            const query = document.getElementById('searchInput').value;
+            if (query) {
+                window.location.href = `collection.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+    }
+
+    function quickSearch(term) {
+        window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
+    }
+
+    // Initialize cart badge on load
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof updateCartBadge === 'function') {
+            updateCartBadge();
+        } else {
+            updateCartBadgeBasic();
+        }
+    });
+</script>
 </body>
 
 </html>
