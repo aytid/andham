@@ -1,14 +1,17 @@
 const products = [
     {
-        id: "ADM00001",
-        title: "Premium Tissue Linen Sarees with heavy blouse - Peach",
-        price: 3550,
-        category: "Plains",
-        collection: "Tissue Linen",
-        image: "https://rudhvivastraa.vercel.app/pic1.jpg",
-        images: ["https://rudhvivastraa.vercel.app/pic1.jpg", "https://rudhvivastraa.vercel.app/pic3.webp"],
-        description: "<em>A timeless blend of elegance and ease</em> — these Soft Tissue Linen Sarees are minimal, refined, and perfect for effortless summer dressing.",
-        bullets: [
+        "id": "ADM00001",
+        "title": "Premium Tissue Linen Sarees with heavy blouse - Peach",
+        "price": 3550,
+        "category": "Plains",
+        "collection": "Tissue Linen",
+        "image": "https://rudhvivastraa.vercel.app/pic1.jpg",
+        "images": [
+            "https://rudhvivastraa.vercel.app/pic1.jpg",
+            "https://rudhvivastraa.vercel.app/pic3.webp"
+        ],
+        "description": "<em>A timeless blend of elegance and ease</em> — these Soft Tissue Linen Sarees are minimal, refined, and perfect for effortless summer dressing.",
+        "bullets": [
             "Crafted from premium soft tissue linen — feather-light, breathable, and luxe to the touch",
             "Paired with a running blouse that features a fully embroidered pattern, adding a grand and luxurious finish",
             "Features a statement pallu, hand-embroidered with intricate French knots for a touch of artistry",
@@ -17,62 +20,74 @@ const products = [
         ]
     },
     {
-        id: "ADM00002",
-        title: "Premium Tissue Linen Sarees with heavy blouse - Pink",
-        price: 3550,
-        category: "Plains",
-        collection: "Tissue Linen",
-        image: "https://rudhvivastraa.vercel.app/casual.jpg",
-        images: ["https://rudhvivastraa.vercel.app/casual.jpg", "https://rudhvivastraa.vercel.app/traditional.jpg"],
-        description: "Handcrafted with precision, this elegant pink tissue linen saree features intricate embroidery and a luxurious blouse piece.",
-        bullets: [
+        "id": "ADM00002",
+        "title": "Premium Tissue Linen Sarees with heavy blouse - Pink",
+        "price": 3550,
+        "category": "Plains",
+        "collection": "Tissue Linen",
+        "image": "https://rudhvivastraa.vercel.app/casual.jpg",
+        "images": [
+            "https://rudhvivastraa.vercel.app/casual.jpg",
+            "https://rudhvivastraa.vercel.app/traditional.jpg"
+        ],
+        "description": "Handcrafted with precision, this elegant pink tissue linen saree features intricate embroidery and a luxurious blouse piece.",
+        "bullets": [
             "Premium tissue linen fabric with natural sheen",
             "Heavy embroidered blouse piece included",
             "Perfect for festive occasions and formal gatherings"
         ]
     },
     {
-        id: "ADM00003",
-        title: "Pure Kanjeevaram Silk Saree - Temple Border",
-        price: 12500,
-        originalPrice: 15000,
-        category: "Pure Kanchipattu",
-        collection: "Kanjeevaram",
-        image: "https://rudhvivastraa.vercel.app/designer.jpg",
-        images: ["https://rudhvivastraa.vercel.app/designer.jpg", "https://rudhvivastraa.vercel.app/pic3.webp"],
-        description: "Authentic Kanjeevaram silk with traditional temple border design. A timeless piece for your special occasions.",
-        bullets: [
+        "id": "ADM00003",
+        "title": "Pure Kanjeevaram Silk Saree - Temple Border",
+        "price": 12500,
+        "originalPrice": 15000,
+        "category": "Pure Kanchipattu",
+        "collection": "Kanjeevaram",
+        "image": "https://rudhvivastraa.vercel.app/designer.jpg",
+        "images": [
+            "https://rudhvivastraa.vercel.app/designer.jpg",
+            "https://rudhvivastraa.vercel.app/pic3.webp"
+        ],
+        "description": "Authentic Kanjeevaram silk with traditional temple border design. A timeless piece for your special occasions.",
+        "bullets": [
             "Pure mulberry silk with zari work",
             "Traditional temple border design",
             "Comes with matching blouse piece"
         ]
     },
     {
-        id: "ADM00004",
-        title: "Semi Kanjeevaram Silk Saree - Floral Design",
-        price: 6800,
-        category: "Semi Kanchipattu",
-        collection: "Kanjeevaram",
-        image: "https://rudhvivastraa.vercel.app/traditional.jpg",
-        images: ["https://rudhvivastraa.vercel.app/traditional.jpg", "https://rudhvivastraa.vercel.app/pic3.webp"],
-        description: "Beautiful semi-Kanjeevaram silk saree with intricate floral designs. Perfect blend of tradition and affordability.",
-        bullets: [
+        "id": "ADM00004",
+        "title": "Semi Kanjeevaram Silk Saree - Floral Design",
+        "price": 6800,
+        "category": "Semi Kanchipattu",
+        "collection": "Kanjeevaram",
+        "image": "https://rudhvivastraa.vercel.app/traditional.jpg",
+        "images": [
+            "https://rudhvivastraa.vercel.app/traditional.jpg",
+            "https://rudhvivastraa.vercel.app/pic3.webp"
+        ],
+        "description": "Beautiful semi-Kanjeevaram silk saree with intricate floral designs. Perfect blend of tradition and affordability.",
+        "bullets": [
             "Semi-silk blend with rich texture",
             "Intricate floral zari work",
             "Lightweight and easy to drape"
         ]
     },
     {
-        id: "ADM00005",
-        title: "Pure Gadwal Silk Saree - Temple Border",
-        price: 9800,
-        originalPrice: 12000,
-        category: "Pure Gadwal",
-        collection: "Gadwal",
-        image: "https://images.unsplash.com/photo-1610030469983-98e360a7e6e8?w=800",
-        images: ["https://images.unsplash.com/photo-1610030469983-98e360a7e6e8?w=800", "https://rudhvivastraa.vercel.app/pic3.webp"],
-        description: "Authentic Pure Gadwal silk saree with signature temple border and rich pallu. A masterpiece of Telugu weaving tradition.",
-        bullets: [
+        "id": "ADM00005",
+        "title": "Pure Gadwal Silk Saree - Temple Border",
+        "price": 9800,
+        "originalPrice": 12000,
+        "category": "Pure Gadwal",
+        "collection": "Gadwal",
+        "image": "https://images.unsplash.com/photo-1610030469983-98e360a7e6e8?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1610030469983-98e360a7e6e8?w=800",
+            "https://rudhvivastraa.vercel.app/pic3.webp"
+        ],
+        "description": "Authentic Pure Gadwal silk saree with signature temple border and rich pallu. A masterpiece of Telugu weaving tradition.",
+        "bullets": [
             "Pure silk body with contrasting border",
             "Signature Gadwal temple border design",
             "Rich zari work on pallu",
@@ -80,15 +95,18 @@ const products = [
         ]
     },
     {
-        id: "ADM00006",
-        title: "Semi Gadwal Cotton Silk Saree - Checks Pattern",
-        price: 4200,
-        category: "Semi Gadwal",
-        collection: "Gadwal",
-        image: "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800",
-        images: ["https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800", "https://rudhvivastraa.vercel.app/casual.jpg"],
-        description: "Elegant Semi Gadwal saree combining cotton comfort with silk-like sheen. Features classic checks pattern.",
-        bullets: [
+        "id": "ADM00006",
+        "title": "Semi Gadwal Cotton Silk Saree - Checks Pattern",
+        "price": 4200,
+        "category": "Semi Gadwal",
+        "collection": "Gadwal",
+        "image": "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800",
+            "https://rudhvivastraa.vercel.app/casual.jpg"
+        ],
+        "description": "Elegant Semi Gadwal saree combining cotton comfort with silk-like sheen. Features classic checks pattern.",
+        "bullets": [
             "Cotton-silk blend for comfort",
             "Classic checks pattern with zari border",
             "Affordable luxury for daily wear",
@@ -96,16 +114,19 @@ const products = [
         ]
     },
     {
-        id: "ADM00007",
-        title: "Pure Kanchipattu Bridal Saree - Heavy Zari",
-        price: 18500,
-        originalPrice: 22000,
-        category: "Pure Kanchipattu",
-        collection: "Kanjeevaram",
-        image: "https://images.unsplash.com/photo-1583391733952-9350aacc9efe?w=800",
-        images: ["https://images.unsplash.com/photo-1583391733952-9350aacc9efe?w=800", "https://rudhvivastraa.vercel.app/designer.jpg"],
-        description: "Magnificent bridal pure Kanchipattu saree with heavy gold zari work. Perfect for weddings and grand celebrations.",
-        bullets: [
+        "id": "ADM00007",
+        "title": "Pure Kanchipattu Bridal Saree - Heavy Zari",
+        "price": 18500,
+        "originalPrice": 22000,
+        "category": "Pure Kanchipattu",
+        "collection": "Kanjeevaram",
+        "image": "https://images.unsplash.com/photo-1583391733952-9350aacc9efe?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1583391733952-9350aacc9efe?w=800",
+            "https://rudhvivastraa.vercel.app/designer.jpg"
+        ],
+        "description": "Magnificent bridal pure Kanchipattu saree with heavy gold zari work. Perfect for weddings and grand celebrations.",
+        "bullets": [
             "Pure mulberry silk with heavy gold zari",
             "Traditional peacock and floral motifs",
             "Rich contrast pallu with intricate designs",
@@ -113,15 +134,18 @@ const products = [
         ]
     },
     {
-        id: "ADM00008",
-        title: "Semi Kanchipattu Saree - Modern Design",
-        price: 5500,
-        category: "Semi Kanchipattu",
-        collection: "Kanjeevaram",
-        image: "https://images.unsplash.com/photo-1596816692476-40d6a437b612?w=800",
-        images: ["https://images.unsplash.com/photo-1596816692476-40d6a437b612?w=800", "https://rudhvivastraa.vercel.app/traditional.jpg"],
-        description: "Contemporary semi-Kanchipattu saree with modern designs. Perfect for office wear and casual occasions.",
-        bullets: [
+        "id": "ADM00008",
+        "title": "Semi Kanchipattu Saree - Modern Design",
+        "price": 5500,
+        "category": "Semi Kanchipattu",
+        "collection": "Kanjeevaram",
+        "image": "https://images.unsplash.com/photo-1596816692476-40d6a437b612?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1596816692476-40d6a437b612?w=800",
+            "https://rudhvivastraa.vercel.app/traditional.jpg"
+        ],
+        "description": "Contemporary semi-Kanchipattu saree with modern designs. Perfect for office wear and casual occasions.",
+        "bullets": [
             "Art silk blend with contemporary designs",
             "Lightweight and comfortable",
             "Modern color combinations",
@@ -129,15 +153,18 @@ const products = [
         ]
     },
     {
-        id: "ADM00009",
-        title: "Plain Cotton Saree - Daily Wear",
-        price: 1200,
-        category: "Plains",
-        collection: "Cotton",
-        image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800",
-        images: ["https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800", "https://rudhvivastraa.vercel.app/pic1.jpg"],
-        description: "Simple and elegant plain cotton saree for everyday comfort. Breathable fabric perfect for summer.",
-        bullets: [
+        "id": "ADM00009",
+        "title": "Plain Cotton Saree - Daily Wear",
+        "price": 1200,
+        "category": "Plains",
+        "collection": "Cotton",
+        "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800",
+            "https://rudhvivastraa.vercel.app/pic1.jpg"
+        ],
+        "description": "Simple and elegant plain cotton saree for everyday comfort. Breathable fabric perfect for summer.",
+        "bullets": [
             "100% pure cotton fabric",
             "Soft and breathable material",
             "Easy to wash and maintain",
@@ -145,15 +172,18 @@ const products = [
         ]
     },
     {
-        id: "ADM00010",
-        title: "Plain Linen Saree - Office Wear",
-        price: 2800,
-        category: "Plains",
-        collection: "Linen",
-        image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800",
-        images: ["https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800", "https://rudhvivastraa.vercel.app/casual.jpg"],
-        description: "Sophisticated plain linen saree with subtle texture. Ideal for professional and formal settings.",
-        bullets: [
+        "id": "ADM00010",
+        "title": "Plain Linen Saree - Office Wear",
+        "price": 2800,
+        "category": "Plains",
+        "collection": "Linen",
+        "image": "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=800",
+            "https://rudhvivastraa.vercel.app/casual.jpg"
+        ],
+        "description": "Sophisticated plain linen saree with subtle texture. Ideal for professional and formal settings.",
+        "bullets": [
             "Premium linen fabric with natural texture",
             "Wrinkle-resistant finish",
             "Elegant drape for office wear",
@@ -161,15 +191,18 @@ const products = [
         ]
     },
     {
-        id: "ADM00011",
-        title: "Pure Gadwal Silk - Peacock Border",
-        price: 11500,
-        category: "Pure Gadwal",
-        collection: "Gadwal",
-        image: "https://images.unsplash.com/photo-1618941716939-553df3c6c278?w=800",
-        images: ["https://images.unsplash.com/photo-1618941716939-553df3c6c278?w=800", "https://rudhvivastraa.vercel.app/designer.jpg"],
-        description: "Exquisite Pure Gadwal saree featuring signature peacock border motif. A treasure for your wardrobe.",
-        bullets: [
+        "id": "ADM00011",
+        "title": "Pure Gadwal Silk - Peacock Border",
+        "price": 11500,
+        "category": "Pure Gadwal",
+        "collection": "Gadwal",
+        "image": "https://images.unsplash.com/photo-1618941716939-553df3c6c278?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1618941716939-553df3c6c278?w=800",
+            "https://rudhvivastraa.vercel.app/designer.jpg"
+        ],
+        "description": "Exquisite Pure Gadwal saree featuring signature peacock border motif. A treasure for your wardrobe.",
+        "bullets": [
             "Authentic Gadwal weaving technique",
             "Peacock motif border in rich zari",
             "Pure silk with cotton border",
@@ -177,19 +210,76 @@ const products = [
         ]
     },
     {
-        id: "ADM00012",
-        title: "Semi Gadwal Saree - Striped Pattern",
-        price: 3600,
-        category: "Semi Gadwal",
-        collection: "Gadwal",
-        image: "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
-        images: ["https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800", "https://rudhvivastraa.vercel.app/traditional.jpg"],
-        description: "Stylish semi-Gadwal saree with contemporary striped pattern. Perfect blend of tradition and trend.",
-        bullets: [
+        "id": "ADM00012",
+        "title": "Semi Gadwal Saree - Striped Pattern",
+        "price": 3600,
+        "category": "Semi Gadwal",
+        "collection": "Gadwal",
+        "image": "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800",
+            "https://rudhvivastraa.vercel.app/traditional.jpg"
+        ],
+        "description": "Stylish semi-Gadwal saree with contemporary striped pattern. Perfect blend of tradition and trend.",
+        "bullets": [
             "Art silk with cotton blend",
             "Modern striped pattern",
             "Lightweight and easy to carry",
             "Versatile for multiple occasions"
         ]
+    },
+    {
+        "id": "ADM00169",
+        "title": "Rohan Test",
+        "category": "Pure Gadwal",
+        "collection": "Gadwal",
+        "price": 12000,
+        "originalPrice": 15000,
+        "image": "https://images.unsplash.com/photo-1769096914324-c8186f3ae3b6?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw0fHx8ZW58MHx8fHx8",
+        "images": [
+            "https://images.unsplash.com/photo-1761839258605-d1b118266ccc?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw4fHx8ZW58MHx8fHx8",
+            "https://images.unsplash.com/photo-1770670588301-2769fd50a060?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMnx8fGVufDB8fHx8fA%3D%3D"
+        ],
+        "description": "",
+        "bullets": [],
+        "stock": "in",
+        "quantity": 10,
+        "createdAt": "2026-02-16T05:08:39.078Z"
+    },
+    {
+        "id": "ADM00125",
+        "title": "Aryan Test",
+        "category": "Semi Kanchipattu",
+        "collection": "Kanjeevaram",
+        "price": 11,
+        "originalPrice": 22,
+        "image": "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800",
+            "https://images.unsplash.com/photo-1606103920295-9a091573f160?w=800"
+        ],
+        "description": "Aryan Test",
+        "bullets": [],
+        "stock": "in",
+        "quantity": 10,
+        "createdAt": "2026-02-16T05:39:26.165Z"
+    },
+    {
+        "id": "ADM11100",
+        "title": "Test",
+        "category": "Semi Gadwal",
+        "collection": "Gadwal",
+        "price": 900,
+        "originalPrice": 1000,
+        "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800",
+        "images": [
+            "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800",
+            "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=800"
+        ],
+        "description": "",
+        "bullets": [],
+        "stock": "in",
+        "quantity": 10,
+        "createdAt": "2026-02-16T05:42:17.130Z"
     }
 ];
