@@ -37,7 +37,9 @@ const products = [
             "Premium tissue linen fabric with natural sheen",
             "Heavy embroidered blouse piece included",
             "Perfect for festive occasions and formal gatherings"
-        ]
+        ],
+        "originalPrice": null,
+        "stock": "in"
     },
     {
         "id": "ADM00003",
