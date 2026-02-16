@@ -229,5 +229,24 @@ const products = [
             "Lightweight and easy to carry",
             "Versatile for multiple occasions"
         ]
+    },
+    {
+        "id": "ADM01998",
+        "title": "Padmanaba simha ",
+        "category": "Pure Kanchipattu",
+        "collection": "Kanjeevaram",
+        "price": 5000,
+        "originalPrice": 6999,
+        "image": "https://www.google.com/search?q=images&oq=images&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIGCAEQRRg9MgYIAhBFGD3SAQgxNDQ2ajBqN6gCD7ACAQ&client=ms-android-realme-terr1-rso2&sourceid=chrome-mobile&ie=UTF-8",
+        "images": [
+            "https://www.google.com/search?client=ms-android-realme-terr1-rso2&hs=l5gU&sca_esv=6a3dc1d72e9664c9&sxsrf=ANbL-n5xLhWPXA_7hX_pCj5KfLosRW38RA:1771221192827&udm=2&fbs=ADc_l-aN0CWEZBOHjofHoaMMDiKpaEWjvZ2Py1XXV8d8KvlI3jljrY5CkLlk8Dq3IvwBz-Qg9gdZYJriKd9fBMKKfwqZsp5a2Z8RykAyI8QON1GKtNJOssmbpPvaOpAriL5ZmTwtx9B17VeAaoqb-qf2R_XTsSl47mZBI3lA--G9xOyGFtv8DwkIOojRDRggS4t6OE1R6oR3omeJ0H3q-lfIvyLc_rLxORE9Q7iqxiTDmwNILKGCgYg&q=images&sa=X&ved=2ahUKEwignpGQqd2SAxUORmwGHfEOI_8QtKgLegQIFBAB&biw=365&bih=688&dpr=3.5"
+        ],
+        "description": "Pitta",
+        "bullets": [
+            "Green pitta"
+        ],
+        "stock": "in",
+        "quantity": 10,
+        "createdAt": "2026-02-16T05:54:05.287Z"
     }
 ];
