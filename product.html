@@ -583,35 +583,6 @@
         document.getElementById('detailQty').textContent = currentQty;
     }
 
-    // FIXED: Add to cart from detail page
-    // function addToCartFromDetail() {
-    //     const product = window.currentProduct;
-    //     if (!product) {
-    //         showToast('Error: Product not loaded');
-    //         return;
-    //     }
-
-    //     // Check if addToCart function exists (from script.js)
-    //     if (typeof addToCart !== 'function') {
-    //         // If not, implement basic cart functionality
-    //         addToCartBasic(product.id, currentQty);
-    //     } else {
-    //         // Use the existing addToCart function multiple times
-    //         for (let i = 0; i < currentQty; i++) {
-    //             addToCart(product.id);
-    //         }
-    //     }
-
-    //     showToast(`Added ${currentQty} item(s) to cart`);
-    //     currentQty = 1;
-    //     document.getElementById('detailQty').textContent = 1;
-        
-    //     // Update cart badge if function exists
-    //     if (typeof updateCartBadge === 'function') {
-    //         updateCartBadge();
-    //     }
-    // }
-
     // Basic cart implementation (if script.js doesn't have it)
     function addToCartBasic(productId, quantity) {
         let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];

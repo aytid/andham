@@ -1,841 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Admin Panel - Andham</title>
     <script src="script.js"></script>
+    <link rel="stylesheet" href="admin.css">
     <script src="products-data.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #8b0000;
-            --primary-light: #a52a2a;
-            --secondary: #1a1a1a;
-            --bg: #f5f5f5;
-            --card-bg: #ffffff;
-            --text: #333333;
-            --text-light: #666666;
-            --border: #e0e0e0;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
-            --info: #17a2b8;
-            --sidebar-width: 250px;
-            --sidebar-collapsed: 60px;
-            --header-height: 60px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: 14px;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-
-        /* Login Screen */
-        .login-screen {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .login-box {
-            background: white;
-            padding: 30px 25px;
-            border-radius: 8px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 360px;
-        }
-
-        .login-box h1 {
-            font-family: 'Playfair Display', serif;
-            text-align: center;
-            margin-bottom: 25px;
-            color: var(--primary);
-            font-size: 1.8rem;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-light);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            font-size: 14px;
-            transition: border-color 0.3s;
-            border-radius: 4px;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .btn {
-            padding: 10px 18px;
-            border: none;
-            cursor: pointer;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-            font-weight: 500;
-            border-radius: 4px;
-            white-space: nowrap;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-        }
-
-        .btn-secondary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-warning {
-            background: var(--warning);
-            color: var(--secondary);
-        }
-
-        .btn-small {
-            padding: 6px 10px;
-            font-size: 10px;
-        }
-
-        /* Mobile Header */
-        .mobile-header {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--header-height);
-            background: var(--secondary);
-            color: white;
-            z-index: 100;
-            padding: 0 15px;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .mobile-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-        }
-
-        .hamburger {
-            width: 24px;
-            height: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            cursor: pointer;
-            padding: 0;
-            background: none;
-            border: none;
-        }
-
-        .hamburger span {
-            display: block;
-            height: 2px;
-            background: white;
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(6px, 6px);
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(6px, -6px);
-        }
-
-        /* Admin Layout */
-        .admin-container {
-            display: none;
-            min-height: 100vh;
-        }
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: var(--secondary);
-            color: white;
-            padding: 20px 0;
-            overflow-y: auto;
-            overflow-x: hidden;
-            z-index: 99;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 98;
-        }
-
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 10px;
-        }
-
-        .sidebar-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            white-space: nowrap;
-        }
-
-        .sidebar-header p {
-            font-size: 11px;
-            color: rgba(255,255,255,0.6);
-            margin-top: 3px;
-            white-space: nowrap;
-        }
-
-        .nav-menu {
-            list-style: none;
-            padding: 10px 0;
-        }
-
-        .nav-item {
-            padding: 12px 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-            white-space: nowrap;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background: rgba(255,255,255,0.1);
-            border-left-color: var(--primary);
-        }
-
-        .nav-item svg {
-            width: 18px;
-            height: 18px;
-            opacity: 0.7;
-            flex-shrink: 0;
-        }
-
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 25px;
-            min-height: 100vh;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.6rem;
-            font-weight: 400;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 13px;
-        }
-
-        .logout-btn {
-            padding: 6px 12px;
-            font-size: 10px;
-        }
-
-        /* Stats Cards */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            padding: 18px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .stat-card h3 {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-light);
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .stat-change {
-            font-size: 11px;
-            margin-top: 4px;
-        }
-
-        .stat-change.positive { color: var(--success); }
-        .stat-change.negative { color: var(--danger); }
-
-        /* Content Sections */
-        .section {
-            display: none;
-            animation: fadeIn 0.3s;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Tables */
-        .table-container {
-            background: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            overflow: hidden;
-            overflow-x: auto;
-        }
-
-        .table-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .table-header h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .search-box input,
-        .search-box select {
-            padding: 8px 12px;
-            border: 1px solid var(--border);
-            font-size: 12px;
-            border-radius: 4px;
-            min-width: 140px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 12px;
-        }
-
-        th {
-            background: #f9f9f9;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 10px;
-            color: var(--text-light);
-        }
-
-        tr:hover {
-            background: #f9f9f9;
-        }
-
-        .product-img {
-            width: 40px;
-            height: 40px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .badge {
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .badge-success {
-            background: rgba(40, 167, 69, 0.1);
-            color: var(--success);
-        }
-
-        .badge-danger {
-            background: rgba(220, 53, 69, 0.1);
-            color: var(--danger);
-        }
-
-        .badge-warning {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning);
-        }
-
-        .actions {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        /* Forms */
-        .form-container {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        .form-group textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-
-        .image-preview {
-            display: flex;
-            gap: 8px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        .image-preview img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-        }
-
-        .bullet-inputs {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .bullet-row {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .bullet-row input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 200;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 450px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .modal-header h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-light);
-            line-height: 1;
-        }
-
-        /* Price Editor */
-        .price-editor {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .price-editor input {
-            width: 80px;
-            padding: 6px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
-
-        /* Stock Toggle */
-        .stock-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .toggle-switch {
-            position: relative;
-            width: 40px;
-            height: 22px;
-            background: var(--border);
-            border-radius: 11px;
-            transition: background 0.3s;
-        }
-
-        .toggle-switch.active {
-            background: var(--success);
-        }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: white;
-            border-radius: 50%;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s;
-        }
-
-        .toggle-switch.active::after {
-            transform: translateX(18px);
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--secondary);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 4px;
-            display: none;
-            animation: slideIn 0.3s;
-            z-index: 1000;
-            font-size: 13px;
-            max-width: 90%;
-        }
-
-        .toast.show {
-            display: block;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Cards Grid for Mobile */
-        .cards-grid {
-            display: none;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .product-card-header {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .product-card img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .product-card-info h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .product-card-info p {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-bottom: 4px;
-        }
-
-        .product-card-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1024px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            html {
-                font-size: 13px;
-            }
-
-            .mobile-header {
-                display: flex;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                width: 260px;
-                top: var(--header-height);
-                height: calc(100vh - var(--header-height));
-                padding: 15px 0;
-            }
-
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-overlay.active {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 80px 15px 20px;
-            }
-
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            .header h1 {
-                font-size: 1.3rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-
-            .stat-card {
-                padding: 12px;
-            }
-
-            .stat-value {
-                font-size: 1.4rem;
-            }
-
-            .table-container {
-                display: none;
-            }
-
-            .cards-grid {
-                display: block;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .search-box input,
-            .search-box select {
-                flex: 1;
-                min-width: 0;
-            }
-
-            .modal-content {
-                padding: 15px;
-                margin: 10px;
-            }
-
-            .form-container {
-                padding: 15px;
-            }
-
-            .btn {
-                padding: 8px 14px;
-                font-size: 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .user-info {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .actions {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .actions .btn {
-                width: 100%;
-            }
-
-            .price-editor {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .price-editor input {
-                width: 100%;
-            }
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        /* Utility classes */
-        .flex-wrap {
-            flex-wrap: wrap;
-        }
-
-        .w-full {
-            width: 100%;
-        }
-
-        .gap-2 {
-            gap: 8px;
-        }
-    </style>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <script>
+        // GitHub Configuration
+        const GITHUB_CONFIG = {
+            owner: 'aytid',
+            repo: 'andham',
+            path: 'products-data.js',
+            branch: 'main',
+            token: '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'
+        };
+    </script>
 </head>
+
 <body>
 
     <!-- Mobile Header -->
@@ -872,7 +59,7 @@
 
     <!-- Admin Panel -->
     <div class="admin-container" id="adminPanel">
-        
+
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -882,55 +69,57 @@
             <ul class="nav-menu">
                 <li class="nav-item active" onclick="showSection('dashboard')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="7"/>
-                        <rect x="14" y="3" width="7" height="7"/>
-                        <rect x="14" y="14" width="7" height="7"/>
-                        <rect x="3" y="14" width="7" height="7"/>
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
                     </svg>
                     Dashboard
                 </li>
                 <li class="nav-item" onclick="showSection('products')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                     </svg>
                     Products
                 </li>
                 <li class="nav-item" onclick="showSection('addProduct')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="16"/>
-                        <line x1="8" y1="12" x2="16" y2="12"/>
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="16" />
+                        <line x1="8" y1="12" x2="16" y2="12" />
                     </svg>
                     Add Product
                 </li>
                 <li class="nav-item" onclick="showSection('inventory')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
                     </svg>
                     Inventory
                 </li>
                 <li class="nav-item" onclick="showSection('priceManager')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="12" y1="1" x2="12" y2="23"/>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
                     Price Manager
                 </li>
                 <li class="nav-item" onclick="showSection('analytics')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 20V10"/>
-                        <path d="M12 20V4"/>
-                        <path d="M6 20v-6"/>
+                        <path d="M18 20V10" />
+                        <path d="M12 20V4" />
+                        <path d="M6 20v-6" />
                     </svg>
                     Analytics
                 </li>
                 <li class="nav-item" onclick="showSection('settings')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
                     Settings
                 </li>
@@ -939,7 +128,7 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            
+
             <!-- Header -->
             <div class="header">
                 <h1 id="pageTitle">Dashboard</h1>
@@ -988,7 +177,9 @@
                             </tr>
                         </thead>
                         <tbody id="activityLog">
-                            <tr><td colspan="4" style="text-align: center; padding: 30px;">No recent activity</td></tr>
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 30px;">No recent activity</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -1000,8 +191,10 @@
                     <div class="table-header">
                         <h3>All Products</h3>
                         <div class="search-box">
-                            <input type="text" id="productSearch" placeholder="Search by ID, name..." onkeyup="searchProducts()">
-                            <button class="btn btn-primary btn-small" onclick="showSection('addProduct')">+ Add New</button>
+                            <input type="text" id="productSearch" placeholder="Search by ID, name..."
+                                onkeyup="searchProducts()">
+                            <button class="btn btn-primary btn-small" onclick="showSection('addProduct')">+ Add
+                                New</button>
                         </div>
                     </div>
                     <table>
@@ -1020,7 +213,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Mobile Cards View -->
                 <div class="cards-grid" id="productsCards">
                     <!-- Mobile product cards rendered here -->
@@ -1079,12 +272,14 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Main Image URL *</label>
-                                <input type="url" id="newProductImage" required placeholder="https://..." onchange="previewImage(this.value, 'mainPreview')">
+                                <input type="url" id="newProductImage" required placeholder="https://..."
+                                    onchange="previewImage(this.value, 'mainPreview')">
                                 <div class="image-preview" id="mainPreview"></div>
                             </div>
                             <div class="form-group">
                                 <label>Additional Images (comma separated)</label>
-                                <input type="text" id="newProductImages" placeholder="https://..., https://..." onchange="previewMultipleImages(this.value, 'additionalPreview')">
+                                <input type="text" id="newProductImages" placeholder="https://..., https://..."
+                                    onchange="previewMultipleImages(this.value, 'additionalPreview')">
                                 <div class="image-preview" id="additionalPreview"></div>
                             </div>
                         </div>
@@ -1099,16 +294,19 @@
                             <div class="bullet-inputs" id="bulletInputs">
                                 <div class="bullet-row">
                                     <input type="text" placeholder="Feature 1" class="bullet-point">
-                                    <button type="button" class="btn btn-danger btn-small" onclick="removeBullet(this)">×</button>
+                                    <button type="button" class="btn btn-danger btn-small"
+                                        onclick="removeBullet(this)">×</button>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-secondary btn-small" onclick="addBullet()" style="margin-top: 8px;">+ Add Feature</button>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="addBullet()"
+                                style="margin-top: 8px;">+ Add Feature</button>
                         </div>
 
                         <div style="margin-top: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
                             <button type="submit" class="btn btn-primary">Save Product</button>
                             <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear</button>
-                            <button type="button" class="btn btn-warning" onclick="showSection('products')">Cancel</button>
+                            <button type="button" class="btn btn-warning"
+                                onclick="showSection('products')">Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -1120,7 +318,8 @@
                     <div class="table-header">
                         <h3>Inventory Management</h3>
                         <div class="search-box">
-                            <input type="text" id="inventorySearch" placeholder="Search products..." onkeyup="searchInventory()">
+                            <input type="text" id="inventorySearch" placeholder="Search products..."
+                                onkeyup="searchInventory()">
                             <button class="btn btn-success btn-small" onclick="bulkUpdateStock()">Bulk Update</button>
                         </div>
                     </div>
@@ -1140,7 +339,7 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <!-- Mobile Cards -->
                 <div class="cards-grid" id="inventoryCards"></div>
             </section>
@@ -1183,20 +382,26 @@
                     <h3 style="margin-bottom: 15px; font-family: 'Playfair Display', serif;">Bulk Price Operations</h3>
                     <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: end;">
                         <div style="flex: 1; min-width: 140px;">
-                            <label style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Operation</label>
-                            <select id="bulkOperation" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                            <label
+                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Operation</label>
+                            <select id="bulkOperation"
+                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                                 <option value="increase">Increase by %</option>
                                 <option value="decrease">Decrease by %</option>
                                 <option value="fixed">Set Fixed Amount</option>
                             </select>
                         </div>
                         <div style="flex: 1; min-width: 100px;">
-                            <label style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Value</label>
-                            <input type="number" id="bulkValue" placeholder="0" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                            <label
+                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Value</label>
+                            <input type="number" id="bulkValue" placeholder="0"
+                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                         </div>
                         <div style="flex: 1; min-width: 140px;">
-                            <label style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Category</label>
-                            <select id="bulkCategory" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                            <label
+                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Category</label>
+                            <select id="bulkCategory"
+                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                                 <option value="all">All Products</option>
                                 <option value="Plains">Plains</option>
                                 <option value="Semi Kanchipattu">Semi Kanchipattu</option>
@@ -1208,7 +413,7 @@
                         <button class="btn btn-primary" onclick="applyBulkPricing()">Apply</button>
                     </div>
                 </div>
-                
+
                 <!-- Mobile Cards -->
                 <div class="cards-grid" id="priceCards"></div>
             </section>
@@ -1234,7 +439,8 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                <div
+                    style="margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
                     <div class="table-container">
                         <div class="table-header">
                             <h3>By Category</h3>
@@ -1273,7 +479,7 @@
             <section id="settings" class="section">
                 <div class="form-container">
                     <h2 style="margin-bottom: 20px; font-family: 'Playfair Display', serif;">Settings</h2>
-                    
+
                     <h3 style="margin: 20px 0 12px; font-size: 14px;">Store Information</h3>
                     <div class="form-row">
                         <div class="form-group">
@@ -1324,19 +530,23 @@
                 <input type="hidden" id="editProductId">
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Title</label>
-                    <input type="text" id="editTitle" required style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                    <input type="text" id="editTitle" required
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Price (₹)</label>
-                    <input type="number" id="editPrice" required min="0" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                    <input type="number" id="editPrice" required min="0"
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Original Price (₹)</label>
-                    <input type="number" id="editOriginalPrice" min="0" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                    <input type="number" id="editOriginalPrice" min="0"
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                 </div>
                 <div class="form-group" style="margin-bottom: 12px;">
                     <label>Category</label>
-                    <select id="editCategory" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                    <select id="editCategory"
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                         <option value="Plains">Plains</option>
                         <option value="Semi Kanchipattu">Semi Kanchipattu</option>
                         <option value="Pure Kanchipattu">Pure Kanchipattu</option>
@@ -1346,7 +556,8 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 15px;">
                     <label>Stock</label>
-                    <select id="editStock" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+                    <select id="editStock"
+                        style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
                         <option value="in">In Stock</option>
                         <option value="out">Out of Stock</option>
                         <option value="low">Low Stock</option>
@@ -1412,10 +623,10 @@
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
-            
+
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             event.target.closest('.nav-item').classList.add('active');
-            
+
             const titles = {
                 dashboard: 'Dashboard',
                 products: 'All Products',
@@ -1460,7 +671,7 @@
 
             let filtered = products;
             if (searchTerm) {
-                filtered = products.filter(p => 
+                filtered = products.filter(p =>
                     p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     p.title.toLowerCase().includes(searchTerm.toLowerCase())
                 );
@@ -1470,11 +681,11 @@
             const tbody = document.getElementById('productsTable');
             tbody.innerHTML = filtered.map(p => {
                 const stockStatus = p.stock || 'in';
-                const badgeClass = stockStatus === 'in' ? 'badge-success' : 
-                                  stockStatus === 'low' ? 'badge-warning' : 'badge-danger';
-                const statusText = stockStatus === 'in' ? 'In Stock' : 
-                                  stockStatus === 'low' ? 'Low Stock' : 'Out of Stock';
-                
+                const badgeClass = stockStatus === 'in' ? 'badge-success' :
+                    stockStatus === 'low' ? 'badge-warning' : 'badge-danger';
+                const statusText = stockStatus === 'in' ? 'In Stock' :
+                    stockStatus === 'low' ? 'Low Stock' : 'Out of Stock';
+
                 return `
                     <tr style="${stockStatus === 'out' ? 'background: #ffebee;' : ''}">
                         <td><img src="${p.image}" class="product-img" alt="" onerror="this.src='https://via.placeholder.com/40 '"></td>
@@ -1538,7 +749,7 @@
         function previewMultipleImages(urls, containerId) {
             const container = document.getElementById(containerId);
             const urlArray = urls.split(',').map(u => u.trim()).filter(u => u);
-            container.innerHTML = urlArray.map(url => 
+            container.innerHTML = urlArray.map(url =>
                 `<img src="${url}" onerror="this.style.display='none'">`
             ).join('');
         }
@@ -1625,14 +836,14 @@
 
             const id = document.getElementById('editProductId').value;
             const product = products.find(p => p.id === id);
-            
+
             if (product) {
                 product.title = document.getElementById('editTitle').value;
                 product.price = parseInt(document.getElementById('editPrice').value);
                 product.originalPrice = parseInt(document.getElementById('editOriginalPrice').value) || null;
                 product.category = document.getElementById('editCategory').value;
                 product.stock = document.getElementById('editStock').value;
-                
+
                 saveProductsToStorage();
                 logActivity('Updated product', id, product.title);
                 showToast('Product updated!');
@@ -1644,7 +855,7 @@
         function deleteProduct(id) {
             if (typeof products === 'undefined') return;
             if (!confirm('Delete this product?')) return;
-            
+
             products = products.filter(p => p.id !== id);
             saveProductsToStorage();
             logActivity('Deleted product', id, '');
@@ -1662,7 +873,7 @@
 
             let filtered = products;
             if (searchTerm) {
-                filtered = products.filter(p => 
+                filtered = products.filter(p =>
                     p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     p.title.toLowerCase().includes(searchTerm.toLowerCase())
                 );
@@ -1765,7 +976,7 @@
 
             let filtered = products;
             if (searchTerm) {
-                filtered = filtered.filter(p => 
+                filtered = filtered.filter(p =>
                     p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     p.title.toLowerCase().includes(searchTerm.toLowerCase())
                 );
@@ -1854,7 +1065,7 @@
         function setDiscount(id) {
             const discount = prompt('Discount % (0 to remove):');
             if (discount === null) return;
-            
+
             const product = products.find(p => p.id === id);
             if (product) {
                 const discountPercent = parseInt(discount);
@@ -1918,7 +1129,7 @@
             });
 
             document.getElementById('analyticsTotal').textContent = products.length;
-            
+
             const avgPrice = products.length > 0 ? Math.round(products.reduce((sum, p) => sum + (p.price || 0), 0) / products.length) : 0;
             document.getElementById('avgPrice').textContent = `₹${avgPrice.toLocaleString()}`;
 
@@ -2000,11 +1211,83 @@
             input.click();
         }
 
-        function saveProductsToStorage() {
+        // function saveProductsToStorage() {
+        //     if (typeof products === 'undefined') return;
+        //     localStorage.setItem('andham_products_data', JSON.stringify(products));
+        // }
+
+        async function saveProductsToStorage() {
             if (typeof products === 'undefined') return;
+
+            // Always save to localStorage as backup
             localStorage.setItem('andham_products_data', JSON.stringify(products));
+
+            // Try to save to GitHub
+            try {
+                await saveToGitHub();
+                showToast('Saved to GitHub!');
+            } catch (err) {
+                console.error('GitHub save failed:', err);
+                showToast('Saved locally (GitHub failed)');
+            }
         }
 
+        async function saveToGitHub() {
+    const { owner, repo, path, branch, token } = GITHUB_CONFIG;
+    
+    if (!token || token === 'YOUR_GITHUB_TOKEN_HERE') {
+        throw new Error('GitHub token not configured');
+    }
+
+    // 1. Get current file to get the SHA
+    const getResponse = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+        {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        }
+    );
+    
+    if (!getResponse.ok) {
+        const error = await getResponse.json();
+        throw new Error(error.message || 'Failed to get file from GitHub');
+    }
+    
+    const fileData = await getResponse.json();
+    
+    // 2. Prepare content as JAVASCRIPT (not JSON)
+    const jsContent = `const products = ${JSON.stringify(products, null, 4)};`;
+    const content = btoa(unescape(encodeURIComponent(jsContent))); // UTF-8 safe base64
+    
+    // 3. Update the file
+    const updateResponse = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+        {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: `Update products - ${new Date().toLocaleString()}`,
+                content: content,
+                sha: fileData.sha,
+                branch: branch
+            })
+        }
+    );
+    
+    if (!updateResponse.ok) {
+        const error = await updateResponse.json();
+        throw new Error(error.message || 'Failed to update file');
+    }
+    
+    return await updateResponse.json();
+}
+        
         function logActivity(action, productId, details) {
             activityLog.unshift({
                 time: new Date().toLocaleString(),
@@ -2052,4 +1335,5 @@
         });
     </script>
 </body>
+
 </html>

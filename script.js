@@ -241,28 +241,43 @@ function changeMainImage(src, thumb) {
 }
 
 function updateDetailQty(change) {
-    detailQuantity += change;
-    if (detailQuantity < 1) detailQuantity = 1;
-    const detailQty = document.getElementById('detailQty');
-    if (detailQty) {
-        detailQty.textContent = detailQuantity;
-    }
+    const qtyEl = document.getElementById('detailQty');
+    let newQty = parseInt(qtyEl.textContent) + change;
+    if (newQty < 1) newQty = 1;
+    if (newQty > 10) newQty = 10;
+    
+    qtyEl.textContent = newQty;
+    detailQuantity = newQty;
 }
 
 function addToCartFromDetail() {
-    if (!currentProduct) return;
+    // Get quantity directly from DOM to ensure it's correct
+    const qtyEl = document.getElementById('detailQty');
+    const quantity = parseInt(qtyEl.textContent) || 1;
+    
+    // Use window.currentProduct if currentProduct is null
+    const product = currentProduct || window.currentProduct;
+    
+    if (!product) {
+        showToast('Error: Product not loaded');
+        return;
+    }
 
-    const existing = cart.find(item => item.id === currentProduct.id);
+    const existing = cart.find(item => item.id === product.id);
     if (existing) {
-        existing.quantity += detailQuantity;
+        existing.quantity += quantity;
     } else {
-        cart.push({ ...currentProduct, quantity: detailQuantity });
+        cart.push({ ...product, quantity: quantity });
     }
     
     localStorage.setItem('andham_cart', JSON.stringify(cart));
     updateCartUI();
-    showToast('Added to cart');
+    showToast(`Added ${quantity} item(s) to cart`);
     toggleCart();
+    
+    // Reset quantity after adding
+    detailQuantity = 1;
+    if (qtyEl) qtyEl.textContent = '1';
 }
 
 // Cart Functions
