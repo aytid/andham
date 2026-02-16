@@ -248,5 +248,25 @@ const products = [
         "stock": "in",
         "quantity": 10,
         "createdAt": "2026-02-16T05:54:05.287Z"
+    },
+    {
+        "id": "ADM01997",
+        "title": "Jaya Simha",
+        "category": "Pure Gadwal",
+        "collection": "Gadwal",
+        "price": 8999,
+        "originalPrice": 10999,
+        "image": "https://plus.unsplash.com/premium_photo-1770675588685-9344f800aa8a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw2fHx8ZW58MHx8fHx8",
+        "images": [
+            "https://images.unsplash.com/photo-1770330514127-f23131508ebb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxMHx8fGVufDB8fHx8fA%3D%3D",
+            "https://images.unsplash.com/photo-1770064319432-9c5f134afca7?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw5fHx8ZW58MHx8fHx8"
+        ],
+        "description": "Jaya Simha",
+        "bullets": [
+            "Baadhsha"
+        ],
+        "stock": "in",
+        "quantity": 10,
+        "createdAt": "2026-02-16T05:56:37.876Z"
     }
 ];
