@@ -10,7 +10,9 @@
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
-    <script src="products-data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <!-- <script src="products-data.js"></script> -->
 </head>
 
 <body>
@@ -21,39 +23,47 @@
     </div>
 
     <!-- Header -->
-    <header class="header">
-        <div class="header-inner">
-            <div class="header-left">
-                <button class="icon-btn" onclick="toggleNav()">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
-                    </svg>
-                </button>
-                <button class="icon-btn" onclick="toggleSearch()">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
-            </div>
-
-            <a href="index.html" class="logo">Andham</a>
-
-            <div class="header-right">
-                <button class="icon-btn" onclick="toggleCart()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg>
-                    <span id="cartBadge"
-                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
-                </button>
-            </div>
+<header class="header">
+    <div class="header-inner">
+        <div class="header-left">
+            <button class="icon-btn" onclick="toggleNav()">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            <button class="icon-btn" onclick="toggleSearch()">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+            </button>
         </div>
-    </header>
+
+        <a href="index.html" class="logo">Andham</a>
+
+        <div class="header-right">
+            <!-- Account Button - Added -->
+            <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+            
+            <button class="icon-btn" onclick="toggleCart()">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <span id="cartBadge"
+                    style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
+            </button>
+        </div>
+    </div>
+</header>
 
     <!-- Navigation Drawer -->
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
@@ -168,14 +178,14 @@
                     <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
-            <div class="footer-block">
+            <!-- <div class="footer-block">
                 <h3>About</h3>
                 <ul class="footer-links">
                     <li><a href="our-story.html">Our Story</a></li>
                     <li><a href="craftsmanship.html">Craftsmanship</a></li>
                     <li><a href="blog.html">Blog</a></li>
                 </ul>
-            </div>
+            </div> -->
             <div class="footer-block">
                 <h3>Newsletter</h3>
                 <p class="footer-text">Subscribe for exclusive updates and offers.</p>
@@ -192,5 +202,33 @@
 
     <div class="toast" id="toast"></div>
 </body>
+<script>
+async function loadProductsForCollection() {
 
+    const { data, error } = await supabaseClient
+        .from("products")
+        .select("*");
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    // convert DB format → your frontend format
+    window.products = data.map(p => ({
+        id: p.product_id,
+        title: p.title,
+        price: p.price,
+        originalPrice: p.original_price,
+        category: p.category,
+        image: p.image,
+        stock: p.stock ? "in" : "out"
+    }));
+
+    // now your existing script.js logic will work
+    initCollectionPage();
+}
+
+document.addEventListener("DOMContentLoaded", loadProductsForCollection);
+</script>
 </html>

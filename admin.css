@@ -600,34 +600,37 @@ tr:hover {
     gap: 8px;
     cursor: pointer;
 }
-
+/* The container/track */
 .toggle-switch {
-    position: relative;
     width: 40px;
-    height: 22px;
-    background: var(--border);
-    border-radius: 11px;
-    transition: background 0.3s;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth color change */
 }
 
-.toggle-switch.active {
-    background: var(--success);
-}
-
+/* The circle/knob */
 .toggle-switch::after {
     content: '';
     position: absolute;
-    width: 18px;
-    height: 18px;
-    background: white;
+    width: 16px;
+    height: 16px;
+    background-color: white;
     border-radius: 50%;
     top: 2px;
     left: 2px;
-    transition: transform 0.3s;
+    transition: transform 0.3s ease; /* This handles the sliding animation */
+}
+
+/* The "ON" state */
+.toggle-switch.active {
+    background-color: #4CAF50; /* Green when active */
 }
 
 .toggle-switch.active::after {
-    transform: translateX(18px);
+    transform: translateX(20px); /* Moves the knob to the right */
 }
 
 /* Toast */
@@ -844,4 +847,32 @@ tr:hover {
 
 .gap-2 {
     gap: 8px;
+}
+
+.upload-area {
+    border: 2px dashed #ccc;
+    padding: 30px;
+    text-align: center;
+    border-radius: 8px;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.upload-area:hover {
+    border-color: #8b0000;
+}
+
+.preview-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.preview-grid img {
+    width: 90px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ddd;
 }

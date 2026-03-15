@@ -1,40 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shipping & Returns - Andham</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
     <style>
         .policy-container {
             max-width: 900px;
             margin: 60px auto;
             padding: 0 30px;
         }
-        
+
         .policy-header {
             text-align: center;
             margin-bottom: 60px;
         }
-        
+
         .policy-header h1 {
             font-family: var(--font-serif);
             font-size: 42px;
             font-weight: 400;
             margin-bottom: 20px;
         }
-        
+
         .policy-header p {
             font-size: 18px;
             color: var(--color-text-light);
             font-style: italic;
         }
-        
+
         .policy-section {
             margin-bottom: 50px;
         }
-        
+
         .policy-section h2 {
             font-family: var(--font-serif);
             font-size: 24px;
@@ -43,40 +50,40 @@
             padding-bottom: 15px;
             border-bottom: 1px solid var(--color-border);
         }
-        
+
         .policy-section h3 {
             font-size: 16px;
             font-weight: 600;
             margin: 25px 0 15px;
             color: var(--color-primary);
         }
-        
+
         .policy-section p {
             font-size: 15px;
             line-height: 1.8;
             color: var(--color-text-light);
             margin-bottom: 15px;
         }
-        
+
         .policy-section ul {
             margin-left: 20px;
             margin-bottom: 20px;
         }
-        
+
         .policy-section li {
             font-size: 15px;
             line-height: 1.8;
             color: var(--color-text-light);
             margin-bottom: 10px;
         }
-        
+
         .info-box {
             background: var(--color-bg);
             padding: 30px;
             margin: 30px 0;
             border-left: 3px solid var(--color-accent);
         }
-        
+
         .info-box h4 {
             font-size: 14px;
             letter-spacing: 1px;
@@ -84,12 +91,13 @@
             margin-bottom: 10px;
             color: var(--color-primary);
         }
-        
+
         .info-box p {
             margin-bottom: 0;
         }
     </style>
 </head>
+
 <body>
 
     <!-- Announcement -->
@@ -97,6 +105,7 @@
         Welcome to our store! We are humbled to tailor your fashion needs.
     </div>
 
+    <!-- Header -->
     <!-- Header -->
     <header class="header">
         <div class="header-inner">
@@ -119,6 +128,14 @@
             <a href="index.html" class="logo">Andham</a>
 
             <div class="header-right">
+                <!-- Account Button - Added -->
+                <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
+                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+
                 <button class="icon-btn" onclick="toggleCart()">
                     <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -180,7 +197,8 @@
 
     <!-- Main Content -->
     <main class="page-content">
-        <div class="breadcrumb" style="max-width: 900px; margin: 20px auto; padding: 0 30px; font-size: 13px; color: #666;">
+        <div class="breadcrumb"
+            style="max-width: 900px; margin: 20px auto; padding: 0 30px; font-size: 13px; color: #666;">
             <a href="index.html">Home</a> <span>/</span> Shipping & Returns
         </div>
 
@@ -193,16 +211,18 @@
             <div class="policy-section">
                 <h2>Shipping Information</h2>
                 <h3>Domestic Shipping (India)</h3>
-                <p>We offer free shipping on all orders above Rs. 5,000 within India. For orders below this amount, a flat shipping fee of Rs. 150 will be charged.</p>
+                <p>We offer free shipping on all orders above Rs. 5,000 within India. For orders below this amount, a
+                    flat shipping fee of Rs. 150 will be charged.</p>
                 <ul>
                     <li>Orders are processed within 1-2 business days</li>
                     <li>Delivery time: 3-7 business days depending on location</li>
                     <li>We ship via reputed courier partners like Blue Dart, DTDC, and Delhivery</li>
                     <li>Tracking information will be provided via email once shipped</li>
                 </ul>
-                
+
                 <h3>International Shipping</h3>
-                <p>We ship worldwide! International shipping rates are calculated at checkout based on weight and destination.</p>
+                <p>We ship worldwide! International shipping rates are calculated at checkout based on weight and
+                    destination.</p>
                 <ul>
                     <li>Delivery time: 7-14 business days</li>
                     <li>Customs duties and taxes are the responsibility of the buyer</li>
@@ -211,14 +231,16 @@
 
                 <div class="info-box">
                     <h4>Order Tracking</h4>
-                    <p>Once your order ships, you will receive an email with your tracking number. You can also track your order by logging into your account.</p>
+                    <p>Once your order ships, you will receive an email with your tracking number. You can also track
+                        your order by logging into your account.</p>
                 </div>
             </div>
 
             <div class="policy-section">
                 <h2>Returns & Exchanges</h2>
                 <h3>Return Policy</h3>
-                <p>We want you to love your purchase. If you're not completely satisfied, we accept returns within 7 days of delivery.</p>
+                <p>We want you to love your purchase. If you're not completely satisfied, we accept returns within 7
+                    days of delivery.</p>
                 <ul>
                     <li>Items must be unused, unwashed, and in original condition</li>
                     <li>All tags and packaging must be intact</li>
@@ -227,25 +249,31 @@
                 </ul>
 
                 <h3>How to Return</h3>
-                <p>To initiate a return, please email us at info@andham.com with your order number and reason for return. We will provide you with a return shipping label and instructions.</p>
-                
+                <p>To initiate a return, please email us at info@andham.com with your order number and reason for
+                    return. We will provide you with a return shipping label and instructions.</p>
+
                 <h3>Refunds</h3>
-                <p>Refunds will be processed within 5-7 business days of receiving the returned item. The refund will be credited to the original payment method.</p>
+                <p>Refunds will be processed within 5-7 business days of receiving the returned item. The refund will be
+                    credited to the original payment method.</p>
 
                 <div class="info-box">
                     <h4>Damaged or Defective Items</h4>
-                    <p>If you receive a damaged or defective item, please contact us within 48 hours of delivery with photos. We will arrange a replacement or full refund at no additional cost.</p>
+                    <p>If you receive a damaged or defective item, please contact us within 48 hours of delivery with
+                        photos. We will arrange a replacement or full refund at no additional cost.</p>
                 </div>
             </div>
 
             <div class="policy-section">
                 <h2>Exchange Policy</h2>
-                <p>We offer exchanges for size or color within 7 days of delivery, subject to availability. If the requested item is not available, we will issue a store credit or refund.</p>
+                <p>We offer exchanges for size or color within 7 days of delivery, subject to availability. If the
+                    requested item is not available, we will issue a store credit or refund.</p>
             </div>
 
             <div class="policy-section">
                 <h2>Need Help?</h2>
-                <p>If you have any questions about shipping or returns, please don't hesitate to contact us at <a href="mailto:info@andham.com" style="color: var(--color-accent);">info@andham.com</a> or call us at +91 98765 43210.</p>
+                <p>If you have any questions about shipping or returns, please don't hesitate to contact us at <a
+                        href="mailto:info@andham.com" style="color: var(--color-accent);">info@andham.com</a> or call us
+                    at +91 98765 43210.</p>
             </div>
         </div>
     </main>
@@ -271,14 +299,14 @@
                     <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
-            <div class="footer-block">
+            <!-- <div class="footer-block">
                 <h3>About</h3>
                 <ul class="footer-links">
                     <li><a href="our-story.html">Our Story</a></li>
                     <li><a href="craftsmanship.html">Craftsmanship</a></li>
                     <li><a href="blog.html">Blog</a></li>
                 </ul>
-            </div>
+            </div> -->
             <div class="footer-block">
                 <h3>Newsletter</h3>
                 <p class="footer-text">Subscribe for exclusive updates and offers.</p>
@@ -299,16 +327,16 @@
             document.getElementById('navDrawer').classList.toggle('active');
             document.getElementById('navOverlay').classList.toggle('active');
         }
-        
+
         function toggleSearch() {
             document.getElementById('searchModal').classList.toggle('active');
         }
-        
+
         function toggleCart() {
             document.getElementById('cartDrawer').classList.toggle('active');
             document.getElementById('cartOverlay').classList.toggle('active');
         }
-        
+
         function showToast(message) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -317,4 +345,5 @@
         }
     </script>
 </body>
+
 </html>

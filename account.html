@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Andham</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .orders-section {
+            background: #fafafa;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .orders-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e5e5;
+        }
+        .order-card {
+            background: white;
+            border: 1px solid #e5e5e5;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .order-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .order-number {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 16px;
+            color: #333;
+        }
+        .order-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .status-shipped {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .order-items {
+            padding: 20px;
+        }
+        .order-item-row {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s;
+        }
+        .order-item-row:hover {
+            background-color: #fafafa;
+        }
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+        .order-item-image {
+            width: 80px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .order-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .order-item-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .order-item-details {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .order-item-price {
+            color: #8b0000;
+            font-weight: 600;
+        }
+        .order-footer {
+            background: #f9f9f9;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #e5e5e5;
+        }
+        .order-total {
+            font-size: 16px;
+        }
+        .order-total strong {
+            color: #8b0000;
+            font-size: 18px;
+        }
+        .view-order-btn {
+            padding: 8px 20px;
+            background: #8b0000;
+            color: white;
+            text-decoration: none;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .view-order-btn:hover {
+            background: #6b0000;
+        }
+        .no-orders {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8b0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .click-hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="12" x2="21" y2="12"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </button>
+            </div>
+            <a href="index.html" class="logo">Andham</a>
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <span id="cartBadge" class="cart-badge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link" onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link" onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link" onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link" onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search by ID, name, or category..." id="searchInput" onkeyup="handleSearch(event)">
+            </div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="quickSearch('Kanchipattu')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Plains')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+            </div>
+            <div id="search-results-list"></div>
+        </div>
+    </div>
+
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 15px 30px; border-radius: 4px; z-index: 3000; opacity: 0; transition: all 0.3s; font-family: 'Inter', sans-serif;"></div>
+
+    <main style="max-width: 900px; margin: 40px auto; padding: 0 20px; padding-top: 80px;">
+        <h1 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">My Account</h1>
+
+        <div id="userInfo" style="background: #fafafa; padding: 30px; margin-bottom: 30px;">
+            <h3>Profile Information</h3>
+            <p><strong>Name:</strong> <span id="accountName">-</span></p>
+            <p><strong>Email:</strong> <span id="accountEmail">-</span></p>
+            <p><strong>Phone:</strong> <span id="accountPhone">-</span></p>
+            <p><strong>Address:</strong> <span id="accountAddress">-</span></p>
+        </div>
+
+        <div class="orders-section">
+            <h3>My Orders</h3>
+            <div id="loadingSpinner" class="loading-spinner" style="display: block; margin: 40px auto;"></div>
+            <div id="orderList"></div>
+        </div>
+
+        <button onclick="logout()" class="btn-secondary" style="padding: 12px 30px; border: 1px solid #333; cursor: pointer;">
+            Logout
+        </button>
+    </main>
+
+    <script>
+        // Auth functions
+        if (typeof isLoggedIn !== 'function') {
+            window.isLoggedIn = function() {
+                return !!(localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user'));
+            };
+        }
+
+        if (typeof getCurrentUser !== 'function') {
+            window.getCurrentUser = function() {
+                const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+                return user ? JSON.parse(user) : null;
+            };
+        }
+
+        if (typeof logout !== 'function') {
+            window.logout = function() {
+                localStorage.removeItem('andham_user');
+                sessionStorage.removeItem('andham_user');
+                window.location.href = 'index.html';
+            };
+        }
+
+        // Check login
+        if (!isLoggedIn()) {
+            window.location.href = 'login.html?redirect=account.html';
+        }
+
+        // Load user info
+        const user = getCurrentUser();
+        if (user) {
+            document.getElementById('accountName').textContent = user.user_name || '-';
+            document.getElementById('accountEmail').textContent = user.email || '-';
+            document.getElementById('accountPhone').textContent = user.phone || '-';
+            document.getElementById('accountAddress').textContent = user.address || '-';
+        }
+
+        // Load orders with items and product images
+        async function loadOrders() {
+            if (typeof supabaseClient === 'undefined') {
+                document.getElementById('orderList').innerHTML = '<div class="no-orders">Database not connected</div>';
+                document.getElementById('loadingSpinner').style.display = 'none';
+                return;
+            }
+            
+            const user = getCurrentUser();
+            if (!user) return;
+
+            try {
+                // Fetch orders with order_items
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select(`
+                        *,
+                        order_items (
+                            item_id,
+                            product_id,
+                            product_name,
+                            quantity,
+                            unit_price,
+                            total_price
+                        )
+                    `)
+                    .eq('user_id', user.user_id)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error fetching orders:', error);
+                    document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    return;
+                }
+
+                const orderList = document.getElementById('orderList');
+                document.getElementById('loadingSpinner').style.display = 'none';
+
+                if (!orders || orders.length === 0) {
+                    orderList.innerHTML = '<div class="no-orders">No orders yet. Start shopping!</div>';
+                    return;
+                }
+
+                // Get all product IDs from all orders
+                const allProductIds = [];
+                orders.forEach(order => {
+                    if (order.order_items) {
+                        order.order_items.forEach(item => {
+                            allProductIds.push(item.product_id);
+                        });
+                    }
+                });
+
+                // Fetch product images
+                let productImages = {};
+                if (allProductIds.length > 0) {
+                    const { data: products, error: productsError } = await supabaseClient
+                        .from('products')
+                        .select('product_id, image')
+                        .in('product_id', allProductIds);
+
+                    if (!productsError && products) {
+                        products.forEach(product => {
+                            productImages[product.product_id] = product.image;
+                        });
+                    }
+                }
+
+                // Render orders
+                orderList.innerHTML = orders.map(order => {
+                    const orderDate = new Date(order.created_at).toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    const statusClass = `status-${order.status || 'pending'}`;
+                    
+                    // Build items HTML
+                    let itemsHtml = '';
+                    if (order.order_items && order.order_items.length > 0) {
+                        itemsHtml = order.order_items.map(item => {
+                            const productImage = productImages[item.product_id] || 'https://via.placeholder.com/80x100?text=No+Image';
+                            return `
+                                <a href="product.html?id=${item.product_id}" class="order-item-row">
+                                    <img src="${productImage}" alt="${item.product_name}" class="order-item-image">
+                                    <div class="order-item-info">
+                                        <div class="order-item-name">${item.product_name}</div>
+                                        <div class="order-item-details">Qty: ${item.quantity} × Rs. ${item.unit_price}</div>
+                                        <div class="order-item-price">Rs. ${item.total_price}</div>
+                                        <div class="click-hint">Click to view product →</div>
+                                    </div>
+                                </a>
+                            `;
+                        }).join('');
+                    } else {
+                        itemsHtml = '<div style="padding: 20px; color: #666;">No items in this order</div>';
+                    }
+
+                    return `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-number">${order.order_number}</div>
+                                    <div class="order-meta">
+                                        <span>${orderDate}</span>
+                                        <span>${order.order_items ? order.order_items.length : 0} items</span>
+                                    </div>
+                                </div>
+                                <span class="order-status ${statusClass}">${order.status || 'Pending'}</span>
+                            </div>
+                            <div class="order-items">
+                                ${itemsHtml}
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">
+                                    Total: <strong>Rs. ${order.total_amount}</strong>
+                                </div>
+                                <a href="order-success.html?order=${order.order_number}" class="view-order-btn">View Details</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        }
+
+        loadOrders();
+        
+        // Update cart badge
+        if (typeof updateCartBadge === 'function') {
+            updateCartBadge();
+        } else if (typeof updateCartUI === 'function') {
+            updateCartUI();
+        }
+    </script>
+</body>
+</html>

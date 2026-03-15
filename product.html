@@ -9,8 +9,11 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
     <script src="script.js"></script>
-    <script src="products-data.js"></script>
+    <script src="auth.js"></script>
+    <!-- <script src="products-data.js"></script> -->
     <style>
         /* Product Gallery Styles */
         .product-detail {
@@ -136,6 +139,7 @@
     </div>
 
     <!-- Header -->
+    <!-- Header -->
     <header class="header">
         <div class="header-inner">
             <div class="header-left">
@@ -157,6 +161,14 @@
             <a href="index.html" class="logo">Andham</a>
 
             <div class="header-right">
+                <!-- Account Button - Added -->
+                <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+
                 <button class="icon-btn" onclick="toggleCart()" style="position: relative;">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -178,17 +190,23 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" onclick="toggleNav()">Home <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" onclick="toggleNav()">Plains
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" onclick="toggleNav()">Semi
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" onclick="toggleNav()">Pure
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" onclick="toggleNav()">Semi Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" onclick="toggleNav()">Pure Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Semi
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Pure
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Semi Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Pure Gadwal
                     <span>›</span></a></div>
         </div>
     </div>
@@ -211,6 +229,8 @@
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
                 <button onclick="quickSearch('Plains')"
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+
+                <div id="search-results-list"></div>
             </div>
         </div>
     </div>
@@ -228,13 +248,13 @@
                 <div style="font-family: 'Playfair Display', serif; font-style: italic;">Your cart is empty</div>
             </div>
         </div>
-        <div class="cart-footer">
-            <div class="cart-subtotal">
-                <span>Subtotal</span>
-                <span id="cartTotal">Rs. 0.00</span>
-            </div>
-            <button class="checkout-btn">Checkout</button>
-        </div>
+<div class="cart-footer">
+    <div class="cart-subtotal">
+        <span>Subtotal</span>
+        <span id="cartTotal">Rs. 0.00</span>
+    </div>
+    <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+</div>
     </div>
 
     <!-- PRODUCT DETAIL VIEW -->
@@ -432,264 +452,243 @@
     </div>
 
     <script>
-    // Product Detail Page Logic
-    let currentQty = 1;
+        // Product Detail Page Logic
+        let currentQty = 1;
 
-    // Initialize when DOM is loaded - SINGLE EVENT LISTENER
-    document.addEventListener('DOMContentLoaded', function () {
-        // Clean product data first
-        cleanProductData();
-        
-        // Get product ID from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
+        // Clean all product URLs
+        function cleanProductData() {
+            if (typeof products === 'undefined') return;
 
-        if (productId && typeof products !== 'undefined') {
-            loadProductDetail(productId);
-        } else {
-            showToast('Product not found');
-            setTimeout(() => window.location.href = 'collection.html', 2000);
-        }
-    });
-
-    // Clean all product URLs
-    function cleanProductData() {
-        if (typeof products === 'undefined') return;
-        
-        products.forEach(p => {
-            if (p.image) p.image = p.image.trim();
-            if (p.images && Array.isArray(p.images)) {
-                p.images = p.images.map(img => img ? img.trim() : '').filter(img => img);
-            }
-        });
-    }
-
-    // Load product details
-    function loadProductDetail(productId) {
-        // Use window.currentProduct to make it globally accessible
-        window.currentProduct = products.find(p => p.id === productId);
-
-        if (!window.currentProduct) {
-            showToast('Product not found');
-            return;
-        }
-
-        const product = window.currentProduct;
-
-        // Update breadcrumb
-        document.getElementById('breadcrumbProduct').textContent = product.title;
-
-        // Update product info
-        document.getElementById('detailTitle').textContent = product.title;
-        document.getElementById('productId').textContent = product.id;
-        document.getElementById('detailPrice').textContent = 'Rs. ' + (product.price || 0).toLocaleString();
-
-        // Handle original price and discount
-        const originalPriceEl = document.getElementById('detailOriginalPrice');
-        const discountBadge = document.getElementById('discountBadge');
-
-        if (product.originalPrice && product.originalPrice > product.price) {
-            originalPriceEl.textContent = 'Rs. ' + product.originalPrice.toLocaleString();
-            originalPriceEl.style.display = 'block';
-
-            const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-            discountBadge.textContent = discount + '% OFF';
-            discountBadge.style.display = 'inline-block';
-        } else {
-            originalPriceEl.style.display = 'none';
-            discountBadge.style.display = 'none';
-        }
-
-        // Setup gallery
-        setupGallery();
-
-        // Update description
-        document.getElementById('detailDescription').innerHTML = product.description ||
-            '<em>A timeless blend of elegance and ease</em> — these sarees are minimal, refined, and perfect for effortless dressing.';
-
-        // Update bullets
-        const bulletsContainer = document.getElementById('detailBullets');
-        if (product.bullets && product.bullets.length > 0) {
-            bulletsContainer.innerHTML = product.bullets.map(b => `<li>${b}</li>`).join('');
-        } else {
-            bulletsContainer.innerHTML = `
-                <li>Crafted from premium quality fabric</li>
-                <li>Paired with a running blouse piece</li>
-                <li>Perfect for special occasions</li>
-            `;
-        }
-    }
-
-    // Setup image gallery
-    function setupGallery() {
-        const mainImage = document.getElementById('mainImage');
-        const thumbnailList = document.getElementById('thumbnailList');
-        const product = window.currentProduct;
-
-        if (!product) return;
-
-        // Collect all images
-        let allImages = [];
-
-        // Add main image
-        if (product.image) {
-            allImages.push(product.image);
-        }
-
-        // Add additional images
-        if (product.images && Array.isArray(product.images)) {
-            product.images.forEach(img => {
-                if (img && !allImages.includes(img)) {
-                    allImages.push(img);
+            products.forEach(p => {
+                if (p.image) p.image = p.image.trim();
+                if (p.images && Array.isArray(p.images)) {
+                    p.images = p.images.map(img => img ? img.trim() : '').filter(img => img);
                 }
             });
         }
 
-        // If no images, use placeholder
-        if (allImages.length === 0) {
-            allImages.push('https://via.placeholder.com/600x800?text=No+Image');
+        function renderProductDetail() {
+
+            const product = window.currentProduct;
+            if (!product) return;
+
+            document.getElementById("detailTitle").textContent = product.title;
+            document.getElementById("productId").textContent = product.id;
+
+            document.getElementById("detailPrice").textContent =
+                "Rs. " + product.price.toLocaleString();
+
+            const original = document.getElementById("detailOriginalPrice");
+            const badge = document.getElementById("discountBadge");
+
+            if (product.originalPrice && product.originalPrice > product.price) {
+
+                original.style.display = "block";
+                original.textContent = "Rs. " + product.originalPrice.toLocaleString();
+
+                const discount = Math.round(
+                    ((product.originalPrice - product.price) / product.originalPrice) * 100
+                );
+
+                badge.style.display = "inline-block";
+                badge.textContent = discount + "% OFF";
+            }
+
+            document.getElementById("mainImage").src = product.image;
         }
+        // Setup image gallery
+        function setupGallery() {
+            const mainImage = document.getElementById('mainImage');
+            const thumbnailList = document.getElementById('thumbnailList');
+            const product = window.currentProduct;
 
-        // Set main image
-        mainImage.src = allImages[0];
-        mainImage.alt = product.title;
+            if (!product) return;
 
-        // Generate thumbnails
-        thumbnailList.innerHTML = allImages.map((img, index) => `
+            // Collect all images
+            let allImages = [];
+
+            // Add main image
+            if (product.image) {
+                allImages.push(product.image);
+            }
+
+            // Add additional images
+            if (product.images && Array.isArray(product.images)) {
+                product.images.forEach(img => {
+                    if (img && !allImages.includes(img)) {
+                        allImages.push(img);
+                    }
+                });
+            }
+
+            // If no images, use placeholder
+            if (allImages.length === 0) {
+                allImages.push('https://via.placeholder.com/600x800?text=No+Image');
+            }
+
+            // Set main image
+            mainImage.src = allImages[0];
+            mainImage.alt = product.title;
+
+            // Generate thumbnails
+            thumbnailList.innerHTML = allImages.map((img, index) => `
             <div class="thumbnail-wrapper ${index === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
                 <img src="${img}" alt="${product.title} - ${index + 1}" class="thumbnail" onerror="this.style.display='none'; this.parentElement.style.display='none'">
             </div>
         `).join('');
 
-        thumbnailList.style.display = allImages.length > 1 ? 'flex' : 'none';
-    }
+            thumbnailList.style.display = allImages.length > 1 ? 'flex' : 'none';
+        }
 
-    // Switch main image
-    function switchImage(src, thumbnailEl) {
-        const mainImage = document.getElementById('mainImage');
-        mainImage.src = src;
+        // Switch main image
+        function switchImage(src, thumbnailEl) {
+            const mainImage = document.getElementById('mainImage');
+            mainImage.src = src;
 
-        document.querySelectorAll('.thumbnail-wrapper').forEach(el => {
-            el.classList.remove('active');
-        });
-        thumbnailEl.classList.add('active');
-    }
-
-    // Quantity updater
-    function updateDetailQty(change) {
-        currentQty += change;
-        if (currentQty < 1) currentQty = 1;
-        if (currentQty > 10) currentQty = 10;
-        document.getElementById('detailQty').textContent = currentQty;
-    }
-
-    // Basic cart implementation (if script.js doesn't have it)
-    function addToCartBasic(productId, quantity) {
-        let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
-        const product = products.find(p => p.id === productId);
-        
-        if (!product) return;
-
-        // Check if already in cart
-        const existingItem = cart.find(item => item.id === productId);
-        
-        if (existingItem) {
-            existingItem.quantity += quantity;
-        } else {
-            cart.push({
-                id: productId,
-                title: product.title,
-                price: product.price,
-                image: product.image,
-                quantity: quantity
+            document.querySelectorAll('.thumbnail-wrapper').forEach(el => {
+                el.classList.remove('active');
             });
+            thumbnailEl.classList.add('active');
         }
 
-        localStorage.setItem('andham_cart', JSON.stringify(cart));
-        updateCartBadgeBasic();
-    }
-
-    // Basic cart badge update
-    function updateCartBadgeBasic() {
-        const cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
-        const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        const badge = document.getElementById('cartBadge');
-        
-        if (badge) {
-            badge.textContent = totalItems;
-            badge.style.display = totalItems > 0 ? 'flex' : 'none';
+        // Quantity updater
+        function updateDetailQty(change) {
+            currentQty += change;
+            if (currentQty < 1) currentQty = 1;
+            if (currentQty > 10) currentQty = 10;
+            document.getElementById('detailQty').textContent = currentQty;
         }
-    }
 
-    // Accordion toggle
-    function toggleAccordion(header) {
-        const content = header.nextElementSibling;
-        const icon = header.querySelector('.accordion-icon');
+        // Accordion toggle
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.accordion-icon');
 
-        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-            content.style.maxHeight = '0px';
-            icon.textContent = '▼';
-        } else {
-            content.style.maxHeight = content.scrollHeight + 'px';
-            icon.textContent = '▲';
-        }
-    }
-
-    // Share product
-    function shareProduct() {
-        const product = window.currentProduct;
-        if (navigator.share) {
-            navigator.share({
-                title: product ? product.title : 'Andham Product',
-                url: window.location.href
-            });
-        } else {
-            navigator.clipboard.writeText(window.location.href);
-            showToast('Link copied to clipboard!');
-        }
-    }
-
-    // Toast notification
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.style.display = 'block';
-        setTimeout(() => {
-            toast.style.display = 'none';
-        }, 3000);
-    }
-
-    // Search functions
-    function toggleSearch() {
-        const modal = document.getElementById('searchModal');
-        modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
-        if (modal.style.display === 'flex') {
-            document.getElementById('searchInput').focus();
-        }
-    }
-
-    function handleSearch(e) {
-        if (e.key === 'Enter') {
-            const query = document.getElementById('searchInput').value;
-            if (query) {
-                window.location.href = `collection.html?search=${encodeURIComponent(query)}`;
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                icon.textContent = '▼';
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.textContent = '▲';
             }
         }
-    }
 
-    function quickSearch(term) {
-        window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
-    }
-
-    // Initialize cart badge on load
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof updateCartBadge === 'function') {
-            updateCartBadge();
-        } else {
-            updateCartBadgeBasic();
+        // Share product
+        function shareProduct() {
+            const product = window.currentProduct;
+            if (navigator.share) {
+                navigator.share({
+                    title: product ? product.title : 'Andham Product',
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard!');
+            }
         }
-    });
-</script>
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Search functions
+        function toggleSearch() {
+            const modal = document.getElementById('searchModal');
+
+            if (!modal) return;
+
+            if (modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) searchInput.focus();
+            }
+        }
+
+        async function handleSearch(e) {
+
+            const query = document.getElementById('searchInput').value.trim();
+
+            if (query.length < 2) return;
+
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .or(`title.ilike.%${query}%,category.ilike.%${query}%,product_id.ilike.%${query}%`)
+                .limit(10);
+
+            if (error) {
+                console.error("Search error:", error);
+                return;
+            }
+
+            displaySearchResults(data);
+        }
+
+        function quickSearch(term) {
+            window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
+        }
+
+        // Initialize cart badge on load
+        document.addEventListener("DOMContentLoaded", async function () {
+            const user = getCurrentUser();
+            if (user) {
+                await syncCartFromDatabase();
+            } else {
+                updateCartUI();
+            }
+        });
+        document.addEventListener("DOMContentLoaded", async function () {
+
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get("id");
+
+            if (!productId) {
+                showToast("Product not found");
+                return;
+            }
+
+            const { data, error } = await supabaseClient
+                .from("products")
+                .select("*")
+                .eq("product_id", productId)
+                .single();
+
+            if (error || !data) {
+                console.error(error);
+                showToast("Product not found");
+                return;
+            }
+
+            // store product globally
+            window.currentProduct = {
+                id: data.product_id,
+                title: data.title,
+                price: data.price,
+                originalPrice: data.original_price,
+                category: data.category,
+                image: data.image,
+                images: data.images
+                    ? data.images.split(",").map(img => img.trim())
+                    : [],
+                description: data.description,
+                bullets: data.bullets ? data.bullets.split(",") : []
+            };
+            setupGallery();
+            renderProductDetail();
+        });
+
+    </script>
 </body>
 
 </html>
