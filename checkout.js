@@ -84,11 +84,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.getElementById('address2').value = data.secondary_address || '';
             document.getElementById('city').value = data.city || '';
             document.getElementById('pincode').value = data.pincode || '';
+            document.getElementById('state').value = data.state || '';
 
-            const stateSelect = document.getElementById("state");
-            if (data.state && stateSelect) {
-                stateSelect.value = data.state;
-            }
         }
     }
     

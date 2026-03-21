@@ -314,78 +314,89 @@
             height: 16px;
             cursor: pointer;
         }
+
         /* Validation Styles */
-.form-group.error input,
-.form-group.error select,
-.form-group.error textarea {
-    border-color: #dc2626;
-    background-color: #fef2f2;
-}
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #dc2626;
+            background-color: #fef2f2;
+        }
 
-.form-group.error label {
-    color: #dc2626;
-}
+        .form-group.error label {
+            color: #dc2626;
+        }
 
-.error-shake {
-    animation: shake 0.5s ease-in-out;
-}
+        .error-shake {
+            animation: shake 0.5s ease-in-out;
+        }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-}
+        @keyframes shake {
 
-/* Enhanced Toast for Validation */
-.toast.validation-toast {
-    background: #dc2626;
-    color: white;
-    font-weight: 500;
-}
+            0%,
+            100% {
+                transform: translateX(0);
+            }
 
-.toast.validation-toast::before {
-    content: '⚠️ ';
-    margin-right: 8px;
-}
+            25% {
+                transform: translateX(-5px);
+            }
 
-/* Field focus animation */
-.form-group input:focus,
-.form-group select:focus {
-    transition: all 0.2s ease;
-}
+            75% {
+                transform: translateX(5px);
+            }
+        }
 
-.form-group.error input:focus,
-.form-group.error select:focus {
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-}
+        /* Enhanced Toast for Validation */
+        .toast.validation-toast {
+            background: #dc2626;
+            color: white;
+            font-weight: 500;
+        }
 
-/* Smooth scroll to first error */
-html {
-    scroll-behavior: smooth;
-}
-.inline-error {
-    color: #dc2626;
-    font-size: 12px;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.3s ease;
-}
+        .toast.validation-toast::before {
+            content: '⚠️ ';
+            margin-right: 8px;
+        }
 
-.inline-error::before {
-    content: '•';
-    font-size: 8px;
-}
+        /* Field focus animation */
+        .form-group input:focus,
+        .form-group select:focus {
+            transition: all 0.2s ease;
+        }
 
-.form-group.error .inline-error {
-    opacity: 1;
-    transform: translateY(0);
-}
+        .form-group.error input:focus,
+        .form-group.error select:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
 
+        /* Smooth scroll to first error */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .inline-error {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .inline-error::before {
+            content: '•';
+            font-size: 8px;
+        }
+
+        .form-group.error .inline-error {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 
@@ -458,140 +469,122 @@ html {
 
     <div id="toast" class="toast"></div>
 
-<div class="checkout-container" id="checkoutContainer">
-    <!-- Left Column: Forms -->
-    <div class="checkout-left">
-        <!-- Contact Information -->
-        <div class="checkout-section">
-            <h2>Contact Information</h2>
-            <div class="form-group" id="emailGroup">
-                <label>Email *</label>
-                <input type="email" id="email" required placeholder="your@email.com">
-                <span class="inline-error">Please enter a valid email address</span>
-            </div>
-            <div class="form-group" id="phoneGroup">
-                <label>Phone *</label>
-                <input type="tel" id="phone" required maxlength="10" placeholder="10-digit mobile number">
-                <span class="inline-error">Please enter a valid 10-digit phone number</span>
-            </div>
-        </div>
-
-        <!-- Shipping Address -->
-        <div class="checkout-section">
-            <h2>Shipping Address</h2>
-
-            <div class="form-group" id="fullNameGroup">
-                <label>Full Name *</label>
-                <input type="text" id="fullName" required placeholder="Enter your full name">
-                <span class="inline-error">Please enter your full name (min 3 characters)</span>
+    <div class="checkout-container" id="checkoutContainer">
+        <!-- Left Column: Forms -->
+        <div class="checkout-left">
+            <!-- Contact Information -->
+            <div class="checkout-section">
+                <h2>Contact Information</h2>
+                <div class="form-group" id="emailGroup">
+                    <label>Email *</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                    <span class="inline-error">Please enter a valid email address</span>
+                </div>
+                <div class="form-group" id="phoneGroup">
+                    <label>Phone *</label>
+                    <input type="tel" id="phone" required maxlength="10" placeholder="10-digit mobile number">
+                    <span class="inline-error">Please enter a valid 10-digit phone number</span>
+                </div>
             </div>
 
-            <div id="primaryAddressFields">
+            <!-- Shipping Address -->
+            <div class="checkout-section">
+                <h2>Shipping Address</h2>
 
-                <div class="form-group" id="address1Group">
-                    <label>Address *</label>
-                    <input type="text" id="address1" placeholder="Street address, P.O. box, company name" required>
-                    <span class="inline-error">Please enter your street address</span>
+                <div class="form-group" id="fullNameGroup">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" required placeholder="Enter your full name">
+                    <span class="inline-error">Please enter your full name (min 3 characters)</span>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group" id="cityGroup">
-                        <label>City *</label>
-                        <input type="text" id="city" required placeholder="City name">
-                        <span class="inline-error">Please enter your city</span>
+                <div id="primaryAddressFields">
+
+                    <div class="form-group" id="address1Group">
+                        <label>Address *</label>
+                        <input type="text" id="address1" placeholder="Street address, P.O. box, company name" required>
+                        <span class="inline-error">Please enter your street address</span>
                     </div>
 
-                    <div class="form-group" id="stateGroup">
-                        <label>State *</label>
-                        <select id="state" required>
-                            <option value="">Select State</option>
-                            <option value="Andhra Pradesh">Andhra Pradesh</option>
-                            <option value="Telangana">Telangana</option>
-                            <option value="Tamil Nadu">Tamil Nadu</option>
-                            <option value="Karnataka">Karnataka</option>
-                            <option value="Kerala">Kerala</option>
-                            <option value="Maharashtra">Maharashtra</option>
-                            <option value="Gujarat">Gujarat</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Uttar Pradesh">Uttar Pradesh</option>
-                            <option value="West Bengal">West Bengal</option>
-                            <option value="Odisha">Odisha</option>
-                            <option value="Assam">Assam</option>
-                        </select>
-                        <span class="inline-error">Please select your state</span>
+                    <div class="form-row">
+                        <div class="form-group" id="cityGroup">
+                            <label>City *</label>
+                            <input type="text" id="city" required placeholder="City name">
+                            <span class="inline-error">Please enter your city</span>
+                        </div>
+                        <div class="form-group" id="stateGroup">
+                            <label>State *</label>
+                            <input type="text" id="state" placeholder="Enter your state" required>
+                            <span class="inline-error">Please enter your state</span>
+                        </div>
                     </div>
+
+                    <div class="form-row">
+                        <div class="form-group" id="pincodeGroup">
+                            <label>PIN Code *</label>
+                            <input type="text" id="pincode" maxlength="6" required placeholder="6-digit PIN">
+                            <span class="inline-error">Please enter a valid 6-digit PIN code</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Country</label>
+                            <input type="text" value="India" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group" id="pincodeGroup">
-                        <label>PIN Code *</label>
-                        <input type="text" id="pincode" maxlength="6" required placeholder="6-digit PIN">
-                        <span class="inline-error">Please enter a valid 6-digit PIN code</span>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Country</label>
-                        <input type="text" value="India" readonly style="background: #f5f5f5; cursor: not-allowed;">
-                    </div>
+                <div class="form-group address-toggle">
+                    <label class="address-checkbox">
+                        <input type="checkbox" id="useDifferentAddress" onchange="toggleAddressForm()">
+                        <span>Deliver to a different address</span>
+                    </label>
                 </div>
 
-            </div>
+                <div class="form-group" id="secondaryAddressGroup" style="display:none;">
+                    <label>Address</label>
+                    <input type="text" id="address2" placeholder="Apartment, suite, unit, building, floor, etc.">
+                </div>
 
-            <div class="form-group address-toggle">
-                <label class="address-checkbox">
-                    <input type="checkbox" id="useDifferentAddress" onchange="toggleAddressForm()">
-                    <span>Deliver to a different address</span>
-                </label>
-            </div>
-
-            <div class="form-group" id="secondaryAddressGroup" style="display:none;">
-                <label>Address</label>
-                <input type="text" id="address2" placeholder="Apartment, suite, unit, building, floor, etc.">
             </div>
 
         </div>
 
-    </div>
+        <!-- Right Column: Order Summary -->
+        <div class="checkout-right">
+            <div class="order-summary">
+                <h2>Order Summary</h2>
+                <div id="orderItems">
+                    <!-- Items will be loaded here -->
+                </div>
 
-    <!-- Right Column: Order Summary -->
-    <div class="checkout-right">
-        <div class="order-summary">
-            <h2>Order Summary</h2>
-            <div id="orderItems">
-                <!-- Items will be loaded here -->
-            </div>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="subtotal">Rs. 0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span id="shipping">Free</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="total">Rs. 0.00</span>
+                </div>
 
-            <div class="summary-row">
-                <span>Subtotal</span>
-                <span id="subtotal">Rs. 0.00</span>
-            </div>
-            <div class="summary-row">
-                <span>Shipping</span>
-                <span id="shipping">Free</span>
-            </div>
-            <div class="summary-row total">
-                <span>Total</span>
-                <span id="total">Rs. 0.00</span>
-            </div>
+                <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
+                    <span class="loading-spinner" id="loadingSpinner"></span>
+                    <span id="btnText">Place Order</span>
+                </button>
 
-            <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
-                <span class="loading-spinner" id="loadingSpinner"></span>
-                <span id="btnText">Place Order</span>
-            </button>
-
-            <div class="secure-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                Secure Checkout - SSL Encrypted
+                <div class="secure-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                    Secure Checkout - SSL Encrypted
+                </div>
             </div>
         </div>
     </div>
-</div>
     <!-- Empty Cart State -->
     <div class="empty-cart" id="emptyCart" style="display: none;">
         <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
@@ -599,7 +592,7 @@ html {
         <p style="color: #666; margin-bottom: 20px;">Add some beautiful sarees to get started</p>
         <a href="collection.html" style="color: #8b0000; text-decoration: underline;">Continue Shopping</a>
     </div>
-        <!-- Footer -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
             <div class="footer-block">

@@ -530,6 +530,7 @@
         function quickSearch(term) {
             window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
         }
+
         async function buyNowProduct() {
 
             const product = window.currentProduct;
@@ -545,6 +546,25 @@
             const qty = parseInt(document.getElementById("detailQty").textContent) || 1;
 
             try {
+
+                // 🔵 Check latest stock from database
+                const { data, error: stockError } = await supabaseClient
+                    .from("products")
+                    .select("stock")
+                    .eq("product_id", product.id)
+                    .single();
+
+                if (stockError) {
+                    console.error(stockError);
+                    alert("Unable to verify product availability");
+                    return;
+                }
+
+                // 🔴 Stop if out of stock
+                if (!data.stock) {
+                    alert("Sorry! This item just went out of stock");
+                    return;
+                }
 
                 // clear existing cart so only this item remains
                 await supabaseClient
@@ -563,7 +583,7 @@
 
                 if (error) {
                     console.error(error);
-                    showToast("Could not add product to cart");
+                    alert("Could not add product to cart");
                     return;
                 }
 
@@ -572,11 +592,12 @@
             } catch (err) {
 
                 console.error(err);
-                showToast("Something went wrong");
+                alert("Something went wrong");
 
             }
 
-        }// Initialize cart badge on load
+        }
+        // Initialize cart badge on load
         document.addEventListener("DOMContentLoaded", async function () {
             const user = getCurrentUser();
             if (user) {

@@ -229,30 +229,75 @@ function renderProducts(list) {
     }
 
     grid.innerHTML = list.map(p => {
+
         const isOutOfStock = p.stock === 'out';
-        const opacity = isOutOfStock ? 'opacity: 0.6; pointer-events: none;' : '';
-        const badge = isOutOfStock ? '<span class="out-of-stock-badge">Out of Stock</span>' : '';
+        const opacity = isOutOfStock ? 'opacity:0.6; pointer-events:none;' : '';
 
         return `
         <div class="product-card" style="${opacity}">
-            ${isOutOfStock ? badge : `<a href="product.html?id=${encodeURIComponent(p.id)}" class="product-link">`}
-                <div class="product-image-wrapper">
 
-                    ${isOutOfStock ? '<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10;"><span style="color: white; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; font-weight: 600;">Out of Stock</span></div>' : ''}
-                    <img src="${p.image}" class="product-img" alt="${p.title}">
-                </div>
-                <div class="product-info">
-                    <div style="font-size: 11px; color: #999; font-family: monospace;">${p.id}</div>
-                    <h3 class="product-title">${p.title}</h3>
-                    <div class="product-price">
-                        ${p.originalPrice ? `<span class="price-original">Rs. ${p.originalPrice.toLocaleString()}.00</span>` : ''}
-                        <span class="price-current" style="color: ${isOutOfStock ? '#999' : '#8b0000'};">Rs. ${p.price.toLocaleString()}.00</span>
+            ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" class="product-link">`}
+
+                <div class="product-image-wrapper">
+                    <span style="
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#8b0000;
+    color:#fff;
+    padding:4px 12px;
+    font-size:10px;
+    text-transform:uppercase;
+    z-index:2;
+">
+    ${p.category}
+</span>
+                    ${isOutOfStock ? `
+                    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
+                        <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
+                            Out of Stock
+                        </span>
                     </div>
+                    ` : ''}
+
+                    <img src="${p.image}" class="product-img" alt="${p.title}">
+
                 </div>
-            ${isOutOfStock ? '' : '</a>'}
+
+            ${isOutOfStock ? '' : `</a>`}
+
+            <div class="product-info">
+
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+
+                    <div style="font-size:11px; color:#999; font-family:monospace;">
+                        ${p.id}
+                    </div>
+
+                    ${isOutOfStock
+                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
+                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
+            }
+
+                </div>
+
+                <h3 class="product-title">${p.title}</h3>
+
+                <div class="product-price">
+                    ${p.originalPrice ? `<span class="price-original">Rs. ${p.originalPrice.toLocaleString()}.00</span>` : ''}
+                    <span class="price-current" style="color:${isOutOfStock ? '#999' : '#8b0000'};">
+                        Rs. ${p.price.toLocaleString()}.00
+                    </span>
+                </div>
+
+            </div>
+
         </div>
-    `}).join('');
+        `;
+
+    }).join('');
 }
+//Render New Arrivals
 function renderNewArrivals() {
 
     const grid = document.getElementById('newArrivalsGrid');
@@ -275,22 +320,36 @@ function renderNewArrivals() {
     grid.innerHTML = newProducts.map(p => {
 
         const isOutOfStock = p.stock === "out";
+        const opacity = isOutOfStock ? 'opacity:0.6; pointer-events:none;' : '';
 
         return `
-        <div class="product-card" style="background:white;">
+        <div class="product-card" style="background:white; ${opacity}">
+        
 
-            <a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">
+            ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">`}
 
                 <div style="position:relative; overflow:hidden;">
 
-                    <span style="position:absolute; top:10px; left:10px; background:#8b0000; color:#fff; padding:4px 12px; font-size:10px; text-transform:uppercase;">
-                        NEW
-                    </span>
+<span style="
+    position:absolute;
+    top:10px;
+    left:10px;
+    background:#8b0000;
+    color:#fff;
+    padding:4px 12px;
+    font-size:10px;
+    text-transform:uppercase;
+    z-index:2;
+">
+    ${p.category}
+</span>
 
                     ${isOutOfStock ? `
-                    <span style="position:absolute; bottom:10px; right:10px; background:#444; color:#fff; padding:4px 12px; font-size:10px;">
-                        Out of Stock
-                    </span>
+                    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
+                        <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
+                            Out of Stock
+                        </span>
+                    </div>
                     ` : ''}
 
                     <img src="${p.image}" style="width:100%; aspect-ratio:3/4; object-fit:cover;" alt="${p.title}">
@@ -298,7 +357,19 @@ function renderNewArrivals() {
                 </div>
 
                 <div style="padding:20px;">
-                    <div style="font-size:11px;color:#999;font-family:monospace;">${p.id}</div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+
+                        <div style="font-size:11px;color:#999;font-family:monospace;">
+                            ${p.id}
+                        </div>
+
+                        ${isOutOfStock
+                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
+                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
+            }
+
+                    </div>
 
                     <h3 style="font-family:var(--font-serif);font-size:16px;margin:10px 0;">
                         ${p.title}
@@ -310,13 +381,14 @@ function renderNewArrivals() {
                             Rs. ${p.originalPrice.toLocaleString()}.00
                         </span>` : ''}
 
-                        <span style="color:#8b0000;font-weight:600;">
+                        <span style="color:${isOutOfStock ? '#999' : '#8b0000'};font-weight:600;">
                             Rs. ${p.price.toLocaleString()}.00
                         </span>
                     </div>
+
                 </div>
 
-            </a>
+            ${isOutOfStock ? '' : '</a>'}
 
         </div>
         `;
@@ -345,49 +417,79 @@ function updateDetailQty(change) {
     detailQuantity = newQty;
 }
 
-function addToCartFromDetail() {
+async function addToCartFromDetail() {
+
+    console.log("Add to cart clicked");
+
     const qtyEl = document.getElementById('detailQty');
-    const quantity = parseInt(qtyEl.textContent) || 1;
+    const quantity = parseInt(qtyEl?.textContent) || 1;
 
     const product = window.currentProduct;
 
     if (!product) {
-        showToast('Error: Product not loaded');
+        showToast("Product not loaded");
         return;
     }
 
-    // Use product_id consistently
     const productId = product.id || product.product_id;
 
-    const existing = cart.find(item => (item.id === productId || item.product_id === productId));
+    console.log("Checking stock for:", productId);
+
+    // Check latest stock
+    const { data, error } = await supabaseClient
+        .from('products')
+        .select('stock')
+        .eq('product_id', productId)
+        .single();
+
+    console.log("Stock response:", data, error);
+
+    if (error) {
+        showToast("Stock check failed");
+        return;
+    }
+    if (!data.stock) {
+        alert("Sorry! This item just went out of stock");
+        return;
+    }
+
+    // Load cart
+    let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+
+    const existing = cart.find(item =>
+        item.id === productId || item.product_id === productId
+    );
 
     if (existing) {
         existing.quantity += quantity;
     } else {
-        // Store complete product data for checkout
+
         cart.push({
             product_id: productId,
-            id: productId, // for compatibility
+            id: productId,
             title: product.title,
             price: product.price,
             image: product.image,
             category: product.category,
             quantity: quantity
         });
+
     }
 
     localStorage.setItem('andham_cart', JSON.stringify(cart));
+
     updateCartUI();
+
     showToast(`Added ${quantity} item(s) to cart`);
+
     toggleCart();
 
-    // Save to database if logged in
     const user = getCurrentUser();
+
     if (user) {
         saveCartToDatabase(productId, existing ? existing.quantity : quantity);
     }
 
-    // Reset quantity
     if (qtyEl) qtyEl.textContent = '1';
 }
 
@@ -662,9 +764,12 @@ function renderHomeProducts() {
     grid.innerHTML = featured.map(p => {
 
         const isOutOfStock = p.stock === "out";
+        const opacity = isOutOfStock ? "opacity:0.6; pointer-events:none;" : "";
 
         return `
-        <div class="product-card" style="background:white; transition:transform 0.3s;">
+        <div class="product-card" style="background:white; transition:transform 0.3s; ${opacity}">
+
+            ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">`}
 
             <div style="position:relative; overflow:hidden;">
 
@@ -673,35 +778,27 @@ function renderHomeProducts() {
                     ${p.category}
                 </span>
 
-                <!-- Out of Stock Badge -->
+                <!-- Out of Stock Overlay -->
                 ${isOutOfStock ? `
-                    <span style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.75); color:#fff; padding:5px 12px; font-size:10px; letter-spacing:1px; text-transform:uppercase; z-index:2;">
-                    Out of Stock
+                <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
+                    <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
+                        Out of Stock
                     </span>
+                </div>
                 ` : ''}
 
-                ${isOutOfStock ? `
-                    <img src="${p.image}"
-                         style="width:100%; aspect-ratio:3/4; object-fit:cover;"
-                         alt="${p.title}">
-                `
-                :
-                `
-                <a href="product.html?id=${encodeURIComponent(p.id)}">
-                    <img src="${p.image}"
-                         style="width:100%; aspect-ratio:3/4; object-fit:cover; transition:transform 0.6s;"
-                         alt="${p.title}"
-                         onmouseover="this.style.transform='scale(1.05)'"
-                         onmouseout="this.style.transform='scale(1)'">
-                </a>
-                `
-            }
+                <img src="${p.image}"
+                     style="width:100%; aspect-ratio:3/4; object-fit:cover; transition:transform 0.6s;"
+                     alt="${p.title}"
+                     onmouseover="this.style.transform='scale(1.05)'"
+                     onmouseout="this.style.transform='scale(1)'">
 
             </div>
 
+            ${isOutOfStock ? '' : `</a>`}
+
             <div style="padding:20px;">
 
-                <!-- ID + Add to Cart -->
                 <div style="display:flex; justify-content:space-between; align-items:center;">
 
                     <div style="font-size:11px; color:#999; font-family:monospace;">
@@ -709,8 +806,8 @@ function renderHomeProducts() {
                     </div>
 
                     ${isOutOfStock
-                ? `<button style="background:#ccc; border:none; padding:6px 12px; font-size:11px; cursor:not-allowed;">Add to Cart</button>`
-                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000; color:white; border:none; padding:6px 12px; font-size:11px; cursor:pointer;">Add to Cart</button>`
+                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
+                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
             }
 
                 </div>
@@ -722,9 +819,9 @@ function renderHomeProducts() {
                 <div>
 
                     ${p.originalPrice ? `
-                        <span style="text-decoration:line-through; color:#999; margin-right:10px;">
-                            Rs. ${p.originalPrice.toLocaleString()}.00
-                        </span>
+                    <span style="text-decoration:line-through; color:#999; margin-right:10px;">
+                        Rs. ${p.originalPrice.toLocaleString()}.00
+                    </span>
                     ` : ''}
 
                     <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
@@ -1240,14 +1337,15 @@ document.addEventListener('DOMContentLoaded', updateHeader);
 // ============================================
 
 function handleAccountClick() {
-    const user = getCurrentUser();
+
+    const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+
     if (user) {
-        window.location.href = 'account.html';
+        window.location.href = "account.html";
     } else {
-        // Save current page for redirect after login
-        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-        window.location.href = `login.html?redirect=${encodeURIComponent(currentPage)}`;
+        window.location.href = "login.html?redirect=account.html";
     }
+
 }
 
 function updateHeaderAccount() {

@@ -305,7 +305,21 @@
     </footer>
 
     <script>
-        requireLogin();
+        async function loadAccount() {
+
+            const user = await getCurrentUser();
+
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            document.getElementById("accountEmail").innerText = user.email;
+            document.getElementById("accountName").innerText = user.user_metadata.full_name;
+
+        }
+
+        loadAccount();
         // Auth functions
         if (typeof isLoggedIn !== 'function') {
             window.isLoggedIn = function () {
