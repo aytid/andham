@@ -9,6 +9,7 @@ async function addProduct(name, price) {
         .insert([{ name: name, price: price }]);
 }
 async function loginWithGoogle() {
+
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
         provider: "google"
     });
@@ -16,6 +17,7 @@ async function loginWithGoogle() {
     if (error) {
         console.error("Google login error:", error);
     }
+
 }
 async function checkUser() {
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -30,36 +32,56 @@ async function checkUser() {
 checkUser();
 
 async function getUserProfile() {
-
     const { data: { user } } = await supabaseClient.auth.getUser();
-
     if (!user) return;
-
     const { data, error } = await supabaseClient
         .from("users")
         .select("*")
         .eq("user_id", user.id)
         .single();
-
     console.log("User profile:", data);
 }
 
 async function checkAuth() {
-
     const { data: { user } } = await supabaseClient.auth.getUser();
-
     if (user && window.location.pathname.includes("login")) {
         window.location.href = "/";
     }
 
 }
+async function getCurrentUser() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    return user;
+}
 
 async function requireLogin() {
-
     const { data: { user } } = await supabaseClient.auth.getUser();
-
     if (!user) {
         window.location.href = "/login.html";
     }
 
 }
+async function handleGoogleSession() {
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const userData = {
+        user_id: user.id,
+        user_name: user.user_metadata.full_name,
+        email: user.email,
+        phone: null,
+        address: null,
+        city: null,
+        state: null,
+        pincode: null,
+        country: "India",
+        login_at: new Date().toISOString()
+    };
+
+    localStorage.setItem("andham_user", JSON.stringify(userData));
+
+}
+
+handleGoogleSession();
