@@ -333,17 +333,23 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" onclick="toggleNav()">Home <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" onclick="toggleNav()">Plains
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" onclick="toggleNav()">Semi
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" onclick="toggleNav()">Pure
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" onclick="toggleNav()">Semi Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" onclick="toggleNav()">Pure Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Semi
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Pure
+                    Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Semi Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Pure Gadwal
                     <span>›</span></a></div>
         </div>
     </div>
@@ -738,7 +744,7 @@
                 completeOrderWithAutoDetect(orderData);
             }, 1500);
         }
-        
+
         // ==================== CREATE ORDER ====================
 
         async function createOrder(userId, orderNumber, total, paymentId, paymentMethod, paymentStatus) {

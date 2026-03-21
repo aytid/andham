@@ -125,6 +125,7 @@ async function initProductPage() {
         .from("products")
         .select("*")
         .eq("product_id", productId)
+        .eq("available_for_customer", true)
         .order('created_at', { ascending: false })
         .single();
 
@@ -698,11 +699,6 @@ function loadProductDetail() {
             .join("");
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    loadProductDetail();
-});
-
 
 // Clean all product URLs on load
 function cleanProductData() {

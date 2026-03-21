@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmed - Andham</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <style>
         .success-container {
@@ -13,6 +15,7 @@
             padding: 40px;
             text-align: center;
         }
+
         .success-icon {
             width: 80px;
             height: 80px;
@@ -25,10 +28,11 @@
             color: white;
             font-size: 40px;
         }
+
         .pending-icon {
             background: #ff9800;
         }
-        
+
         /* Order Summary Styles */
         .order-summary {
             background: #fafafa;
@@ -36,16 +40,19 @@
             margin: 30px 0;
             text-align: left;
         }
+
         .order-summary-header {
             background: #f0f0f0;
             padding: 15px 20px;
             border-bottom: 1px solid #e5e5e5;
         }
+
         .order-summary-header h3 {
             margin: 0;
             font-family: 'Playfair Display', serif;
             font-size: 18px;
         }
+
         .order-item {
             display: flex;
             padding: 20px;
@@ -56,12 +63,15 @@
             text-decoration: none;
             color: inherit;
         }
+
         .order-item:hover {
             background-color: #f5f5f5;
         }
+
         .order-item:last-child {
             border-bottom: none;
         }
+
         .order-item-image {
             width: 100px;
             height: 130px;
@@ -69,51 +79,59 @@
             border-radius: 4px;
             flex-shrink: 0;
         }
+
         .order-item-details {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
+
         .order-item-name {
             font-weight: 500;
             margin-bottom: 8px;
             color: #333;
             font-size: 16px;
         }
+
         .order-item-meta {
             font-size: 13px;
             color: #666;
             margin-bottom: 5px;
         }
+
         .order-item-price {
             font-weight: 600;
             color: #8b0000;
             font-size: 15px;
             margin-top: 5px;
         }
+
         .order-item-qty {
             font-size: 13px;
             color: #666;
         }
+
         .click-hint {
             font-size: 11px;
             color: #999;
             margin-top: 8px;
             font-style: italic;
         }
-        
+
         .order-totals {
             background: #f5f5f5;
             padding: 20px;
             border-top: 2px solid #ddd;
         }
+
         .total-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
             font-size: 14px;
         }
+
         .total-row.grand-total {
             font-size: 18px;
             font-weight: 600;
@@ -122,7 +140,7 @@
             padding-top: 15px;
             color: #8b0000;
         }
-        
+
         .shipping-info {
             background: #fff;
             padding: 20px;
@@ -130,16 +148,18 @@
             border: 1px solid #e5e5e5;
             text-align: left;
         }
+
         .shipping-info h4 {
             margin: 0 0 10px 0;
             font-family: 'Playfair Display', serif;
         }
+
         .shipping-info p {
             margin: 5px 0;
             color: #666;
             font-size: 14px;
         }
-        
+
         .payment-details {
             background: #f5f5f5;
             padding: 20px;
@@ -147,15 +167,18 @@
             text-align: left;
             border-radius: 4px;
         }
+
         .detail-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
             border-bottom: 1px solid #ddd;
         }
+
         .detail-row:last-child {
             border-bottom: none;
         }
+
         .status-badge {
             display: inline-block;
             padding: 5px 15px;
@@ -164,14 +187,17 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
+
         .status-paid {
             background: #4CAF50;
             color: white;
         }
+
         .status-pending {
             background: #ff9800;
             color: white;
         }
+
         .whatsapp-btn {
             display: inline-flex;
             align-items: center;
@@ -183,6 +209,7 @@
             border-radius: 4px;
             margin-top: 20px;
         }
+
         .loading-spinner {
             display: inline-block;
             width: 40px;
@@ -192,10 +219,17 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
+
         .error-message {
             color: #8b0000;
             padding: 20px;
@@ -205,6 +239,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Announcement -->
@@ -240,7 +275,7 @@
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                 </button>
-                
+
                 <button class="icon-btn" onclick="toggleCart()">
                     <svg viewBox="0 0 24 24">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
@@ -262,13 +297,20 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link" onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link" onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link" onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link" onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
+                    onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
         </div>
     </div>
 
@@ -277,13 +319,19 @@
         <button class="search-close" onclick="toggleSearch()">×</button>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" class="search-input" placeholder="Search products..." id="searchInput" onkeyup="handleSearch(event)">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
             </div>
-            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="quickSearch('Kanchipattu')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
-                <button onclick="quickSearch('Gadwal')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Plains')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Plains')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
             </div>
             <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
@@ -315,9 +363,11 @@
         <div class="success-icon" id="statusIcon">✓</div>
         <h1 style="font-family: 'Playfair Display', serif; margin-bottom: 15px;" id="statusTitle">Thank You!</h1>
         <p style="color: #666; margin-bottom: 30px;" id="statusMessage">Your order has been placed successfully.</p>
-        
+
         <div style="background: #fafafa; padding: 30px; margin-bottom: 30px;">
-            <div style="font-size: 12px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">ORDER NUMBER</div>
+            <div
+                style="font-size: 12px; color: #666; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">
+                ORDER NUMBER</div>
             <div style="font-size: 24px; font-weight: 600; font-family: monospace;" id="orderNumber">-</div>
         </div>
 
@@ -370,7 +420,8 @@
             </div>
         </div>
 
-        <div id="pendingMessage" style="display: none; background: #fff3cd; padding: 20px; margin: 20px 0; color: #856404; text-align: left;">
+        <div id="pendingMessage"
+            style="display: none; background: #fff3cd; padding: 20px; margin: 20px 0; color: #856404; text-align: left;">
             <strong>⏳ Payment Verification Pending</strong><br>
             We're verifying your payment. You'll receive a confirmation email once verified.
         </div>
@@ -382,13 +433,15 @@
 
         <a href="#" id="whatsappBtn" class="whatsapp-btn" style="display: none;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                <path
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
             </svg>
             Send Payment Screenshot
         </a>
 
         <div style="margin-top: 30px;">
-            <a href="index.html" style="display: inline-block; padding: 15px 40px; background: #8b0000; color: white; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; font-size: 14px;">
+            <a href="index.html"
+                style="display: inline-block; padding: 15px 40px; background: #8b0000; color: white; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; font-size: 14px;">
                 Continue Shopping
             </a>
         </div>
@@ -397,7 +450,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="script.js"></script>
-    
+
     <script>
         const params = new URLSearchParams(window.location.search);
         const orderNumber = params.get('order');
@@ -488,7 +541,7 @@
                 items.forEach(item => {
                     const itemTotal = item.total_price || (item.unit_price * item.quantity);
                     const productImage = item.product_image || 'https://via.placeholder.com/100x130?text=No+Image';
-                    
+
                     itemsHtml += `
                         <a href="product.html?id=${item.product_id}" class="order-item">
                             <img src="${productImage}" alt="${item.product_title}" class="order-item-image">
@@ -523,7 +576,7 @@
             // Display shipping info if available
             if (order.shipping_address) {
                 let shipping = order.shipping_address;
-                
+
                 if (typeof shipping === 'string') {
                     try {
                         shipping = JSON.parse(shipping);
@@ -531,12 +584,12 @@
                         shipping = null;
                     }
                 }
-                
+
                 if (shipping) {
                     document.getElementById('shippingInfo').style.display = 'block';
                     document.getElementById('shippingName').textContent = shipping.name || '';
                     document.getElementById('shippingAddress').textContent = shipping.address || '';
-                    document.getElementById('shippingCity').textContent = 
+                    document.getElementById('shippingCity').textContent =
                         `${shipping.city || ''}, ${shipping.state || ''} - ${shipping.pincode || ''}`;
                     document.getElementById('shippingPhone').textContent = `Phone: ${shipping.phone || ''}`;
                 }
@@ -548,7 +601,7 @@
             document.getElementById('paymentDetails').style.display = 'block';
             document.getElementById('paymentMethod').textContent = method.replace('_', ' ');
             document.getElementById('transactionId').textContent = paymentId || 'Pending';
-            
+
             const statusBadge = document.getElementById('paymentStatus');
             if (status === 'paid') {
                 statusBadge.textContent = 'Paid';
@@ -561,7 +614,7 @@
                 document.getElementById('statusIcon').textContent = '⏳';
                 document.getElementById('statusTitle').textContent = 'Order Received';
                 document.getElementById('statusMessage').textContent = 'Payment verification in progress.';
-                
+
                 const whatsappBtn = document.getElementById('whatsappBtn');
                 whatsappBtn.style.display = 'inline-flex';
                 whatsappBtn.href = `https://wa.me/91YOUR_PHONE_NUMBER?text=Hi, I just placed order ${orderNumber}. Payment ID: ${paymentId}. Here's my payment screenshot.`;
@@ -569,4 +622,5 @@
         }
     </script>
 </body>
+
 </html>
