@@ -1,5 +1,4 @@
 // Global variables
-requireLogin();
 let checkoutCart = [];
 let selectedPaymentMethod = '';
 let currentOrderNumber = '';

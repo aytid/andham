@@ -182,7 +182,7 @@
             <form id="signinForm" class="auth-form active" onsubmit="handleSignIn(event)">
                 <h1 class="auth-title">Welcome Back</h1>
                 <p class="auth-subtitle">Sign in to access your orders and saved items</p>
-                    <button type="button" class="google-btn" onclick="loginWithGoogle()">Continue with Google</button>
+                <button type="button" class="google-btn" onclick="loginWithGoogle()">Continue with Google</button>
                 <div class="form-group">
                     <label for="signinEmail">Email or Phone *</label>
                     <input type="text" id="signinEmail" required placeholder="your@email.com or phone number">
@@ -503,18 +503,12 @@
             }
         }
 
-        // Check for existing session on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
-
-            if (user) {
-                const redirect = new URLSearchParams(window.location.search).get('redirect');
-                window.location.href = redirect || 'index.html';
-            }
-        });
     </script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <script>
+        checkAuth();
+    </script>
 </body>
 
 </html>

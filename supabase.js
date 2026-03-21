@@ -43,17 +43,16 @@ async function getUserProfile() {
 
     console.log("User profile:", data);
 }
+
 async function checkAuth() {
 
     const { data: { user } } = await supabaseClient.auth.getUser();
 
-    if (user) {
+    if (user && window.location.pathname.includes("login")) {
         window.location.href = "/";
     }
 
 }
-
-checkAuth();
 
 async function requireLogin() {
 
