@@ -11,7 +11,7 @@
     <style>
         .success-container {
             max-width: 800px;
-            margin: 100px auto;
+            margin: 0px auto;
             padding: 40px;
             text-align: center;
         }
@@ -426,10 +426,7 @@
             We're verifying your payment. You'll receive a confirmation email once verified.
         </div>
 
-        <p style="font-size: 14px; color: #666; margin: 30px 0;">
-            We've sent a confirmation to your email.<br>
-            Your items will be delivered within 5-7 business days.
-        </p>
+        <p style="font-size: 14px; color: #666; margin: 30px 0;">Your items will be delivered within 5-7 business days.</p>
 
         <a href="#" id="whatsappBtn" class="whatsapp-btn" style="display: none;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -446,6 +443,48 @@
             </a>
         </div>
     </div>
+        <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <!-- <h3>About</h3>
+                <ul class="footer-links">
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul> -->
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>

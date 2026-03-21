@@ -55,13 +55,28 @@ function logout() {
 
 // Show section
 function showSection(sectionId, e) {
+    // Save current section to localStorage
+    localStorage.setItem('andham_admin_current_section', sectionId);
+
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(sectionId).classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    if (e) {
-        e.target.closest('.nav-item').classList.add('active');
+
+    // Handle nav item highlighting
+    if (e && e.target) {
+        const navItem = e.target.closest('.nav-item');
+        if (navItem) navItem.classList.add('active');
+    } else {
+        // If no event (on page load), find nav item by onclick attribute
+        document.querySelectorAll('.nav-item').forEach(n => {
+            const onclickAttr = n.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.includes(`'${sectionId}'`)) {
+                n.classList.add('active');
+            }
+        });
     }
+
     const titles = {
         dashboard: 'Dashboard',
         products: 'All Products',
@@ -69,7 +84,8 @@ function showSection(sectionId, e) {
         inventory: 'Inventory',
         priceManager: 'Price Manager',
         analytics: 'Analytics',
-        settings: 'Settings'
+        customers: 'Customers',
+        orders: 'Orders',
     };
     document.getElementById('pageTitle').textContent = titles[sectionId] || sectionId;
 
@@ -81,7 +97,9 @@ function showSection(sectionId, e) {
     if (sectionId === 'products') renderProductsTable();
     if (sectionId === 'inventory') renderInventory();
     if (sectionId === 'priceManager') renderPriceManager();
-    if (sectionId === 'analytics') loadAnalytics();
+    if (sectionId === 'analytics') loadAllAnalytics();
+    if (sectionId === 'customers') loadCustomersFromSupabase();
+    if (sectionId === 'orders') loadOrders();
 }
 
 // Dashboard
@@ -131,13 +149,14 @@ function renderProductsTable(searchTerm = '') {
     } else {
         tbody.innerHTML = filtered.map(p => `
             <tr>
-                <td><img src="${p.image}" class="product-img" onerror="this.src='https://via.placeholder.com/50'"></td>
+                <td><img src="${p.image}" class="product-img" onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'"></td>
                 <td><code style="font-size: 11px;">${p.id}</code></td>
                 <td>${p.title}</td>
                 <td><span class="badge badge-success">${p.category}</span></td>
                 <td>₹${(p.price || 0).toLocaleString()}</td>
                 <td class="actions">
                     <button class="btn btn-secondary btn-small" onclick="editProduct('${p.id}')">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="confirmDeleteProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')">Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -165,10 +184,123 @@ function renderProductsTable(searchTerm = '') {
                 </div>
                 <div class="product-card-actions">
                     <button class="btn btn-secondary btn-small" onclick="editProduct('${p.id}')" style="flex: 1;">Edit</button>
+                    <button class="btn btn-danger btn-small" onclick="confirmDeleteProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')" style="flex: 1;">Delete</button>
                 </div>
             </div>
         `).join('');
     }
+}
+//Load Customers
+// Add this function to load users from Supabase
+async function loadCustomersFromSupabase() {
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        showToast("Failed to load customers: " + error.message);
+        console.error(error);
+        return;
+    }
+
+    // Store in global variable that loadCustomers() expects
+    window.customers = data || [];
+
+    // Now render the customers
+    loadCustomers();
+}
+
+// Update your existing loadCustomers function
+function loadCustomers() {
+    // Check if customers data exists
+    if (!window.customers || window.customers.length === 0) {
+        const tbody = document.getElementById('customersTable');
+        const cardsContainer = document.getElementById('customersCards');
+
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">Loading customers...</td></tr>';
+        if (cardsContainer) cardsContainer.innerHTML = '<div style="text-align: center; padding: 40px;">Loading customers...</div>';
+        return;
+    }
+
+    const searchTerm = document.getElementById('customerSearch')?.value?.toLowerCase() || '';
+
+    // Filter customers
+    let filtered = window.customers.filter(c => {
+        const matchesSearch = !searchTerm ||
+            c.user_name?.toLowerCase().includes(searchTerm) ||
+            c.email?.toLowerCase().includes(searchTerm) ||
+            c.phone?.includes(searchTerm) ||
+            c.city?.toLowerCase().includes(searchTerm);
+
+        return matchesSearch;
+    });
+
+    // Desktop table
+    const tbody = document.getElementById('customersTable');
+    if (!tbody) return;
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 40px; color: #666;">
+                    ${searchTerm ? 'No matching customers found' : 'No customers found'}
+                </td>
+            </tr>
+        `;
+    } else {
+        tbody.innerHTML = filtered.map(c => `
+            <tr>
+                <td>${c.user_name || 'N/A'}</td>
+                <td>
+                    ${c.email ? `<div>📧 ${c.email}</div>` : ''}
+                    ${c.phone ? `<div>📱 ${c.phone}</div>` : ''}
+                </td>
+                <td>
+                    ${c.city ? `${c.city}, ` : ''}${c.state || ''}<br>
+                    <small style="color: #666;">${c.pincode || ''} ${c.country || 'India'}</small>
+                </td>
+                <td>${new Date(c.created_at).toLocaleDateString()}</td>
+            </tr>
+        `).join('');
+    }
+
+    // Mobile cards
+    const cardsContainer = document.getElementById('customersCards');
+    if (!cardsContainer) return;
+
+    if (filtered.length === 0) {
+        cardsContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+                ${searchTerm ? 'No matching customers found' : 'No customers found'}
+            </div>
+        `;
+    } else {
+        cardsContainer.innerHTML = filtered.map(c => `
+            <div class="customer-card" style="background: white; border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div class="customer-card-header" style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(c.user_name || 'User')}&background=random&color=fff" 
+                        style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;"
+                        onerror="this.style.display='none'">
+                    <div class="customer-card-info" style="flex: 1;">
+                        <h4 style="margin: 0 0 5px 0;">${c.user_name || 'N/A'}</h4>
+                        <p style="margin: 0; font-size: 12px; color: #666;"><code>${c.user_id}</code></p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px;">${c.email || c.phone || 'No contact info'}</p>
+                        <small style="color: #666;">${c.city || ''}${c.city && c.state ? ', ' : ''}${c.state || ''}</small>
+                    </div>
+                </div>
+                <div class="customer-card-actions" style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary btn-small" onclick="viewCustomer('${c.user_id}')" style="flex: 1;">View</button>
+                    <button class="btn btn-primary btn-small" onclick="editCustomer('${c.user_id}')" style="flex: 1;">Edit</button>
+                </div>
+            </div>
+        `).join('');
+    }
+}
+
+// Search function for customers
+function searchCustomers() {
+    loadCustomers();
 }
 
 function searchProducts() {
@@ -204,31 +336,87 @@ function previewMultipleImages(urls, containerId) {
     ).join('');
 }
 
-async function generateProductId() {
+async function generateProductId(category) {
+    // Determine prefix
+    let prefix;
+    switch (category?.toUpperCase()) {
+        case 'KANCHIPATTU':
+            prefix = 'KAN';
+            break;
+        case 'GADWAL':
+            prefix = 'GAD';
+            break;
+        case 'BANARAS':
+            prefix = 'BAN';
+            break;
+        case 'FANCY':
+            prefix = 'FAN';
+            break;
+        default:
+            prefix = 'GEN';
+    }
+
+    // Get last ID with this prefix
     const { data, error } = await supabaseClient
         .from("products")
         .select("product_id")
+        .ilike("product_id", `${prefix}%`)
         .order("product_id", { ascending: false })
         .limit(1);
 
     if (error || !data || data.length === 0) {
-        return "ADM00001";
+        return `${prefix}00001`;
     }
 
     const lastId = data[0].product_id;
-    const number = parseInt(lastId.replace("ADM", ""));
+    const numberPart = lastId.substring(3);
+    const number = parseInt(numberPart);
 
-    return "ADM" + String(number + 1).padStart(5, "0");
+    if (isNaN(number)) {
+        return `${prefix}00001`;
+    }
+
+    const nextNumber = number + 1;
+    return `${prefix}${String(nextNumber).padStart(5, "0")}`;
 }
+// Generate and set Product ID when category changes
+async function generateAndSetProductId() {
+    const categorySelect = document.getElementById('newProductCategory');
+    const idField = document.getElementById('newProductID');
+    const category = categorySelect.value;
 
+    if (!category) {
+        idField.value = '';
+        idField.placeholder = 'Select category to generate ID';
+        return;
+    }
+
+    // Show loading state
+    idField.value = 'Generating...';
+
+    try {
+        const newId = await generateProductId(category);
+        idField.value = newId;
+    } catch (err) {
+        console.error('Error generating ID:', err);
+        idField.value = '';
+        showToast('Error generating Product ID');
+    }
+}
 // Save product - using URLs only, no file upload
 async function saveProduct(e) {
     e.preventDefault();
 
+    const productId = document.getElementById('newProductID').value;
+
+    if (!productId) {
+        showToast('Please select a category first to generate Product ID');
+        return;
+    }
+
     try {
         const imageInput = document.getElementById("newProductImage");
         const galleryInput = document.getElementById("newProductImages");
-
         const mainFile = imageInput.files[0];
 
         if (!mainFile) {
@@ -238,7 +426,6 @@ async function saveProduct(e) {
 
         // Upload main image
         const mainFileName = `${Date.now()}-${mainFile.name}`;
-
         const { error: mainUploadError } = await supabaseClient
             .storage
             .from("product-images")
@@ -255,11 +442,9 @@ async function saveProduct(e) {
 
         // Upload gallery images
         let galleryUrls = [];
-
         if (galleryInput.files.length > 0) {
             for (const file of galleryInput.files) {
                 const fileName = `${Date.now()}-${file.name}`;
-
                 const { error } = await supabaseClient
                     .storage
                     .from("product-images")
@@ -283,19 +468,17 @@ async function saveProduct(e) {
         const bullets = Array.from(document.querySelectorAll('.bullet-point'))
             .map(input => input.value.trim())
             .filter(val => val)
-            .join('|');
+            .join(',');
 
-        const productId = await generateProductId();
-
+        // Insert product with generated ID
         const { error } = await supabaseClient.from("products").insert({
-            product_id: productId,
+            product_id: productId,  // Use the generated ID
             title: document.getElementById('newProductTitle').value,
             price: parseInt(document.getElementById('newProductPrice').value),
             original_price: parseInt(document.getElementById('newProductOriginalPrice').value) || null,
             image: mainImageUrl,
             images: galleryUrls.length ? galleryUrls.join(",") : null,
             category: document.getElementById('newProductCategory').value,
-            collection: document.getElementById('newProductCollection').value || null,
             description: document.getElementById('newProductDescription').value || null,
             bullets: bullets || null,
             stock: true,
@@ -307,9 +490,7 @@ async function saveProduct(e) {
 
         showToast("Product saved successfully!");
         logActivity('Added product', productId, 'New product created');
-
         await loadProductsFromSupabase();
-
         clearForm();
         showSection('products');
 
@@ -318,9 +499,10 @@ async function saveProduct(e) {
         console.error(err);
     }
 }
-
 function clearForm() {
     document.getElementById('addProductForm').reset();
+    document.getElementById('newProductID').value = '';
+    document.getElementById('newProductID').placeholder = 'Select category to generate ID';
     document.getElementById('mainPreviewGrid').innerHTML = '';
     document.getElementById('galleryPreviewGrid').innerHTML = '';
     document.getElementById('bulletInputs').innerHTML = `
@@ -471,8 +653,8 @@ async function toggleStock(id) {
     if (error) {
         console.error(error);
         showToast("Stock update failed");
-        product.stock = !newStock; // Revert
-        if (updateData.quantity) product.quantity = 0; // Revert quantity too
+        product.stock = !newStock;
+        if (updateData.quantity) product.quantity = 0;
         renderInventory();
         return;
     }
@@ -674,34 +856,69 @@ async function applyBulkPricing() {
 }
 
 // Analytics
-function loadAnalytics() {
+async function loadAnalytics() {
+    
+    if (!products || products.length === 0) {
+        await loadProductsFromSupabase();
+    }
+    if (products.length === 0) return;
     if (typeof products === 'undefined') return;
 
-    const categoryStats = {};
-    products.forEach(p => {
-        if (!categoryStats[p.category]) {
-            categoryStats[p.category] = { count: 0, totalPrice: 0, totalQuantity: 0 };
-        }
-        categoryStats[p.category].count++;
-        categoryStats[p.category].totalPrice += p.price || 0;
-        categoryStats[p.category].totalQuantity += p.quantity || 0;
-    });
+    /* PRODUCT METRICS */
 
     document.getElementById('analyticsTotal').textContent = products.length;
 
-    const availableCount = products.filter(p => p.available_for_customer).length;
-    document.getElementById('analyticsAvailable').textContent = availableCount;
+    const categories = [...new Set(products.map(p => p.category))];
+    document.getElementById('analyticsCategories').textContent = categories.length;
 
-    const avgPrice = products.length > 0 ? Math.round(products.reduce((sum, p) => sum + (p.price || 0), 0) / products.length) : 0;
-    document.getElementById('avgPrice').textContent = `₹${avgPrice.toLocaleString()}`;
+    const avgPrice = products.length
+        ? products.reduce((sum, p) => sum + (p.price || 0), 0) / products.length
+        : 0;
 
-    const totalQuantity = products.reduce((sum, p) => sum + (p.quantity || 0), 0);
-    document.getElementById('totalQuantity').textContent = totalQuantity;
+    document.getElementById('avgPrice').textContent =
+        "₹" + Math.round(avgPrice).toLocaleString();
 
-    const topCat = Object.entries(categoryStats).sort((a, b) => b[1].count - a[1].count)[0];
-    document.getElementById('topCategory').textContent = topCat ? topCat[0] : '-';
 
-    document.getElementById('categoryStats').innerHTML = Object.entries(categoryStats).map(([cat, stats]) => `
+    /* INVENTORY VALUE */
+
+    const inventoryValue = products.reduce(
+        (sum, p) => sum + (p.price || 0) * (p.quantity || 0),
+        0
+    );
+
+    document.getElementById('inventoryValue').textContent =
+        "₹" + inventoryValue.toLocaleString();
+
+
+    /* CATEGORY STATS */
+
+    const categoryStats = {};
+
+    products.forEach(p => {
+
+        if (!categoryStats[p.category]) {
+            categoryStats[p.category] = {
+                count: 0,
+                totalPrice: 0,
+                totalQuantity: 0
+            };
+        }
+
+        categoryStats[p.category].count++;
+        categoryStats[p.category].totalPrice += p.price || 0;
+        categoryStats[p.category].totalQuantity += p.quantity || 0;
+
+    });
+
+    const topCat = Object.entries(categoryStats)
+        .sort((a, b) => b[1].count - a[1].count)[0];
+
+    document.getElementById('topCategory').textContent =
+        topCat ? topCat[0] : '-';
+
+
+    document.getElementById('categoryStats').innerHTML =
+        Object.entries(categoryStats).map(([cat, stats]) => `
         <tr>
             <td>${cat}</td>
             <td>${stats.count}</td>
@@ -709,6 +926,9 @@ function loadAnalytics() {
             <td>${stats.totalQuantity}</td>
         </tr>
     `).join('');
+
+
+    /* PRICE DISTRIBUTION */
 
     const ranges = {
         'Under ₹2k': products.filter(p => (p.price || 0) < 2000).length,
@@ -718,27 +938,113 @@ function loadAnalytics() {
         'Over ₹15k': products.filter(p => (p.price || 0) >= 15000).length
     };
 
-    document.getElementById('priceDistribution').innerHTML = Object.entries(ranges).map(([range, count]) => `
+    document.getElementById('priceDistribution').innerHTML =
+        Object.entries(ranges).map(([range, count]) => `
         <tr>
             <td>${range}</td>
             <td>${count}</td>
-            <td>${products.length > 0 ? Math.round((count / products.length) * 100) : 0}%</td>
+            <td>${products.length ? Math.round((count / products.length) * 100) : 0}%</td>
         </tr>
     `).join('');
-}
 
-// Settings
-function saveSettings() {
-    const settings = {
-        storeName: document.getElementById('storeName').value,
-        email: document.getElementById('storeEmail').value,
-        currency: document.getElementById('currencySymbol').value,
-        taxRate: parseFloat(document.getElementById('taxRate').value) || 0
-    };
-    localStorage.setItem('andham_admin_settings', JSON.stringify(settings));
-    showToast('Settings saved!');
-}
 
+    /* SALES METRICS */
+
+    const { data: revenueData } = await supabaseClient
+        .from("orders")
+        .select("total_amount, created_at")
+        .eq("payment_status", "paid");
+
+
+    const totalRevenue = (revenueData || [])
+        .reduce((sum, o) => sum + Number(o.total_amount), 0);
+
+    document.getElementById("totalRevenue").textContent =
+        "₹" + totalRevenue.toLocaleString();
+
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const todayRevenue = (revenueData || [])
+        .filter(o => o.created_at?.startsWith(today))
+        .reduce((sum, o) => sum + Number(o.total_amount), 0);
+
+    document.getElementById("todayRevenue").textContent =
+        "₹" + todayRevenue.toLocaleString();
+
+
+    const avgOrder = revenueData?.length
+        ? totalRevenue / revenueData.length
+        : 0;
+
+    document.getElementById("avgOrder").textContent =
+        "₹" + Math.round(avgOrder).toLocaleString();
+
+
+    /* ITEMS SOLD */
+
+    const { data: itemsData } = await supabaseClient
+        .from("order_items")
+        .select("quantity");
+
+    const itemsSold = (itemsData || [])
+        .reduce((sum, i) => sum + Number(i.quantity), 0);
+
+    document.getElementById("itemsSold").textContent = itemsSold;
+
+
+    /* TOP SELLING PRODUCTS */
+
+    const { data: topProducts } = await supabaseClient
+        .from("order_items")
+        .select("product_id, product_name, quantity, total_price");
+
+    const grouped = {};
+
+    (topProducts || []).forEach(item => {
+
+        if (!grouped[item.product_id]) {
+            grouped[item.product_id] = {
+                name: item.product_name,
+                sold: 0,
+                revenue: 0
+            };
+        }
+
+        grouped[item.product_id].sold += item.quantity;
+        grouped[item.product_id].revenue += Number(item.total_price);
+
+    });
+
+    const sorted = Object.values(grouped)
+        .sort((a, b) => b.sold - a.sold)
+        .slice(0, 10);
+
+
+    const table = document.getElementById("topSellingTable");
+
+    if (!sorted.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="3" style="text-align:center;padding:30px;color:#666;">
+                    No sales yet
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    table.innerHTML = sorted.map(p => `
+        <tr>
+            <td>${p.name}</td>
+            <td>${p.sold}</td>
+            <td>₹${p.revenue.toLocaleString()}</td>
+        </tr>
+    `).join('');
+
+}
 function exportProducts() {
     if (typeof products === 'undefined') return;
     const dataStr = JSON.stringify(products, null, 2);
@@ -850,6 +1156,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.target === editModal) closeModal();
         });
     }
+    const savedSection = localStorage.getItem('andham_admin_current_section');
+    if (savedSection && savedSection !== 'dashboard') {
+        showSection(savedSection);
+    }
 });
 
 // Handle window resize
@@ -860,47 +1170,42 @@ window.addEventListener('resize', () => {
 });
 
 async function loadProductsFromSupabase() {
-        const { data, error } = await supabaseClient
-            .from("products")
-            .select("*")
-            .order("created_at", { ascending: false });
+    const { data, error } = await supabaseClient
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-        if (error) {
-            showToast("Failed to load products: " + error.message);
-            return;
-        }
+    if (error) {
+        showToast("Failed to load products: " + error.message);
+        return;
+    }
 
-        if (!data || data.length === 0) {
-            products = [];
-        } else {
-            products = data.map(p => {
-                const quantity = p.quantity || 0;
-                // If quantity is 0, force stock to false
-                // Otherwise use the stored stock value (default true)
-                const stock = quantity === 0 ? false : (p.stock !== false);
+    if (!data || data.length === 0) {
+        products = [];
+    } else {
+        products = data.map(p => ({
+            sys_id: p.sys_id,
+            id: p.product_id,
+            title: p.title,
+            price: p.price,
+            originalPrice: p.original_price,
+            category: p.category,
+            collection: p.collection,
+            image: p.image,
+            images: p.images ? p.images.split(",") : [],
+            description: p.description,
+            bullets: p.bullets ? p.bullets.split("|") : [],
+            stock: p.stock,
+            available_for_customer: p.available_for_customer,
+            quantity: p.quantity || 0
+        }));
+    }
 
-                return {
-                    id: p.product_id,
-                    title: p.title,
-                    price: p.price,
-                    originalPrice: p.original_price,
-                    category: p.category,
-                    collection: p.collection,
-                    image: p.image,
-                    images: p.images ? p.images.split(",") : [],
-                    description: p.description,
-                    bullets: p.bullets ? p.bullets.split("|") : [],
-                    stock: stock,
-                    available_for_customer: p.available_for_customer !== false,
-                    quantity: quantity
-                };
-            });
-        }
-
-        renderProductsTable();
-        renderInventory();
-        loadDashboard();
+    renderProductsTable();
+    renderInventory();
+    loadDashboard();
 }
+
 async function updatePrice(id) {
     const input = document.getElementById(`newPrice-${id}`);
     if (!input) {
@@ -955,7 +1260,6 @@ async function updatePriceMobile(id) {
     showToast("Price updated!");
 }
 
-// Single DOMContentLoaded listener
 document.addEventListener("DOMContentLoaded", () => {
     loadProductsFromSupabase();
     const user = localStorage.getItem("admin_user");
@@ -1093,40 +1397,6 @@ function openInventoryEdit(id) {
     document.getElementById("inventoryEditModal").classList.add("active");
 }
 
-async function updateProduct(e) {
-    e.preventDefault();
-
-    const productId = document.getElementById("editProductId").value;
-
-    const updatedData = {
-        title: document.getElementById("editTitle").value,
-        category: document.getElementById("editCategory").value,
-        collection: document.getElementById("editCollection").value || null,
-        price: parseInt(document.getElementById("editPrice").value) || 0,
-        original_price: parseInt(document.getElementById("editOriginalPrice").value) || null,
-        image: document.getElementById("editImage").value,
-        images: document.getElementById("editImages").value || null,
-        description: document.getElementById("editDescription").value || null,
-        bullets: document.getElementById("editBullets").value || null
-    };
-
-    const { error } = await supabaseClient
-        .from("products")
-        .update(updatedData)
-        .eq("product_id", productId);
-
-    if (error) {
-        console.error(error);
-        showToast("Update failed");
-        return;
-    }
-
-    showToast("Product updated successfully");
-
-    closeModal();
-    await loadProductsFromSupabase();
-}
-
 function closeInventoryEditModal() {
     document.getElementById("inventoryEditModal").classList.remove("active");
 }
@@ -1159,3 +1429,327 @@ async function saveInventoryEdit(e) {
     closeInventoryEditModal();
     showToast("Product updated!");
 }
+
+let deleteProductId = null;
+
+function confirmDeleteProduct(id, title) {
+
+    deleteProductId = id;
+
+    document.getElementById("deleteProductInfo").textContent =
+        `${id} — ${title}`;
+
+    document.getElementById("deleteModal").classList.add("active");
+
+    document.getElementById("confirmDeleteBtn").onclick = async function () {
+        await deleteProduct(deleteProductId);
+        closeDeleteModal();
+    };
+}
+
+function closeDeleteModal() {
+    document.getElementById("deleteModal").classList.remove("active");
+}
+// Delete product from Supabase
+async function deleteProduct(id) {
+
+  console.log("Deleting product:", id);
+
+  const { error } = await supabaseClient
+    .from("products")
+    .delete()
+    .eq("product_id", id);
+
+  if (error) {
+    console.error(error);
+    showToast("Delete failed");
+    return;
+  }
+
+  showToast("Product deleted successfully");
+
+  await loadProductsFromSupabase();
+  renderProductsTable();
+}
+
+async function loadSalesTrend() {
+    const { data: orders } = await supabaseClient
+        .from("orders")
+        .select("total_amount, created_at, payment_status")
+        .eq("payment_status", "paid")
+        .order("created_at", { ascending: true });
+
+    if (!orders?.length) return;
+
+    // Group by date (last 30 days)
+    const last30Days = {};
+    const today = new Date();
+    
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        last30Days[d.toISOString().split("T")[0]] = 0;
+    }
+
+    orders.forEach(o => {
+        const date = o.created_at?.split("T")[0];
+        if (last30Days.hasOwnProperty(date)) {
+            last30Days[date] += Number(o.total_amount);
+        }
+    });
+
+    const labels = Object.keys(last30Days);
+    const values = Object.values(last30Days);
+
+    // Create canvas chart
+    const canvas = document.getElementById('salesTrendChart');
+    const ctx = canvas.getContext('2d');
+    
+    // Simple bar chart rendering
+    const maxVal = Math.max(...values) || 1;
+    const barWidth = (canvas.width - 60) / labels.length;
+    const chartHeight = canvas.height - 40;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw bars with gradient
+    values.forEach((val, i) => {
+        const height = (val / maxVal) * chartHeight;
+        const x = 30 + i * barWidth;
+        const y = canvas.height - 20 - height;
+        
+        const gradient = ctx.createLinearGradient(0, y, 0, canvas.height - 20);
+        gradient.addColorStop(0, '#6366f1');
+        gradient.addColorStop(1, '#8b5cf6');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(x + 2, y, barWidth - 4, height);
+        
+        // Hover effect data attribute
+        canvas.dataset[`tooltip${i}`] = `₹${val.toLocaleString()} on ${labels[i]}`;
+    });
+
+    // Add to HTML: <canvas id="salesTrendChart" width="800" height="300"></canvas>
+}
+
+async function loadCategoryChart() {
+    const { data: items } = await supabaseClient
+        .from("order_items")
+        .select("product_id, quantity, total_price");
+
+    // Get product categories
+    const productIds = [...new Set(items?.map(i => i.product_id) || [])];
+    
+    const { data: products } = await supabaseClient
+        .from("products")
+        .select("product_id, category")
+        .in("product_id", productIds);
+
+    const productMap = Object.fromEntries(products?.map(p => [p.product_id, p.category]) || []);
+
+    // Aggregate by category
+    const catRevenue = {};
+    items?.forEach(item => {
+        const cat = productMap[item.product_id] || 'Unknown';
+        catRevenue[cat] = (catRevenue[cat] || 0) + Number(item.total_price);
+    });
+
+    // Render donut chart using SVG
+    const total = Object.values(catRevenue).reduce((a, b) => a + b, 0);
+    let currentAngle = 0;
+    const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'];
+
+    const svgSegments = Object.entries(catRevenue).map(([cat, val], i) => {
+        const angle = (val / total) * 360;
+        const startAngle = currentAngle;
+        currentAngle += angle;
+        
+        // SVG arc path calculation
+        const x1 = 100 + 80 * Math.cos(Math.PI * startAngle / 180);
+        const y1 = 100 + 80 * Math.sin(Math.PI * startAngle / 180);
+        const x2 = 100 + 80 * Math.cos(Math.PI * currentAngle / 180);
+        const y2 = 100 + 80 * Math.sin(Math.PI * currentAngle / 180);
+        
+        const largeArc = angle > 180 ? 1 : 0;
+        
+        return `
+            <path d="M100,100 L${x1},${y1} A80,80 0 ${largeArc},1 ${x2},${y2} Z" 
+                  fill="${colors[i % colors.length]}" 
+                  stroke="white" stroke-width="2"
+                  data-category="${cat}"
+                  data-value="₹${val.toLocaleString()}"
+                  class="chart-segment">
+                <title>${cat}: ₹${val.toLocaleString()} (${Math.round(val/total*100)}%)</title>
+            </path>
+        `;
+    }).join('');
+
+    document.getElementById('categoryDonut').innerHTML = `
+        <svg viewBox="0 0 200 200" class="donut-chart">
+            ${svgSegments}
+            <circle cx="100" cy="100" r="50" fill="white"/>
+            <text x="100" y="95" text-anchor="middle" font-size="12" fill="#666">Total</text>
+            <text x="100" y="115" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">₹${total.toLocaleString()}</text>
+        </svg>
+        <div class="chart-legend">
+            ${Object.keys(catRevenue).map((cat, i) => `
+                <div class="legend-item">
+                    <span class="dot" style="background:${colors[i % colors.length]}"></span>
+                    <span>${cat}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+async function loadHourlyHeatmap() {
+    const { data: orders } = await supabaseClient
+        .from("orders")
+        .select("created_at, total_amount")
+        .eq("payment_status", "paid");
+
+    // Group by hour of day (0-23)
+    const hourlyData = new Array(24).fill(0).map(() => ({ count: 0, revenue: 0 }));
+    
+    orders?.forEach(o => {
+        const hour = new Date(o.created_at).getHours();
+        hourlyData[hour].count++;
+        hourlyData[hour].revenue += Number(o.total_amount);
+    });
+
+    const maxRevenue = Math.max(...hourlyData.map(h => h.revenue)) || 1;
+
+    const heatmapHtml = hourlyData.map((data, hour) => {
+        const intensity = data.revenue / maxRevenue;
+        const opacity = 0.2 + (intensity * 0.8);
+        const timeLabel = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour-12} PM`;
+        
+        return `
+            <div class="heatmap-cell" 
+                 style="background: rgba(99, 102, 241, ${opacity})"
+                 title="${timeLabel}: ${data.count} orders, ₹${data.revenue.toLocaleString()}">
+                <span class="hour-label">${timeLabel}</span>
+                <span class="hour-value">${data.count}</span>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('hourlyHeatmap').innerHTML = `
+        <div class="heatmap-grid">${heatmapHtml}</div>
+        <div class="heatmap-legend">
+            <span>Low</span>
+            <div class="gradient-bar"></div>
+            <span>High</span>
+        </div>
+    `;
+}
+async function loadInventoryHealth() {
+    const { data: products } = await supabaseClient
+        .from("products")
+        .select("title, quantity, price, category, stock");
+
+    // Categorize inventory health
+    const health = {
+        outOfStock: products?.filter(p => !p.stock || p.quantity === 0) || [],
+        lowStock: products?.filter(p => p.stock && p.quantity > 0 && p.quantity <= 3) || [],
+        healthy: products?.filter(p => p.stock && p.quantity > 3) || []
+    };
+
+    const healthScore = Math.round((health.healthy.length / products.length) * 100);
+
+    document.getElementById('inventoryHealth').innerHTML = `
+        <div class="health-score">
+            <div class="circular-progress" style="--progress: ${healthScore}">
+                <span>${healthScore}%</span>
+            </div>
+            <p>Inventory Health Score</p>
+        </div>
+        
+        <div class="health-breakdown">
+            <div class="health-item critical">
+                <span class="count">${health.outOfStock.length}</span>
+                <span class="label">Out of Stock</span>
+            </div>
+            <div class="health-item warning">
+                <span class="count">${health.lowStock.length}</span>
+                <span class="label">Low Stock (≤3)</span>
+            </div>
+            <div class="health-item good">
+                <span class="count">${health.healthy.length}</span>
+                <span class="label">Healthy</span>
+            </div>
+        </div>
+        
+        <div id="criticalProducts" class="product-alert-list">
+            ${health.outOfStock.slice(0, 5).map(p => `
+                <div class="alert-item critical">
+                    <span>${p.title}</span>
+                    <span class="badge">Restock Now</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+}
+async function loadRecentActivity() {
+    const { data: recentOrders } = await supabaseClient
+        .from("orders")
+        .select("order_number, total_amount, created_at, payment_status, status")
+        .order("created_at", { ascending: false })
+        .limit(10);
+
+    const activityHtml = recentOrders?.map(order => {
+        const timeAgo = getTimeAgo(new Date(order.created_at));
+        const icon = order.payment_status === 'paid' ? '💰' : '⏳';
+        const statusClass = order.payment_status === 'paid' ? 'success' : 'pending';
+        
+        return `
+            <div class="activity-item ${statusClass}">
+                <div class="activity-icon">${icon}</div>
+                <div class="activity-content">
+                    <p>Order <strong>#${order.order_number}</strong> - ₹${Number(order.total_amount).toLocaleString()}</p>
+                    <span class="activity-time">${timeAgo}</span>
+                </div>
+                <span class="status-badge ${statusClass}">${order.status}</span>
+            </div>
+        `;
+    }).join('');
+
+    document.getElementById('activityFeed').innerHTML = activityHtml || '<p>No recent activity</p>';
+}
+
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    if (seconds < 60) return 'Just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+}
+
+function showProductList(type) {
+    // Filter products based on type
+    let filtered;
+    if (type === 'outOfStock') {
+        filtered = products.filter(p => !p.stock || p.quantity === 0);
+    } else if (type === 'lowStock') {
+        filtered = products.filter(p => p.stock && p.quantity > 0 && p.quantity <= 3);
+    }
+    
+    // Switch to inventory section and show filtered
+    showSection('inventory');
+    document.getElementById('inventorySearch').value = type === 'outOfStock' ? 'out of stock' : 'low stock';
+    renderInventory(filtered.map(p => p.id).join(' '));
+}
+async function loadAllAnalytics() {
+    await Promise.all([
+        loadAnalytics(),
+        loadSalesTrend(),
+        loadCategoryChart(),
+        loadHourlyHeatmap(),
+        loadInventoryHealth(),
+        loadRecentActivity()
+    ]);
+}
+
+// Auto-refresh every 5 minutes
+setInterval(loadAllAnalytics, 300000);

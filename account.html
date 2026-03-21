@@ -12,174 +12,6 @@
     <script src="supabase.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
-    <style>
-        .orders-section {
-            background: #fafafa;
-            padding: 30px;
-            margin-bottom: 30px;
-        }
-        .orders-section h3 {
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e5e5e5;
-        }
-        .order-card {
-            background: white;
-            border: 1px solid #e5e5e5;
-            margin-bottom: 25px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .order-header {
-            background: #f5f5f5;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .order-number {
-            font-weight: 600;
-            font-family: monospace;
-            font-size: 16px;
-            color: #333;
-        }
-        .order-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-        .order-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 500;
-        }
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .status-processing {
-            background: #cce5ff;
-            color: #004085;
-        }
-        .status-shipped {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-        .status-delivered {
-            background: #d4edda;
-            color: #155724;
-        }
-        .status-cancelled {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .order-items {
-            padding: 20px;
-        }
-        .order-item-row {
-            display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #f0f0f0;
-            text-decoration: none;
-            color: inherit;
-            transition: background-color 0.2s;
-        }
-        .order-item-row:hover {
-            background-color: #fafafa;
-        }
-        .order-item-row:last-child {
-            border-bottom: none;
-        }
-        .order-item-image {
-            width: 80px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 4px;
-            flex-shrink: 0;
-        }
-        .order-item-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .order-item-name {
-            font-weight: 500;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        .order-item-details {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .order-item-price {
-            color: #8b0000;
-            font-weight: 600;
-        }
-        .order-footer {
-            background: #f9f9f9;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid #e5e5e5;
-        }
-        .order-total {
-            font-size: 16px;
-        }
-        .order-total strong {
-            color: #8b0000;
-            font-size: 18px;
-        }
-        .view-order-btn {
-            padding: 8px 20px;
-            background: #8b0000;
-            color: white;
-            text-decoration: none;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-radius: 4px;
-            transition: background-color 0.2s;
-        }
-        .view-order-btn:hover {
-            background: #6b0000;
-        }
-        .no-orders {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #8b0000;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .click-hint {
-            font-size: 11px;
-            color: #999;
-            margin-top: 5px;
-            font-style: italic;
-        }
-    </style>
 </head>
 
 <body>
@@ -188,15 +20,15 @@
             <div class="header-left">
                 <button class="icon-btn" onclick="toggleNav()">
                     <svg viewBox="0 0 24 24">
-                        <line x1="3" y1="12" x2="21" y2="12"/>
-                        <line x1="3" y1="6" x2="21" y2="6"/>
-                        <line x1="3" y1="18" x2="21" y2="18"/>
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
                     </svg>
                 </button>
                 <button class="icon-btn" onclick="toggleSearch()">
                     <svg viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
                     </svg>
                 </button>
             </div>
@@ -204,9 +36,9 @@
             <div class="header-right">
                 <button class="icon-btn" onclick="toggleCart()">
                     <svg viewBox="0 0 24 24">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                        <line x1="3" y1="6" x2="21" y2="6"/>
-                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
                     </svg>
                     <span id="cartBadge" class="cart-badge">0</span>
                 </button>
@@ -221,13 +53,19 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link" onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link" onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link" onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link" onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span></span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
         </div>
     </div>
 
@@ -236,15 +74,23 @@
         <button class="search-close" onclick="toggleSearch()">×</button>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" class="search-input" placeholder="Search by ID, name, or category..." id="searchInput" onkeyup="handleSearch(event)">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
             </div>
-            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="quickSearch('Kanchipattu')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
-                <button onclick="quickSearch('Gadwal')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Plains')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
             </div>
-            <div id="search-results-list"></div>
+            <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
     </div>
 
@@ -265,47 +111,217 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast" style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 15px 30px; border-radius: 4px; z-index: 3000; opacity: 0; transition: all 0.3s; font-family: 'Inter', sans-serif;"></div>
+    <div id="toast" class="toast"
+        style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 15px 30px; border-radius: 4px; z-index: 3000; opacity: 0; transition: all 0.3s; font-family: 'Inter', sans-serif;">
+    </div>
 
-    <main style="max-width: 900px; margin: 40px auto; padding: 0 20px; padding-top: 80px;">
+    <main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
         <h1 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">My Account</h1>
 
-        <div id="userInfo" style="background: #fafafa; padding: 30px; margin-bottom: 30px;">
-            <h3>Profile Information</h3>
-            <p><strong>Name:</strong> <span id="accountName">-</span></p>
-            <p><strong>Email:</strong> <span id="accountEmail">-</span></p>
-            <p><strong>Phone:</strong> <span id="accountPhone">-</span></p>
-            <p><strong>Address:</strong> <span id="accountAddress">-</span></p>
+        <!-- Tab Navigation -->
+        <div class="account-tabs">
+            <button class="tab-btn active" onclick="switchTab('profile')">My Profile</button>
+            <button class="tab-btn" onclick="switchTab('orders')">My Orders</button>
         </div>
 
-        <div class="orders-section">
-            <h3>My Orders</h3>
-            <div id="loadingSpinner" class="loading-spinner" style="display: block; margin: 40px auto;"></div>
-            <div id="orderList"></div>
+        <!-- My Profile Tab -->
+        <div id="profileTab" class="tab-content active">
+            <div class="profile-section">
+                <h3>Profile Information</h3>
+
+                <div class="success-message" id="profileSuccess">Profile updated successfully!</div>
+                <div class="error-message" id="profileError">Error updating profile. Please try again.</div>
+
+                <!-- View Mode -->
+                <div id="profileView">
+
+                    <div class="profile-grid">
+
+                        <div class="profile-field">
+                            <label>Full Name</label>
+                            <div class="value" id="viewName">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Email Address</label>
+                            <div class="value" id="viewEmail">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Phone Number</label>
+                            <div class="value" id="viewPhone">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Primary Address</label>
+                            <div class="value" id="viewAddress">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>City</label>
+                            <div class="value" id="viewCity">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Pincode</label>
+                            <div class="value" id="viewPincode">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>State</label>
+                            <div class="value" id="viewState">-</div>
+                        </div>
+
+                        <div class="profile-field">
+                            <label>Country</label>
+                            <div class="value" id="viewCountry">India</div>
+                        </div>
+
+                    </div>
+
+                    <div class="profile-field" style="margin-top:20px;">
+                        <label>Secondary Address</label>
+                        <div class="value" id="viewSecondaryAddress">-</div>
+                    </div>
+
+                    <button class="edit-profile-btn" onclick="toggleEditProfile()">Edit Profile</button>
+
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="profileEdit" class="edit-profile-form">
+
+                    <form id="profileForm" onsubmit="saveProfile(event)">
+
+                        <div class="profile-grid">
+
+                            <div class="profile-field">
+                                <label>Full Name</label>
+                                <input type="text" id="editName" name="user_name" required>
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Email Address</label>
+                                <input type="email" id="editEmail" name="email" required>
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Phone Number</label>
+                                <input type="tel" id="editPhone" name="phone">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Primary Address</label>
+                                <input type="text" id="editAddress" name="address">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>City</label>
+                                <input type="text" id="editCity" name="city">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Pincode</label>
+                                <input type="text" id="editPincode" name="pincode">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>State</label>
+                                <input type="text" id="editState" name="state">
+                            </div>
+
+                            <div class="profile-field">
+                                <label>Country</label>
+                                <input type="text" id="editCountry" name="country" value="India">
+                            </div>
+
+                        </div>
+
+                        <div class="profile-field" style="margin-top:20px;">
+                            <label>Secondary Address</label>
+                            <input type="text" id="editSecondaryAddress" name="secondary_address">
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="save-btn">Save Changes</button>
+                            <button type="button" class="cancel-btn" onclick="toggleEditProfile()">Cancel</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <div class="logout-section">
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
         </div>
 
-        <button onclick="logout()" class="btn-secondary" style="padding: 12px 30px; border: 1px solid #333; cursor: pointer;">
-            Logout
-        </button>
+        <!-- My Orders Tab -->
+        <div id="ordersTab" class="tab-content">
+            <div class="orders-section">
+                <h3>Order History</h3>
+                <div id="loadingSpinner" class="loading-spinner" style="display: block; margin: 40px auto;"></div>
+                <div id="orderList"></div>
+            </div>
+        </div>
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
+
     <script>
+        requireLogin();
         // Auth functions
         if (typeof isLoggedIn !== 'function') {
-            window.isLoggedIn = function() {
+            window.isLoggedIn = function () {
                 return !!(localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user'));
             };
         }
 
         if (typeof getCurrentUser !== 'function') {
-            window.getCurrentUser = function() {
+            window.getCurrentUser = function () {
                 const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
                 return user ? JSON.parse(user) : null;
             };
         }
 
         if (typeof logout !== 'function') {
-            window.logout = function() {
+            window.logout = function () {
                 localStorage.removeItem('andham_user');
                 sessionStorage.removeItem('andham_user');
                 window.location.href = 'index.html';
@@ -317,13 +333,199 @@
             window.location.href = 'login.html?redirect=account.html';
         }
 
-        // Load user info
-        const user = getCurrentUser();
-        if (user) {
-            document.getElementById('accountName').textContent = user.user_name || '-';
-            document.getElementById('accountEmail').textContent = user.email || '-';
-            document.getElementById('accountPhone').textContent = user.phone || '-';
-            document.getElementById('accountAddress').textContent = user.address || '-';
+        let currentUserData = null;
+
+        // Load user profile from Supabase
+        async function loadUserProfile() {
+            if (typeof supabaseClient === 'undefined') {
+                showToast('Database not connected');
+                return;
+            }
+
+            const user = getCurrentUser();
+            if (!user || !user.user_id) return;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('user_id', user.user_id)
+                    .single();
+
+                if (error) {
+                    console.error('Error fetching user:', error);
+                    // Fallback to localStorage data
+                    populateProfileView(user);
+                    return;
+                }
+
+                currentUserData = data;
+                populateProfileView(data);
+                populateEditForm(data);
+
+                // Update localStorage with fresh data
+                localStorage.setItem('andham_user', JSON.stringify({
+                    ...user,
+                    ...data
+                }));
+
+            } catch (err) {
+                console.error('Error:', err);
+                populateProfileView(user);
+            }
+        }
+
+        // Populate profile view
+        function populateProfileView(data) {
+            const setValue = (id, value) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (value && value.trim() !== '') {
+                        el.textContent = value;
+                        el.classList.remove('empty');
+                    } else {
+                        el.textContent = 'Not provided';
+                        el.classList.add('empty');
+                    }
+                }
+            };
+
+            setValue('viewName', data.user_name);
+            setValue('viewEmail', data.email);
+            setValue('viewPhone', data.phone);
+            setValue('viewAddress', data.address);
+            setValue('viewSecondaryAddress', data.secondary_address);
+            setValue('viewCity', data.city);
+            setValue('viewState', data.state);
+            setValue('viewPincode', data.pincode);
+            setValue('viewCountry', data.country || 'India');
+        }
+
+        // Populate edit form
+        function populateEditForm(data) {
+            document.getElementById('editName').value = data.user_name || '';
+            document.getElementById('editEmail').value = data.email || '';
+            document.getElementById('editPhone').value = data.phone || '';
+            document.getElementById('editAddress').value = data.address || '';
+            document.getElementById('editSecondaryAddress').value = data.secondary_address || '';
+            document.getElementById('editCity').value = data.city || '';
+            document.getElementById('editState').value = data.state || '';
+            document.getElementById('editPincode').value = data.pincode || '';
+            document.getElementById('editCountry').value = data.country || 'India';
+        }
+
+        // Toggle edit profile form
+        function toggleEditProfile() {
+            const viewMode = document.getElementById('profileView');
+            const editMode = document.getElementById('profileEdit');
+
+            if (editMode.classList.contains('active')) {
+                editMode.classList.remove('active');
+                viewMode.style.display = 'block';
+            } else {
+                editMode.classList.add('active');
+                viewMode.style.display = 'none';
+                // Refresh form data
+                if (currentUserData) {
+                    populateEditForm(currentUserData);
+                }
+            }
+        }
+
+        // Save profile changes
+        async function saveProfile(event) {
+            event.preventDefault();
+
+            if (typeof supabaseClient === 'undefined') {
+                showToast('Database not connected');
+                return;
+            }
+
+            const user = getCurrentUser();
+            if (!user || !user.user_id) {
+                showToast('Please login again');
+                return;
+            }
+
+            const formData = {
+                user_name: document.getElementById('editName').value.trim(),
+                email: document.getElementById('editEmail').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                address: document.getElementById('editAddress').value.trim(),
+                secondary_address: document.getElementById('editSecondaryAddress').value.trim(),
+                city: document.getElementById('editCity').value.trim(),
+                state: document.getElementById('editState').value.trim(),
+                pincode: document.getElementById('editPincode').value.trim(),
+                country: document.getElementById('editCountry').value.trim() || 'India'
+            };
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .update(formData)
+                    .eq('user_id', user.user_id)
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error updating profile:', error);
+                    document.getElementById('profileError').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('profileError').style.display = 'none';
+                    }, 3000);
+                    return;
+                }
+
+                // Update current data and view
+                currentUserData = data;
+                populateProfileView(data);
+                toggleEditProfile();
+
+                // Update localStorage
+                localStorage.setItem('andham_user', JSON.stringify({
+                    ...user,
+                    ...data
+                }));
+
+                // Show success message
+                document.getElementById('profileSuccess').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('profileSuccess').style.display = 'none';
+                }, 3000);
+
+                showToast('Profile updated successfully!');
+
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('profileError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('profileError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tab === 'profile') {
+                document.getElementById('profileTab').classList.add('active');
+            } else if (tab === 'orders') {
+                document.getElementById('ordersTab').classList.add('active');
+                // Load orders if not already loaded
+                if (document.getElementById('orderList').innerHTML === '') {
+                    loadOrders();
+                }
+            }
         }
 
         // Load orders with items and product images
@@ -333,9 +535,9 @@
                 document.getElementById('loadingSpinner').style.display = 'none';
                 return;
             }
-            
+
             const user = getCurrentUser();
-            if (!user) return;
+            if (!user || !user.user_id) return;
 
             try {
                 // Fetch orders with order_items
@@ -366,7 +568,7 @@
                 document.getElementById('loadingSpinner').style.display = 'none';
 
                 if (!orders || orders.length === 0) {
-                    orderList.innerHTML = '<div class="no-orders">No orders yet. Start shopping!</div>';
+                    orderList.innerHTML = '<div class="no-orders">No orders yet. <a href="collection.html" style="color: #8b0000;">Start shopping!</a></div>';
                     return;
                 }
 
@@ -402,14 +604,14 @@
                         month: 'long',
                         day: 'numeric'
                     });
-                    
+
                     const statusClass = `status-${order.status || 'pending'}`;
-                    
+
                     // Build items HTML
                     let itemsHtml = '';
                     if (order.order_items && order.order_items.length > 0) {
                         itemsHtml = order.order_items.map(item => {
-                            const productImage = productImages[item.product_id] || 'https://via.placeholder.com/80x100?text=No+Image';
+                            const productImage = productImages[item.product_id] || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg';
                             return `
                                 <a href="product.html?id=${item.product_id}" class="order-item-row">
                                     <img src="${productImage}" alt="${item.product_name}" class="order-item-image">
@@ -458,8 +660,12 @@
             }
         }
 
-        loadOrders();
-        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserProfile();
+            // Orders will load when tab is clicked
+        });
+
         // Update cart badge
         if (typeof updateCartBadge === 'function') {
             updateCartBadge();
@@ -468,4 +674,5 @@
         }
     </script>
 </body>
+
 </html>

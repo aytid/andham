@@ -8,3 +8,59 @@ async function addProduct(name, price) {
         .from('products')
         .insert([{ name: name, price: price }]);
 }
+async function loginWithGoogle() {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google"
+    });
+
+    if (error) {
+        console.error("Google login error:", error);
+    }
+}
+async function checkUser() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (user) {
+        console.log("User logged in:", user);
+    } else {
+        console.log("No user logged in");
+    }
+}
+
+checkUser();
+
+async function getUserProfile() {
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+    console.log("User profile:", data);
+}
+async function checkAuth() {
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (user) {
+        window.location.href = "/";
+    }
+
+}
+
+checkAuth();
+
+async function requireLogin() {
+
+    const { data: { user } } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        window.location.href = "/login.html";
+    }
+
+}

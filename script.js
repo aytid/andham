@@ -1,23 +1,17 @@
-let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
+// let cart = JSON.parse(localStorage.getItem('andham_cart')) || [];
 let currentProduct = null;
 let detailQuantity = 1;
 
 // Available filters
-const availableFilters = ["Plains", "Semi Kanchipattu", "Pure Kanchipattu", "Semi Gadwal", "Pure Gadwal"];
+const availableFilters = ["Kanchipattu", "Gadwal", "Banaras", "Fancy"];
 
 // Filter descriptions
 const filterDescriptions = {
-    "Plains": "Elegant plain sarees perfect for daily wear and minimalist styling. Crafted with precision for the modern woman.",
-    "Semi Kanchipattu": "Beautiful semi-silk Kanchipattu sarees offering traditional elegance at accessible prices.",
-    "Pure Kanchipattu": "Authentic pure silk Kanchipattu sarees with intricate zari work, perfect for weddings and special occasions.",
-    "Semi Gadwal": "Stylish semi-silk Gadwal sarees combining comfort with traditional craftsmanship.",
-    "Pure Gadwal": "Exquisite pure silk Gadwal sarees featuring the signature kuttu weaving technique and rich borders."
+    "Kanchipattu": "Beautiful Kanchipattu silk sarees known for rich zari and traditional weaving.",
+    "Gadwal": "Classic Gadwal sarees famous for lightweight silk and contrasting borders.",
+    "Banaras": "Elegant Banaras silk sarees with intricate zari weaving and royal patterns.",
+    "Fancy": "Modern designer sarees perfect for parties and special occasions."
 };
-
-// Helper function to find product by ID
-// function findProductById(id) {
-//     return products.find(p => p.id === id || p.id === String(id));
-// }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
@@ -67,7 +61,7 @@ function initCollectionPage() {
     }
     // Handle category filter
     else if (filter && availableFilters.includes(filter)) {
-        filteredProducts = products.filter(p => p.category === filter);
+        filteredProducts = products.filter(p => p.category?.toLowerCase() === filter.toLowerCase());
         title = filter;
         description = filterDescriptions[filter] || description;
         updateBreadcrumb(filter);
@@ -136,18 +130,18 @@ async function initProductPage() {
     }
 
     // Convert DB record → frontend object
-    window.currentProduct = {
-        id: data.product_id,
-        title: data.title,
-        price: data.price,
-        originalPrice: data.original_price,
-        category: data.category,
-        image: data.image,
-        images: data.images ? data.images.split(",").map(i => i.trim()) : [],
-        description: data.description,
-        bullets: data.bullets ? data.bullets.split(",").map(b => b.trim()) : [],
-        stock: data.stock
-    };
+    window.products = data
+        .filter(p => p.available_for_customer)
+        .map(p => ({
+            id: p.product_id,
+            title: p.title,
+            price: p.price,
+            originalPrice: p.original_price,
+            category: p.category,
+            image: p.image,
+            stock: p.stock ? "in" : "out",
+            created_at: p.created_at
+        }));
 
     const product = window.currentProduct;
 
@@ -259,6 +253,76 @@ function renderProducts(list) {
         </div>
     `}).join('');
 }
+function renderNewArrivals() {
+
+    const grid = document.getElementById('newArrivalsGrid');
+    if (!grid || typeof products === 'undefined') return;
+
+    const today = new Date();
+    const fifteenDaysAgo = new Date();
+    fifteenDaysAgo.setDate(today.getDate() - 15);
+
+    const newProducts = products.filter(p => {
+        const created = new Date(p.created_at);
+        return created >= fifteenDaysAgo;
+    });
+
+    if (newProducts.length === 0) {
+        grid.innerHTML = `<div style="text-align:center;color:#999;">No new arrivals</div>`;
+        return;
+    }
+
+    grid.innerHTML = newProducts.map(p => {
+
+        const isOutOfStock = p.stock === "out";
+
+        return `
+        <div class="product-card" style="background:white;">
+
+            <a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">
+
+                <div style="position:relative; overflow:hidden;">
+
+                    <span style="position:absolute; top:10px; left:10px; background:#8b0000; color:#fff; padding:4px 12px; font-size:10px; text-transform:uppercase;">
+                        NEW
+                    </span>
+
+                    ${isOutOfStock ? `
+                    <span style="position:absolute; bottom:10px; right:10px; background:#444; color:#fff; padding:4px 12px; font-size:10px;">
+                        Out of Stock
+                    </span>
+                    ` : ''}
+
+                    <img src="${p.image}" style="width:100%; aspect-ratio:3/4; object-fit:cover;" alt="${p.title}">
+
+                </div>
+
+                <div style="padding:20px;">
+                    <div style="font-size:11px;color:#999;font-family:monospace;">${p.id}</div>
+
+                    <h3 style="font-family:var(--font-serif);font-size:16px;margin:10px 0;">
+                        ${p.title}
+                    </h3>
+
+                    <div>
+                        ${p.originalPrice ? `
+                        <span style="text-decoration:line-through;color:#999;margin-right:10px;">
+                            Rs. ${p.originalPrice.toLocaleString()}.00
+                        </span>` : ''}
+
+                        <span style="color:#8b0000;font-weight:600;">
+                            Rs. ${p.price.toLocaleString()}.00
+                        </span>
+                    </div>
+                </div>
+
+            </a>
+
+        </div>
+        `;
+
+    }).join('');
+}
 // Product detail functions
 function changeMainImage(src, thumb) {
     const mainImage = document.getElementById('mainImage');
@@ -284,9 +348,9 @@ function updateDetailQty(change) {
 function addToCartFromDetail() {
     const qtyEl = document.getElementById('detailQty');
     const quantity = parseInt(qtyEl.textContent) || 1;
-    
+
     const product = window.currentProduct;
-    
+
     if (!product) {
         showToast('Error: Product not loaded');
         return;
@@ -294,35 +358,35 @@ function addToCartFromDetail() {
 
     // Use product_id consistently
     const productId = product.id || product.product_id;
-    
+
     const existing = cart.find(item => (item.id === productId || item.product_id === productId));
-    
+
     if (existing) {
         existing.quantity += quantity;
     } else {
         // Store complete product data for checkout
-        cart.push({ 
+        cart.push({
             product_id: productId,
             id: productId, // for compatibility
             title: product.title,
             price: product.price,
             image: product.image,
             category: product.category,
-            quantity: quantity 
+            quantity: quantity
         });
     }
-    
+
     localStorage.setItem('andham_cart', JSON.stringify(cart));
     updateCartUI();
     showToast(`Added ${quantity} item(s) to cart`);
     toggleCart();
-    
+
     // Save to database if logged in
     const user = getCurrentUser();
     if (user) {
         saveCartToDatabase(productId, existing ? existing.quantity : quantity);
     }
-    
+
     // Reset quantity
     if (qtyEl) qtyEl.textContent = '1';
 }
@@ -330,7 +394,7 @@ function addToCartFromDetail() {
 async function saveCartToDatabase(productId, quantity) {
     const user = getCurrentUser();
     if (!user) return;
-    
+
     try {
         await supabaseClient
             .from('cart')
@@ -444,11 +508,11 @@ function updateCartUI() {
 
         return `
             <div class="cart-item" style="display: flex; gap: 15px; padding: 20px; border-bottom: 1px solid #eee;">
-                <img src="${item.image || 'https://via.placeholder.com/80x100?text=No+Image'}" 
+                <img src="${item.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}" 
                      class="cart-item-image" 
                      style="width: 80px; height: 100px; object-fit: cover;" 
                      alt="${item.title || 'Product'}"
-                     onerror="this.src='https://via.placeholder.com/80x100?text=No+Image'">
+                     onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'">
                 <div class="cart-item-details" style="flex: 1;">
                     <div class="cart-item-category" style="font-size: 10px; color: #8b0000; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${item.category || ''}</div>
                     <div class="cart-item-id" style="font-size: 10px; color: #999; font-family: monospace; margin-bottom: 3px;">${itemId}</div>
@@ -589,54 +653,93 @@ document.addEventListener('keydown', (e) => {
 
 // For home page - render featured products
 function renderHomeProducts() {
+
     const grid = document.getElementById('homeProductsGrid');
     if (!grid || typeof products === 'undefined') return;
 
     const featured = products;
 
     grid.innerHTML = featured.map(p => {
-        const isOutOfStock = p.stock === 'out';
 
-        if (isOutOfStock) {
-            return `
-            <div class="product-card" style="opacity: 0.6; background: white;">
-                <div style="position: relative;">
-                    <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 10;">
-                        <span style="color: white; font-size: 14px; text-transform: uppercase; letter-spacing: 2px;">Out of Stock</span>
-                    </div>
-                    <img src="${p.image}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover;" alt="${p.title}">
-                </div>
-                <div style="padding: 20px;">
-                    <div style="font-size: 11px; color: #999; font-family: monospace;">${p.id}</div>
-                    <h3 style="font-family: var(--font-serif); font-size: 16px; margin: 10px 0;">${p.title}</h3>
-                    <div>
-                        ${p.originalPrice ? `<span style="text-decoration: line-through; color: #999; margin-right: 10px;">Rs. ${p.originalPrice.toLocaleString()}.00</span>` : ''}
-                        <span style="color: #999; font-weight: 600;">Rs. ${p.price.toLocaleString()}.00</span>
-                    </div>
-                </div>
-            </div>`;
-        }
+        const isOutOfStock = p.stock === "out";
 
         return `
-        <div class="product-card" style="background: white; transition: transform 0.3s;">
-            <a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration: none; color: inherit;">
-                <div style="position: relative; overflow: hidden;">
-                    <span style="position: absolute; top: 10px; left: 10px; background: #8b0000; color: #fff; padding: 4px 12px; font-size: 10px; text-transform: uppercase; z-index: 2;">${p.category}</span>
-                    <img src="${p.image}" style="width: 100%; aspect-ratio: 3/4; object-fit: cover; transition: transform 0.6s;" alt="${p.title}" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                </div>
-                <div style="padding: 20px;">
-                    <div style="font-size: 11px; color: #999; font-family: monospace;">${p.id}</div>
-                    <h3 style="font-family: var(--font-serif); font-size: 16px; margin: 10px 0;">${p.title}</h3>
-                    <div>
-                        ${p.originalPrice ? `<span style="text-decoration: line-through; color: #999; margin-right: 10px;">Rs. ${p.originalPrice.toLocaleString()}.00</span>` : ''}
-                        <span style="color: #8b0000; font-weight: 600;">Rs. ${p.price.toLocaleString()}.00</span>
+        <div class="product-card" style="background:white; transition:transform 0.3s;">
+
+            <div style="position:relative; overflow:hidden;">
+
+                <!-- Category Badge -->
+                <span style="position:absolute; top:10px; left:10px; background:#8b0000; color:#fff; padding:4px 12px; font-size:10px; text-transform:uppercase; z-index:2;">
+                    ${p.category}
+                </span>
+
+                <!-- Out of Stock Badge -->
+                ${isOutOfStock ? `
+                    <span style="position:absolute; bottom:10px; right:10px; background:rgba(0,0,0,0.75); color:#fff; padding:5px 12px; font-size:10px; letter-spacing:1px; text-transform:uppercase; z-index:2;">
+                    Out of Stock
+                    </span>
+                ` : ''}
+
+                ${isOutOfStock ? `
+                    <img src="${p.image}"
+                         style="width:100%; aspect-ratio:3/4; object-fit:cover;"
+                         alt="${p.title}">
+                `
+                :
+                `
+                <a href="product.html?id=${encodeURIComponent(p.id)}">
+                    <img src="${p.image}"
+                         style="width:100%; aspect-ratio:3/4; object-fit:cover; transition:transform 0.6s;"
+                         alt="${p.title}"
+                         onmouseover="this.style.transform='scale(1.05)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                </a>
+                `
+            }
+
+            </div>
+
+            <div style="padding:20px;">
+
+                <!-- ID + Add to Cart -->
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+
+                    <div style="font-size:11px; color:#999; font-family:monospace;">
+                        ${p.id}
                     </div>
+
+                    ${isOutOfStock
+                ? `<button style="background:#ccc; border:none; padding:6px 12px; font-size:11px; cursor:not-allowed;">Add to Cart</button>`
+                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000; color:white; border:none; padding:6px 12px; font-size:11px; cursor:pointer;">Add to Cart</button>`
+            }
+
                 </div>
-            </a>
-        </div>`;
+
+                <h3 style="font-family:var(--font-serif); font-size:16px; margin:10px 0;">
+                    ${p.title}
+                </h3>
+
+                <div>
+
+                    ${p.originalPrice ? `
+                        <span style="text-decoration:line-through; color:#999; margin-right:10px;">
+                            Rs. ${p.originalPrice.toLocaleString()}.00
+                        </span>
+                    ` : ''}
+
+                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
+                        Rs. ${p.price.toLocaleString()}.00
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
     }).join('');
 }
-
 // Call in initHomePage
 function initHomePage() {
     renderHomeProducts(); // Add this line
@@ -646,6 +749,7 @@ function loadProductDetail() {
 
     const product = window.currentProduct;
     if (!product) return;
+    console.log(JSON.stringify(product));
 
     // Title
     document.getElementById("detailTitle").textContent = product.title;

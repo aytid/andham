@@ -73,13 +73,16 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link" onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link" onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link" onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link" onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span></span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link"
+                    onclick="toggleNav()">Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link" onclick="toggleNav()">Banaras
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link"
+                    onclick="toggleNav()">Fancy <span>›</span></a></div>
         </div>
     </div>
 
@@ -91,13 +94,20 @@
                 <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
                     onkeyup="handleSearch(event)">
             </div>
-            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
                 Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="quickSearch('Kanchipattu')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
-                <button onclick="quickSearch('Gadwal')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Plains')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
             </div>
+            <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
     </div>
 
@@ -119,12 +129,12 @@
                 <span>Subtotal</span>
                 <span id="cartTotal">Rs. 0.00</span>
             </div>
-            <button class="checkout-btn">Checkout</button>
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
         </div>
     </div>
 
     <!-- COLLECTION PAGE VIEW -->
-    <div id="collectionView" class="page-view active" style="padding-top: 0px; min-height: 100vh;">
+    <div id="collectionView" class="page-view active">
         
         <!-- Breadcrumb -->
         <div class="breadcrumb" style="padding: 20px 5%; background: #f9f9f9;">
@@ -162,11 +172,10 @@
             <div class="footer-block">
                 <h3>Shop</h3>
                 <ul class="footer-links">
-                    <li><a href="collection.html?filter=Plains">Plains</a></li>
-                    <li><a href="collection.html?filter=Semi+Kanchipattu">Semi Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Pure+Kanchipattu">Pure Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Semi+Gadwal">Semi Gadwal</a></li>
-                    <li><a href="collection.html?filter=Pure+Gadwal">Pure Gadwal</a></li>
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
                 </ul>
             </div>
             <div class="footer-block">
@@ -178,14 +187,14 @@
                     <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
-            <!-- <div class="footer-block">
-                <h3>About</h3>
+            <div class="footer-block">
+                <!-- <h3>About</h3>
                 <ul class="footer-links">
                     <li><a href="our-story.html">Our Story</a></li>
                     <li><a href="craftsmanship.html">Craftsmanship</a></li>
                     <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div> -->
+                </ul> -->
+            </div>
             <div class="footer-block">
                 <h3>Newsletter</h3>
                 <p class="footer-text">Subscribe for exclusive updates and offers.</p>

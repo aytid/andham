@@ -13,122 +13,6 @@
     <script src="supabase.js"></script>
     <script src="script.js"></script>
     <script src="auth.js"></script>
-    <!-- <script src="products-data.js"></script> -->
-    <style>
-        /* Product Gallery Styles */
-        .product-detail {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .product-gallery {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            position: sticky;
-            top: 100px;
-            height: fit-content;
-        }
-
-        .main-image-container {
-            width: 100%;
-            aspect-ratio: 3/4;
-            background: #f5f5f5;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .main-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .thumbnail-list {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding: 5px;
-        }
-
-        .thumbnail-wrapper {
-            flex-shrink: 0;
-            width: 80px;
-            height: 100px;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 2px solid transparent;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f5f5f5;
-        }
-
-        .thumbnail-wrapper:hover {
-            border-color: #ccc;
-        }
-
-        .thumbnail-wrapper.active {
-            border-color: #8b0000;
-            box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2);
-        }
-
-        .thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Hide scrollbar for thumbnails */
-        .thumbnail-list::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .thumbnail-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .thumbnail-list::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 2px;
-        }
-
-        /* Responsive */
-        @media (max-width: 968px) {
-            .product-detail {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .product-gallery {
-                position: relative;
-                top: 0;
-            }
-        }
-
-        /* Loading state */
-        .image-loading {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -194,19 +78,14 @@
             </div>
             <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span></span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Semi
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Pure
-                    Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Semi Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Pure Gadwal
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
                     <span>›</span></a></div>
         </div>
     </div>
@@ -216,8 +95,8 @@
         <button class="search-close" onclick="toggleSearch()">×</button>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" class="search-input" placeholder="Search by ID, name, or category..."
-                    id="searchInput" onkeyup="handleSearch(event)">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
             </div>
             <div
                 style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
@@ -227,11 +106,12 @@
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
                 <button onclick="quickSearch('Gadwal')"
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Plains')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
-
-                <div id="search-results-list"></div>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
             </div>
+            <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
     </div>
 
@@ -258,7 +138,7 @@
     </div>
 
     <!-- PRODUCT DETAIL VIEW -->
-    <div id="productView" class="page-view active" style="padding-top: 80px;">
+    <div id="productView" class="page-view active" style="padding-top: 0px;">
         <div class="breadcrumb">
             <a href="index.html">Home</a>
             <span>/</span>
@@ -269,12 +149,14 @@
 
         <div class="product-detail">
             <div class="product-gallery">
+
+                <div class="thumbnail-list" id="thumbnailList">
+                </div>
+
                 <div class="main-image-container">
                     <img src="" alt="" class="main-image" id="mainImage">
                 </div>
-                <div class="thumbnail-list" id="thumbnailList">
-                    <!-- Thumbnails rendered here -->
-                </div>
+
             </div>
 
             <div class="product-info-detail">
@@ -297,10 +179,6 @@
                     ID: <span id="productId">---</span>
                 </div>
 
-                <div class="product-tax" style="font-size: 13px; color: #666; margin-bottom: 20px;">Tax included. <a
-                        href="#" style="color: #8b0000; text-decoration: underline;">Shipping</a> calculated at
-                    checkout.</div>
-
                 <div class="product-actions">
                     <div class="quantity-row"
                         style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
@@ -321,7 +199,7 @@
                         <button class="btn-primary" onclick="addToCartFromDetail()"
                             style="width: 100%; padding: 16px; background: #8b0000; color: white; border: none; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; border-radius: 4px; transition: background 0.3s;">Add
                             to cart</button>
-                        <button class="btn-secondary"
+                        <button onclick="buyNowProduct()" class="btn-secondary"
                             style="width: 100%; padding: 16px; background: transparent; color: #333; border: 1px solid #333; font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; border-radius: 4px;">Buy
                             it now</button>
                     </div>
@@ -339,62 +217,49 @@
                     Share
                 </button>
 
-                <div class="product-description" id="detailDescription"
-                    style="margin: 20px 0; line-height: 1.8; color: #555;">
-                    Loading description...
-                </div>
-
                 <ul class="bullet-list" id="detailBullets"
                     style="margin: 20px 0; padding-left: 20px; line-height: 2; color: #555;">
                     <!-- Bullets rendered here -->
                 </ul>
 
-                <div class="note-text" id="detailNote"
-                    style="margin: 20px 0; padding: 15px; background: #f9f9f9; border-left: 3px solid #8b0000; font-size: 13px; color: #666;">
-                    <strong>Please note:</strong> Slight color variations may occur due to digital photography and
-                    individual phone screens.
-                </div>
-
                 <div class="accordions" style="margin-top: 30px; border-top: 1px solid #eee;">
                     <div class="accordion-item" style="border-bottom: 1px solid #eee;">
                         <button class="accordion-header" onclick="toggleAccordion(this)"
                             style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span>Materials</span>
+                            <span>Description</span>
                             <span class="accordion-icon">▼</span>
                         </button>
                         <div class="accordion-content"
                             style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
-                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
-                                Premium tissue linen fabric with intricate hand embroidery. Running blouse piece
-                                included (0.8 meters).
+                            <div class="accordion-body" id="detailDescription"
+                                style="padding-bottom: 20px; color: #666; line-height: 1.8;">
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item" style="border-bottom: 1px solid #eee;">
                         <button class="accordion-header" onclick="toggleAccordion(this)"
                             style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span>Shipping & Returns</span>
+                            <span>Shipping & Delivery</span>
                             <span class="accordion-icon">▼</span>
                         </button>
                         <div class="accordion-content"
                             style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
                             <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
-                                Free shipping on orders above Rs. 5000. Delivered within 5-7 business days. Easy 7-day
-                                returns available.
+                                Free shipping on orders above Rs. 1000. Delivered within 5-7 business days.
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item" style="border-bottom: 1px solid #eee;">
                         <button class="accordion-header" onclick="toggleAccordion(this)"
                             style="width: 100%; padding: 20px 0; background: none; border: none; text-align: left; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
-                            <span>Care Instructions</span>
+                            <span>Return and Exchange</span>
                             <span class="accordion-icon">▼</span>
                         </button>
                         <div class="accordion-content"
                             style="max-height: 0; overflow: hidden; transition: max-height 0.3s;">
-                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">
-                                Dry clean only. Storing in a cool, dry place helps maintain the fabric's texture and the
-                                delicacy of the embroidery.
+                            <div class="accordion-body" style="padding-bottom: 20px; color: #666; line-height: 1.8;">No
+                                Returns or exchanges due to the nature of our products. Please refer to our size guide
+                                before purchasing.
                             </div>
                         </div>
                     </div>
@@ -431,8 +296,8 @@
                     <li><a href="our-story.html">Our Story</a></li>
                     <li><a href="craftsmanship.html">Craftsmanship</a></li>
                     <li><a href="blog.html">Blog</a></li>
-                </ul>
-            </div> -->
+                </ul> -->
+            </div>
             <div class="footer-block">
                 <h3>Newsletter</h3>
                 <p class="footer-text">Subscribe for exclusive updates and offers.</p>
@@ -446,6 +311,7 @@
             <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
         </div>
     </footer>
+
 
     <div class="toast" id="toast"
         style="position: fixed; bottom: 30px; right: 30px; background: #1a1a1a; color: white; padding: 16px 24px; border-radius: 4px; display: none; z-index: 1000; font-size: 14px;">
@@ -492,9 +358,35 @@
 
                 badge.style.display = "inline-block";
                 badge.textContent = discount + "% OFF";
+
+            } else {
+                original.style.display = "none";
+                badge.style.display = "none";
             }
 
             document.getElementById("mainImage").src = product.image;
+
+            // Description
+            document.getElementById("detailDescription").innerHTML =
+                product.description || "";
+
+            // Bullet Points
+            const bulletContainer = document.getElementById("detailBullets");
+
+            if (bulletContainer) {
+
+                let bullets = product.bullets || [];
+
+                if (typeof bullets === "string") {
+                    bullets = bullets.split(",").map(b => b.trim()).filter(b => b);
+                }
+
+                bulletContainer.innerHTML = bullets
+                    .map(b => `<li>${b}</li>`)
+                    .join("");
+
+            }
+
         }
         // Setup image gallery
         function setupGallery() {
@@ -638,8 +530,53 @@
         function quickSearch(term) {
             window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
         }
+        async function buyNowProduct() {
 
-        // Initialize cart badge on load
+            const product = window.currentProduct;
+            if (!product) return;
+
+            const user = getCurrentUser();
+
+            if (!user) {
+                window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
+                return;
+            }
+
+            const qty = parseInt(document.getElementById("detailQty").textContent) || 1;
+
+            try {
+
+                // clear existing cart so only this item remains
+                await supabaseClient
+                    .from("cart")
+                    .delete()
+                    .eq("user_id", user.user_id);
+
+                // insert product into cart
+                const { error } = await supabaseClient
+                    .from("cart")
+                    .insert({
+                        user_id: user.user_id,
+                        product_id: product.id,
+                        quantity: qty
+                    });
+
+                if (error) {
+                    console.error(error);
+                    showToast("Could not add product to cart");
+                    return;
+                }
+
+                window.location.href = "checkout.html";
+
+            } catch (err) {
+
+                console.error(err);
+                showToast("Something went wrong");
+
+            }
+
+        }// Initialize cart badge on load
         document.addEventListener("DOMContentLoaded", async function () {
             const user = getCurrentUser();
             if (user) {

@@ -9,24 +9,164 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
+    <style>
+        /* Additional styles for nav on auth page */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .auth-container {
+            padding-top: 120px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .drawer-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            background: white;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .google-btn:hover {
+            background: #f7f7f7;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 10px 0 20px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Header -->
+    <!-- Full Navigation Header -->
     <header class="header">
         <div class="header-inner">
-            <a href="index.html" class="back-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-            </a>
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
             <a href="index.html" class="logo">Andham</a>
-            <div style="width: 40px;"></div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span id="cartBadge" class="cart-badge" style="display: none;">0</span>
+                </button>
+            </div>
         </div>
     </header>
+
+    <!-- Navigation Drawer -->
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Menu</span>
+            <button class="close-btn" onclick="toggleNav()">×</button>
+        </div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
+            </div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
+            </div>
+            <div id="search-results-list" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div style="text-align: center; padding: 40px; color: #666;">
+                Your cart is empty
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <main class="auth-container">
@@ -42,7 +182,7 @@
             <form id="signinForm" class="auth-form active" onsubmit="handleSignIn(event)">
                 <h1 class="auth-title">Welcome Back</h1>
                 <p class="auth-subtitle">Sign in to access your orders and saved items</p>
-
+                    <button type="button" class="google-btn" onclick="loginWithGoogle()">Continue with Google</button>
                 <div class="form-group">
                     <label for="signinEmail">Email or Phone *</label>
                     <input type="text" id="signinEmail" required placeholder="your@email.com or phone number">
@@ -87,11 +227,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="signupPhone">Phone Number</label>
-                    <input type="tel" id="signupPhone" placeholder="+91 98765 43210">
-                </div>
-
-                <div class="form-group">
                     <label for="signupPassword">Password *</label>
                     <div class="password-wrapper">
                         <input type="password" id="signupPassword" required placeholder="Min 6 characters"
@@ -110,27 +245,49 @@
                     <input type="password" id="confirmPassword" required placeholder="Confirm your password">
                 </div>
 
-                <!-- Add this after confirm password field -->
-                <div class="form-group">
-                    <label for="address">Shipping Address *</label>
-                    <textarea id="address" name="address" required
-                        placeholder="Enter your full address including street, city, state, and PIN code"
-                        style="width: 100%; padding: 12px 15px; border: 1px solid var(--color-border); border-radius: 4px; font-size: 14px; font-family: var(--font-sans); resize: vertical; min-height: 80px; outline: none;"></textarea>
-                </div>
-
                 <button type="submit" class="auth-btn">Create Account</button>
             </form>
-
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="auth-footer">
-        <p>© 2026 Andham. All rights reserved.</p>
-    </footer>
-
     <!-- Toast -->
     <div class="toast" id="toast"></div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+                <h3>Help</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                    <li><a href="faq.html">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-block">
+            </div>
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+        </div>
+    </footer>
 
     <script>
         // Toggle between forms
@@ -166,7 +323,44 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Handle Sign In - based on your existing table structure
+        // Navigation functions
+        function toggleNav() {
+            const navDrawer = document.getElementById('navDrawer');
+            const navOverlay = document.getElementById('navOverlay');
+            navDrawer.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+        }
+
+        function toggleSearch() {
+            const searchModal = document.getElementById('searchModal');
+            searchModal.classList.toggle('active');
+            if (searchModal.classList.contains('active')) {
+                document.getElementById('searchInput').focus();
+            }
+        }
+
+        function toggleCart() {
+            const cartDrawer = document.getElementById('cartDrawer');
+            const cartOverlay = document.getElementById('cartOverlay');
+            cartDrawer.classList.toggle('active');
+            cartOverlay.classList.toggle('active');
+        }
+
+        function quickSearch(term) {
+            document.getElementById('searchInput').value = term;
+            handleSearch({ key: 'Enter' });
+        }
+
+        function handleSearch(e) {
+            if (e.key === 'Enter') {
+                const query = document.getElementById('searchInput').value;
+                if (query.trim()) {
+                    window.location.href = `collection.html?search=${encodeURIComponent(query)}`;
+                }
+            }
+        }
+
+        // Handle Sign In
         async function handleSignIn(e) {
             e.preventDefault();
 
@@ -175,7 +369,6 @@
             const rememberMe = document.getElementById('rememberMe').checked;
 
             try {
-                // Check if input is email or phone
                 const isEmail = loginInput.includes('@');
 
                 let query;
@@ -187,7 +380,6 @@
                         .eq('password', password)
                         .single();
                 } else {
-                    // Assume phone number
                     query = supabaseClient
                         .from('users')
                         .select('*')
@@ -203,13 +395,17 @@
                     return;
                 }
 
-                // Store user session
                 const userData = {
                     user_id: data.user_id,
                     user_name: data.user_name,
                     email: data.email,
                     phone: data.phone,
-                    address: data.address,  // NEW FIELD
+                    address: data.address,
+                    secondary_address: data.secondary_address,
+                    city: data.city,
+                    state: data.state,
+                    pincode: data.pincode,
+                    country: data.country || 'IN',
                     login_at: new Date().toISOString()
                 };
 
@@ -221,7 +417,6 @@
 
                 showToast(`Welcome back, ${data.user_name || 'User'}!`, 'success');
 
-                // Redirect to home or previous page
                 setTimeout(() => {
                     const redirect = new URLSearchParams(window.location.search).get('redirect');
                     window.location.href = redirect || 'index.html';
@@ -233,8 +428,7 @@
             }
         }
 
-        // Handle Sign Up - based on your existing table structure
-        // // Handle Sign Up - with address field
+        // Handle Sign Up
         async function handleSignUp(e) {
             e.preventDefault();
 
@@ -243,9 +437,7 @@
             const phone = document.getElementById('signupPhone').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            const address = document.getElementById('address').value.trim(); // NEW FIELD
 
-            // Validation
             if (password !== confirmPassword) {
                 showToast('Passwords do not match', 'error');
                 return;
@@ -256,14 +448,7 @@
                 return;
             }
 
-            // NEW: Address validation
-            if (!address || address.length < 10) {
-                showToast('Please enter a complete address (min 10 characters)', 'error');
-                return;
-            }
-
             try {
-                // Check if email already exists
                 const { data: existingUser } = await supabaseClient
                     .from('users')
                     .select('email')
@@ -275,7 +460,6 @@
                     return;
                 }
 
-                // Check if phone already exists (if provided)
                 if (phone) {
                     const { data: existingPhone } = await supabaseClient
                         .from('users')
@@ -289,7 +473,6 @@
                     }
                 }
 
-                // Create new user WITH ADDRESS
                 const { data, error } = await supabaseClient
                     .from('users')
                     .insert({
@@ -297,7 +480,7 @@
                         email: email,
                         phone: phone || null,
                         password: password,
-                        address: address  // NEW FIELD
+                        country: 'IN'
                     })
                     .select()
                     .single();
@@ -309,8 +492,6 @@
                 }
 
                 showToast('Account created successfully! Please sign in.', 'success');
-
-                // Clear form and switch to sign in
                 document.getElementById('signupForm').reset();
                 setTimeout(() => {
                     showForm('signin');
@@ -321,18 +502,19 @@
                 showToast('Something went wrong. Please try again.', 'error');
             }
         }
+
         // Check for existing session on load
         document.addEventListener('DOMContentLoaded', () => {
             const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
 
             if (user) {
-                // User is already logged in, redirect to home
                 const redirect = new URLSearchParams(window.location.search).get('redirect');
                 window.location.href = redirect || 'index.html';
             }
         });
     </script>
     <script src="auth.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

@@ -24,47 +24,47 @@
     </div>
 
     <!-- Header -->
-<header class="header">
-    <div class="header-inner">
-        <div class="header-left">
-            <button class="icon-btn" onclick="toggleNav()">
-                <svg viewBox="0 0 24 24">
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
-                </svg>
-            </button>
-            <button class="icon-btn" onclick="toggleSearch()">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-            </button>
-        </div>
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    </svg>
+                </button>
+            </div>
 
-        <a href="index.html" class="logo">Andham</a>
+            <a href="index.html" class="logo">Andham</a>
 
-        <div class="header-right">
-            <!-- Account Button - Added -->
-            <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-            </button>
-            
-            <button class="icon-btn" onclick="toggleCart()">
-                <svg viewBox="0 0 24 24">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <path d="M16 10a4 4 0 0 1-8 0" />
-                </svg>
-                <span id="cartBadge"
-                    style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
-            </button>
+            <div class="header-right">
+                <!-- Account Button - Added -->
+                <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg>
+                    <span id="cartBadge"
+                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
+                </button>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
     <!-- Navigation Drawer -->
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
@@ -74,20 +74,17 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
-            </div>
             <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Plains" class="nav-link" onclick="toggleNav()">Plains
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span></span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Semi Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Pure Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Semi+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Semi Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Pure+Gadwal" class="nav-link"
-                    onclick="toggleNav()">Pure Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
         </div>
     </div>
 
@@ -107,8 +104,10 @@
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
                 <button onclick="quickSearch('Gadwal')"
                     style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Plains')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Plains</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
             </div>
             <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
@@ -127,113 +126,67 @@
                 <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
             </div>
         </div>
-<div class="cart-footer">
-    <div class="cart-subtotal">
-        <span>Subtotal</span>
-        <span id="cartTotal">Rs. 0.00</span>
-    </div>
-    <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
-</div>
-    </div>
-
-        <style>
-            .visit-store-btn {
-                display: inline-block;
-                padding: 16px 40px;
-                border: 1px solid rgba(255, 255, 255, 0.4);
-                color: #fff;
-                text-decoration: none;
-                font-size: 11px;
-                letter-spacing: 3px;
-                text-transform: uppercase;
-                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                position: relative;
-                overflow: hidden;
-                background: transparent;
-            }
-
-            .visit-store-btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 100%;
-                height: 100%;
-                background: #fff;
-                transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: -1;
-            }
-
-            .visit-store-btn:hover {
-                color: #000;
-                border-color: #fff;
-                letter-spacing: 4px;
-            }
-
-            .visit-store-btn:hover::before {
-                left: 0;
-            }
-
-            .scroll-indicator {
-                position: absolute;
-                bottom: 30px;
-                left: 50%;
-                transform: translateX(-50%);
-                color: rgba(255, 255, 255, 0.6);
-                animation: bounce 2s infinite;
-            }
-
-            @keyframes bounce {
-
-                0%,
-                20%,
-                50%,
-                80%,
-                100% {
-                    transform: translateX(-50%) translateY(0);
-                }
-
-                40% {
-                    transform: translateX(-50%) translateY(-10px);
-                }
-
-                60% {
-                    transform: translateX(-50%) translateY(-5px);
-                }
-            }
-        </style>
-
-        <!-- Collections Section -->
-        <div class="home-section" style="background:#fff;">
-            <div class="section-header">
-                <h2 class="section-title">Shop by Collection</h2>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
             </div>
-            <div class="collections-grid">
-                <div class="collection-card" onclick="window.location.href='collection.html?filter=Pure+Kanchipattu'">
-                    <img
-                        src="https://media.samyakk.in/pub/media/catalog/product/o/f/off-white-gold-dual-tone-floral-motif-zari-woven-kanchipuram-tissue-silk-saree-sr27343.jpg">
-                    <div class="collection-overlay">
-                        <span>Kanchipattu</span>
-                    </div>
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+        </div>
+    </div>
+
+    <!-- Collections Section -->
+    <div class="home-section" style="background:#fff;">
+        <div class="section-header">
+            <h2 class="section-title">Shop by Collection</h2>
+        </div>
+        <div class="collections-grid">
+            <div class="collection-card" onclick="window.location.href='collection.html?filter=Kanchipattu'">
+                <img
+                    src="https://media.samyakk.in/pub/media/catalog/product/o/f/off-white-gold-dual-tone-floral-motif-zari-woven-kanchipuram-tissue-silk-saree-sr27343.jpg">
+                <div class="collection-overlay">
+                    <span>Kanchipattu</span>
                 </div>
-                <div class="collection-card" onclick="window.location.href='collection.html?filter=Pure+Gadwal'">
-                    <img
-                        src="https://assets.ajio.com/medias/sys_master/root/20230808/z8t4/64d243eaa9b42d15c99895fa/-473Wx593H-466291886-green-MODEL.jpg">
-                    <div class="collection-overlay">
-                        <span>Gadwal</span>
-                    </div>
+            </div>
+            <div class="collection-card" onclick="window.location.href='collection.html?filter=Gadwal'">
+                <img
+                    src="https://assets.ajio.com/medias/sys_master/root/20230808/z8t4/64d243eaa9b42d15c99895fa/-473Wx593H-466291886-green-MODEL.jpg">
+                <div class="collection-overlay">
+                    <span>Gadwal</span>
                 </div>
-                <div class="collection-card" onclick="window.location.href='collection.html'">
-                    <img
-                        src="https://images.unsplash.com/photo-1745482036066-5d215ed6b910?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8">
-                    <div class="collection-overlay">
-                        <span>View All</span>
-                    </div>
+            </div>
+            <div class="collection-card" onclick="window.location.href='collection.html?filter=Banaras'">
+                <img
+                    src="https://media.samyakk.in/pub/media/catalog/product/o/f/off-white-gold-dual-tone-floral-motif-zari-woven-kanchipuram-tissue-silk-saree-sr27343.jpg">
+                <div class="collection-overlay">
+                    <span>Banaras</span>
+                </div>
+            </div>
+            <div class="collection-card" onclick="window.location.href='collection.html?filter=Fancy'">
+                <img
+                    src="https://media.samyakk.in/pub/media/catalog/product/o/f/off-white-gold-dual-tone-floral-motif-zari-woven-kanchipuram-tissue-silk-saree-sr27343.jpg">
+                <div class="collection-overlay">
+                    <span>Fancy</span>
+                </div>
+            </div>
+            <div class="collection-card" onclick="window.location.href='collection.html'">
+                <img
+                    src="https://images.unsplash.com/photo-1745482036066-5d215ed6b910?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE0fHx8ZW58MHx8fHx8">
+                <div class="collection-overlay">
+                    <span>View All</span>
                 </div>
             </div>
         </div>
     </div>
+    
+    <!--New Arrivals-->
+    <div class="home-section" style="background:#fafafa;">
+    <div class="section-header">
+        <h2 class="section-title">New Arrivals</h2>
+    </div>
 
+    <div class="products-grid" id="newArrivalsGrid"></div>
+</div>
     <div class="home-section" style="background:#fafafa;">
         <div class="section-header">
             <h2 class="section-title">Our Collection</h2>
@@ -255,17 +208,21 @@
                 }
 
                 // Convert DB structure → your existing frontend structure
-                window.products = data.map(p => ({
-                    id: p.product_id,
-                    title: p.title,
-                    price: p.price,
-                    originalPrice: p.original_price,
-                    category: p.category,
-                    image: p.image,
-                    stock: p.stock ? "in" : "out"
-                }));
+                window.products = data
+                    .filter(p => p.available_for_customer)
+                    .map(p => ({
+                        id: p.product_id,
+                        title: p.title,
+                        price: p.price,
+                        originalPrice: p.original_price,
+                        category: p.category,
+                        image: p.image,
+                        stock: p.stock ? "in" : "out",
+                        created_at: p.created_at
+                    }));
 
                 renderHomeProducts();
+                renderNewArrivals();
             }
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -280,11 +237,10 @@
             <div class="footer-block">
                 <h3>Shop</h3>
                 <ul class="footer-links">
-                    <li><a href="collection.html?filter=Plains">Plains</a></li>
-                    <li><a href="collection.html?filter=Semi+Kanchipattu">Semi Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Pure+Kanchipattu">Pure Kanchipattu</a></li>
-                    <li><a href="collection.html?filter=Semi+Gadwal">Semi Gadwal</a></li>
-                    <li><a href="collection.html?filter=Pure+Gadwal">Pure Gadwal</a></li>
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
                 </ul>
             </div>
             <div class="footer-block">
@@ -297,12 +253,12 @@
                 </ul>
             </div>
             <div class="footer-block">
-                <h3>About</h3>
+                <!-- <h3>About</h3>
                 <ul class="footer-links">
                     <li><a href="our-story.html">Our Story</a></li>
                     <li><a href="craftsmanship.html">Craftsmanship</a></li>
                     <li><a href="blog.html">Blog</a></li>
-                </ul>
+                </ul> -->
             </div>
             <div class="footer-block">
                 <h3>Newsletter</h3>
