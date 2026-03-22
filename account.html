@@ -12,7 +12,6 @@
     <script src="supabase.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
-<base target="_blank">
 </head>
 
 <body>
@@ -468,4 +467,226 @@
                 phone: document.getElementById('editPhone').value.trim(),
                 address: document.getElementById('editAddress').value.trim(),
                 secondary_address: document.getElementById('editSecondaryAddress').value.trim(),
-                city: document.getElementById('editCity'
+                city: document.getElementById('editCity').value.trim(),
+                state: document.getElementById('editState').value.trim(),
+                pincode: document.getElementById('editPincode').value.trim(),
+                country: document.getElementById('editCountry').value.trim() || 'India'
+            };
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .update(formData)
+                    .eq('user_id', user.user_id)
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error updating profile:', error);
+                    document.getElementById('profileError').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('profileError').style.display = 'none';
+                    }, 3000);
+                    return;
+                }
+
+                // Update current data and view
+                currentUserData = data;
+                populateProfileView(data);
+                toggleEditProfile();
+
+                // Update localStorage
+                localStorage.setItem('andham_user', JSON.stringify({
+                    ...user,
+                    ...data
+                }));
+
+                // Show success message
+                document.getElementById('profileSuccess').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('profileSuccess').style.display = 'none';
+                }, 3000);
+
+                showToast('Profile updated successfully!');
+
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('profileError').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('profileError').style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tab === 'profile') {
+                document.getElementById('profileTab').classList.add('active');
+            } else if (tab === 'orders') {
+                document.getElementById('ordersTab').classList.add('active');
+                // Load orders if not already loaded
+                if (document.getElementById('orderList').innerHTML === '') {
+                    loadOrders();
+                }
+            }
+        }
+
+        // Load orders with items and product images
+        async function loadOrders() {
+            if (typeof supabaseClient === 'undefined') {
+                document.getElementById('orderList').innerHTML = '<div class="no-orders">Database not connected</div>';
+                document.getElementById('loadingSpinner').style.display = 'none';
+                return;
+            }
+
+            const user = getCurrentUser();
+            if (!user || !user.user_id) return;
+
+            try {
+                // Fetch orders with order_items
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select(`
+                        *,
+                        order_items (
+                            item_id,
+                            product_id,
+                            product_name,
+                            quantity,
+                            unit_price,
+                            total_price
+                        )
+                    `)
+                    .eq('user_id', user.user_id)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error('Error fetching orders:', error);
+                    document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
+                    document.getElementById('loadingSpinner').style.display = 'none';
+                    return;
+                }
+
+                const orderList = document.getElementById('orderList');
+                document.getElementById('loadingSpinner').style.display = 'none';
+
+                if (!orders || orders.length === 0) {
+                    orderList.innerHTML = '<div class="no-orders">No orders yet. <a href="collection.html" style="color: #8b0000;">Start shopping!</a></div>';
+                    return;
+                }
+
+                // Get all product IDs from all orders
+                const allProductIds = [];
+                orders.forEach(order => {
+                    if (order.order_items) {
+                        order.order_items.forEach(item => {
+                            allProductIds.push(item.product_id);
+                        });
+                    }
+                });
+
+                // Fetch product images
+                let productImages = {};
+                if (allProductIds.length > 0) {
+                    const { data: products, error: productsError } = await supabaseClient
+                        .from('products')
+                        .select('product_id, image')
+                        .in('product_id', allProductIds);
+
+                    if (!productsError && products) {
+                        products.forEach(product => {
+                            productImages[product.product_id] = product.image;
+                        });
+                    }
+                }
+
+                // Render orders
+                orderList.innerHTML = orders.map(order => {
+                    const orderDate = new Date(order.created_at).toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
+                    const statusClass = `status-${order.status || 'pending'}`;
+
+                    // Build items HTML
+                    let itemsHtml = '';
+                    if (order.order_items && order.order_items.length > 0) {
+                        itemsHtml = order.order_items.map(item => {
+                            const productImage = productImages[item.product_id] || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg';
+                            return `
+                                <a href="product.html?id=${item.product_id}" class="order-item-row">
+                                    <img src="${productImage}" alt="${item.product_name}" class="order-item-image">
+                                    <div class="order-item-info">
+                                        <div class="order-item-name">${item.product_name}</div>
+                                        <div class="order-item-details">Qty: ${item.quantity} × Rs. ${item.unit_price}</div>
+                                        <div class="order-item-price">Rs. ${item.total_price}</div>
+                                        <div class="click-hint">Click to view product →</div>
+                                    </div>
+                                </a>
+                            `;
+                        }).join('');
+                    } else {
+                        itemsHtml = '<div style="padding: 20px; color: #666;">No items in this order</div>';
+                    }
+
+                    return `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-number">${order.order_number}</div>
+                                    <div class="order-meta">
+                                        <span>${orderDate}</span>
+                                        <span>${order.order_items ? order.order_items.length : 0} items</span>
+                                    </div>
+                                </div>
+                                <span class="order-status ${statusClass}">${order.status || 'Pending'}</span>
+                            </div>
+                            <div class="order-items">
+                                ${itemsHtml}
+                            </div>
+                            <div class="order-footer">
+                                <div class="order-total">
+                                    Total: <strong>Rs. ${order.total_amount}</strong>
+                                </div>
+                                <a href="order-success.html?order=${order.order_number}" class="view-order-btn">View Details</a>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error:', err);
+                document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserProfile();
+            // Orders will load when tab is clicked
+        });
+
+        // Update cart badge
+        if (typeof updateCartBadge === 'function') {
+            updateCartBadge();
+        } else if (typeof updateCartUI === 'function') {
+            updateCartUI();
+        }
+    </script>
+</body>
+
+</html>
