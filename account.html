@@ -12,6 +12,499 @@
     <script src="supabase.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
+    <style>
+        /* Mobile Responsive Profile Styles */
+        .account-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #e5e5e5;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            color: #8b0000;
+            border-bottom-color: #8b0000;
+            font-weight: 500;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .profile-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .profile-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-field label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .profile-field .value {
+            font-size: 15px;
+            color: #333;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            min-height: 20px;
+        }
+
+        .profile-field .value.empty {
+            color: #999;
+            font-style: italic;
+        }
+
+        .profile-field input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: border-color 0.3s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .profile-field input:focus {
+            outline: none;
+            border-color: #8b0000;
+        }
+
+        .edit-profile-btn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #8b0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .edit-profile-btn:hover {
+            background: #6b0000;
+        }
+
+        .edit-profile-form {
+            display: none;
+        }
+
+        .edit-profile-form.active {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            padding: 12px 30px;
+            background: #8b0000;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .cancel-btn {
+            padding: 12px 30px;
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .logout-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            padding: 12px 40px;
+            background: transparent;
+            color: #666;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Orders Section */
+        .orders-section {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .orders-section h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 25px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8b0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-orders {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 15px;
+        }
+
+        .order-card {
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .order-header {
+            background: #f9f9f9;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .order-meta {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .order-meta span {
+            margin-right: 15px;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-processing {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-shipped {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .order-items {
+            padding: 20px;
+        }
+
+        .order-item-row {
+            display: flex;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s;
+        }
+
+        .order-item-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-item-row:hover {
+            background: #fafafa;
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .order-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .order-item-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .order-item-details {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .order-item-price {
+            font-weight: 600;
+            color: #8b0000;
+            font-size: 14px;
+        }
+
+        .click-hint {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .order-footer {
+            background: #f9f9f9;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .order-total {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .order-total strong {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .view-order-btn {
+            padding: 8px 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+
+        .view-order-btn:hover {
+            background: #555;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            main {
+                margin: 20px auto !important;
+                padding: 0 15px !important;
+            }
+
+            h1 {
+                font-size: 24px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .profile-section,
+            .orders-section {
+                padding: 20px;
+            }
+
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .profile-field input {
+                font-size: 16px; /* Prevents zoom on iOS */
+                padding: 14px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .save-btn,
+            .cancel-btn {
+                width: 100%;
+                padding: 14px;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-item-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .order-item-image {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+            }
+
+            .order-footer {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .view-order-btn {
+                text-align: center;
+                padding: 12px;
+            }
+
+            .tab-btn {
+                flex: 1;
+                text-align: center;
+                padding: 15px;
+                font-size: 13px;
+            }
+
+            .account-tabs {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-section h3,
+            .orders-section h3 {
+                font-size: 18px;
+            }
+
+            .order-item-image {
+                height: 150px;
+            }
+
+            .edit-profile-btn,
+            .logout-btn {
+                width: 100%;
+                padding: 14px;
+            }
+        }
+    </style>
+<base target="_blank">
 </head>
 
 <body>
