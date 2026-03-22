@@ -504,7 +504,6 @@
             }
         }
     </style>
-<base target="_blank">
 </head>
 
 <body>
@@ -798,21 +797,6 @@
     </footer>
 
     <script>
-        async function loadAccount() {
-
-            const user = await getCurrentUser();
-
-            if (!user) {
-                window.location.href = "login.html";
-                return;
-            }
-
-            document.getElementById("accountEmail").innerText = user.email;
-            document.getElementById("accountName").innerText = user.user_metadata.full_name;
-
-        }
-
-        loadAccount();
         // Auth functions
         if (typeof isLoggedIn !== 'function') {
             window.isLoggedIn = function () {
@@ -846,6 +830,13 @@
         async function loadUserProfile() {
             if (typeof supabaseClient === 'undefined') {
                 showToast('Database not connected');
+                // Use localStorage data as fallback
+                const user = getCurrentUser();
+                if (user) {
+                    currentUserData = user;
+                    populateProfileView(user);
+                    populateEditForm(user);
+                }
                 return;
             }
 
@@ -862,7 +853,9 @@
                 if (error) {
                     console.error('Error fetching user:', error);
                     // Fallback to localStorage data
+                    currentUserData = user;
                     populateProfileView(user);
+                    populateEditForm(user);
                     return;
                 }
 
@@ -878,7 +871,10 @@
 
             } catch (err) {
                 console.error('Error:', err);
+                // Fallback to localStorage data on error
+                currentUserData = user;
                 populateProfileView(user);
+                populateEditForm(user);
             }
         }
 
@@ -887,7 +883,10 @@
             const setValue = (id, value) => {
                 const el = document.getElementById(id);
                 if (el) {
-                    if (value && value.trim() !== '') {
+                    if (value && value.trim && value.trim() !== '') {
+                        el.textContent = value;
+                        el.classList.remove('empty');
+                    } else if (value && typeof value === 'string') {
                         el.textContent = value;
                         el.classList.remove('empty');
                     } else {
@@ -897,7 +896,7 @@
                 }
             };
 
-            setValue('viewName', data.user_name);
+            setValue('viewName', data.user_name || data.full_name);
             setValue('viewEmail', data.email);
             setValue('viewPhone', data.phone);
             setValue('viewAddress', data.address);
@@ -910,15 +909,26 @@
 
         // Populate edit form
         function populateEditForm(data) {
-            document.getElementById('editName').value = data.user_name || '';
-            document.getElementById('editEmail').value = data.email || '';
-            document.getElementById('editPhone').value = data.phone || '';
-            document.getElementById('editAddress').value = data.address || '';
-            document.getElementById('editSecondaryAddress').value = data.secondary_address || '';
-            document.getElementById('editCity').value = data.city || '';
-            document.getElementById('editState').value = data.state || '';
-            document.getElementById('editPincode').value = data.pincode || '';
-            document.getElementById('editCountry').value = data.country || 'India';
+            // Handle both field naming conventions (user_name vs full_name)
+            const name = data.user_name || data.full_name || '';
+            const email = data.email || '';
+            const phone = data.phone || '';
+            const address = data.address || '';
+            const secondaryAddress = data.secondary_address || '';
+            const city = data.city || '';
+            const state = data.state || '';
+            const pincode = data.pincode || '';
+            const country = data.country || 'India';
+
+            document.getElementById('editName').value = name;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editPhone').value = phone;
+            document.getElementById('editAddress').value = address;
+            document.getElementById('editSecondaryAddress').value = secondaryAddress;
+            document.getElementById('editCity').value = city;
+            document.getElementById('editState').value = state;
+            document.getElementById('editPincode').value = pincode;
+            document.getElementById('editCountry').value = country;
         }
 
         // Toggle edit profile form
@@ -927,15 +937,22 @@
             const editMode = document.getElementById('profileEdit');
 
             if (editMode.classList.contains('active')) {
+                // Switching back to view mode
                 editMode.classList.remove('active');
                 viewMode.style.display = 'block';
             } else {
-                editMode.classList.add('active');
-                viewMode.style.display = 'none';
-                // Refresh form data
+                // Switching to edit mode - ALWAYS populate form first
+                const user = getCurrentUser();
+                
+                // Populate with currentUserData if available, otherwise use user from localStorage
                 if (currentUserData) {
                     populateEditForm(currentUserData);
+                } else if (user) {
+                    populateEditForm(user);
                 }
+                
+                editMode.classList.add('active');
+                viewMode.style.display = 'none';
             }
         }
 
