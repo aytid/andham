@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQs - Andham</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --font-serif: 'Playfair Display', serif;
@@ -20,16 +17,8 @@
             --color-bg: #fafafa;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: var(--font-sans);
             color: var(--color-text);
@@ -65,17 +54,14 @@
             height: 70px;
         }
 
-        .header-left,
-        .header-right {
+        .header-left, .header-right {
             display: flex;
             align-items: center;
             gap: 25px;
             flex: 1;
         }
 
-        .header-right {
-            justify-content: flex-end;
-        }
+        .header-right { justify-content: flex-end; }
 
         .icon-btn {
             background: none;
@@ -89,9 +75,7 @@
             position: relative;
         }
 
-        .icon-btn:hover {
-            opacity: 0.6;
-        }
+        .icon-btn:hover { opacity: 0.6; }
 
         .icon-btn svg {
             width: 22px;
@@ -128,25 +112,22 @@
         }
 
         /* Navigation & Cart Drawers */
-        .nav-overlay,
-        .cart-overlay {
+        .nav-overlay, .cart-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             opacity: 0;
             visibility: hidden;
             transition: all 0.3s ease;
             z-index: 1001;
         }
 
-        .nav-overlay.active,
-        .cart-overlay.active {
+        .nav-overlay.active, .cart-overlay.active {
             opacity: 1;
             visibility: visible;
         }
 
-        .nav-drawer,
-        .cart-drawer {
+        .nav-drawer, .cart-drawer {
             position: fixed;
             top: 0;
             width: 400px;
@@ -158,20 +139,10 @@
             overflow-y: auto;
         }
 
-        .nav-drawer {
-            left: 0;
-            transform: translateX(-100%);
-        }
-
-        .cart-drawer {
-            right: 0;
-            transform: translateX(100%);
-        }
-
-        .nav-drawer.active,
-        .cart-drawer.active {
-            transform: translateX(0);
-        }
+        .nav-drawer { left: 0; transform: translateX(-100%); }
+        .cart-drawer { right: 0; transform: translateX(100%); }
+        
+        .nav-drawer.active, .cart-drawer.active { transform: translateX(0); }
 
         .drawer-header {
             padding: 25px 30px;
@@ -200,19 +171,11 @@
             transition: all 0.2s;
         }
 
-        .close-btn:hover {
-            color: #000;
-            transform: rotate(90deg);
-        }
+        .close-btn:hover { color: #000; transform: rotate(90deg); }
 
-        .nav-content {
-            padding: 20px 0;
-        }
-
-        .nav-item {
-            border-bottom: 1px solid var(--color-border);
-        }
-
+        .nav-content { padding: 20px 0; }
+        .nav-item { border-bottom: 1px solid var(--color-border); }
+        
         .nav-link {
             display: flex;
             justify-content: space-between;
@@ -226,16 +189,9 @@
             transition: all 0.2s;
         }
 
-        .nav-link:hover {
-            background: var(--color-bg);
-            padding-left: 35px;
-        }
+        .nav-link:hover { background: var(--color-bg); padding-left: 35px; }
 
-        .cart-items {
-            padding: 20px 30px;
-            min-height: 300px;
-        }
-
+        .cart-items { padding: 20px 30px; min-height: 300px; }
         .cart-empty {
             text-align: center;
             padding: 60px 20px;
@@ -274,7 +230,7 @@
         .search-modal {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(255,255,255,0.98);
             z-index: 1003;
             opacity: 0;
             visibility: hidden;
@@ -285,10 +241,7 @@
             padding-top: 150px;
         }
 
-        .search-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
+        .search-modal.active { opacity: 1; visibility: visible; }
 
         .search-close {
             position: absolute;
@@ -302,9 +255,7 @@
         }
 
         /* Main Content */
-        .page-content {
-            min-height: calc(100vh - 400px);
-        }
+        .page-content { min-height: calc(100vh - 400px); }
 
         .page-header {
             background: var(--color-bg);
@@ -341,14 +292,8 @@
             transition: color 0.2s;
         }
 
-        .breadcrumb a:hover {
-            color: #000;
-        }
-
-        .breadcrumb span {
-            margin: 0 8px;
-            color: #999;
-        }
+        .breadcrumb a:hover { color: #000; }
+        .breadcrumb span { margin: 0 8px; color: #999; }
 
         /* FAQ Search */
         .faq-search {
@@ -363,7 +308,7 @@
             display: flex;
             background: #fff;
             border: 1px solid var(--color-border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             padding: 5px;
         }
 
@@ -388,9 +333,7 @@
             transition: background 0.3s;
         }
 
-        .search-btn:hover {
-            background: #333;
-        }
+        .search-btn:hover { background: #333; }
 
         /* FAQ Categories */
         .faq-container {
@@ -441,15 +384,8 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .faq-item {
@@ -595,14 +531,9 @@
             font-weight: 400;
         }
 
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        
         .footer-links a {
             color: #999;
             text-decoration: none;
@@ -610,13 +541,8 @@
             transition: color 0.2s;
         }
 
-        .footer-links a:hover {
-            color: #fff;
-        }
-
-        .footer-links a.active {
-            color: #fff;
-        }
+        .footer-links a:hover { color: #fff; }
+        .footer-links a.active { color: #fff; }
 
         .footer-text {
             color: #999;
@@ -625,11 +551,8 @@
             margin-bottom: 20px;
         }
 
-        .newsletter-form {
-            display: flex;
-            border-bottom: 1px solid #444;
-        }
-
+        .newsletter-form { display: flex; border-bottom: 1px solid #444; }
+        
         .newsletter-input {
             flex: 1;
             background: none;
@@ -639,10 +562,8 @@
             outline: none;
         }
 
-        .newsletter-input::placeholder {
-            color: #666;
-        }
-
+        .newsletter-input::placeholder { color: #666; }
+        
         .newsletter-btn {
             background: none;
             border: none;
@@ -665,10 +586,7 @@
             gap: 20px;
         }
 
-        .footer-copyright {
-            color: #666;
-            font-size: 13px;
-        }
+        .footer-copyright { color: #666; font-size: 13px; }
 
         .no-results {
             text-align: center;
@@ -677,45 +595,19 @@
             display: none;
         }
 
-        .no-results.show {
-            display: block;
-        }
+        .no-results.show { display: block; }
 
         @media (max-width: 768px) {
-            .header-inner {
-                padding: 0 20px;
-                height: 60px;
-            }
-
-            .logo {
-                font-size: 18px;
-            }
-
-            .page-title {
-                font-size: 32px;
-            }
-
-            .page-header {
-                padding: 60px 20px;
-            }
-
-            .faq-question {
-                font-size: 18px;
-                padding: 20px 0;
-            }
-
-            .category-tab {
-                padding: 10px 16px;
-                font-size: 12px;
-            }
-
-            .faq-container {
-                padding: 0 20px;
-            }
+            .header-inner { padding: 0 20px; height: 60px; }
+            .logo { font-size: 18px; }
+            .page-title { font-size: 32px; }
+            .page-header { padding: 60px 20px; }
+            .faq-question { font-size: 18px; padding: 20px 0; }
+            .category-tab { padding: 10px 16px; font-size: 12px; }
+            .faq-container { padding: 0 20px; }
         }
     </style>
 </head>
-
 <body>
 
     <!-- Announcement -->
@@ -728,18 +620,23 @@
         <div class="header-inner">
             <div class="header-left">
                 <button class="icon-btn" onclick="toggleNav()">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
-                    </svg>
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                </button>
+                <button class="icon-btn" onclick="toggleSearch()">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                 </button>
             </div>
 
             <a href="index.html" class="logo">Andham</a>
+
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleCart()">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <span id="cartBadge">0</span>
+                </button>
+            </div>
         </div>
     </header>
-
 
     <!-- Navigation Drawer -->
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
@@ -787,29 +684,22 @@
             <div class="search-input-wrapper">
                 <input type="text" class="search-input" placeholder="Search products..." id="globalSearchInput">
             </div>
-            <div
-                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
-                Popular Searches</div>
+            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
-                <button
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue
-                    Linen</button>
-                <button
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanjeevaram</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Tissue Linen</button>
+                <button style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Cotton</button>
             </div>
         </div>
     </div>
 
     <!-- Main Content -->
     <main class="page-content">
-
+        
         <!-- Page Header -->
         <div class="page-header">
             <h1 class="page-title">Frequently Asked Questions</h1>
-            <p class="page-subtitle">Find answers to common questions about orders, shipping, returns, and our products.
-            </p>
+            <p class="page-subtitle">Find answers to common questions about orders, shipping, returns, and our products.</p>
         </div>
 
         <!-- Search -->
@@ -829,7 +719,7 @@
 
         <!-- FAQ Content -->
         <div class="faq-container">
-
+            
             <!-- Category Tabs -->
             <div class="category-tabs">
                 <button class="category-tab active" onclick="showCategory('orders')">Orders</button>
@@ -858,8 +748,7 @@
                                 <li>Enter your shipping and payment details</li>
                                 <li>Confirm your order</li>
                             </ul>
-                            <p>You'll receive an order confirmation email within minutes. If you need assistance, please
-                                <a href="#">contact us</a>.</p>
+                            <p>You'll receive an order confirmation email within minutes. If you need assistance, please <a href="#">contact us</a>.</p>
                         </div>
                     </div>
                 </div>
@@ -871,11 +760,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>We process orders quickly to ensure fast delivery. You can modify or cancel your order
-                                within 2 hours of placing it by contacting our customer service team immediately at
-                                <strong>+91 98765 43210</strong> or emailing <strong>info@andham.com</strong>.</p>
-                            <p>Once the order has been shipped, modifications are not possible, but you can return the
-                                item once received (subject to our return policy).</p>
+                            <p>We process orders quickly to ensure fast delivery. You can modify or cancel your order within 2 hours of placing it by contacting our customer service team immediately at <strong>+91 98765 43210</strong> or emailing <strong>info@andham.com</strong>.</p>
+                            <p>Once the order has been shipped, modifications are not possible, but you can return the item once received (subject to our return policy).</p>
                         </div>
                     </div>
                 </div>
@@ -913,8 +799,7 @@
                                 <li>Receive a confirmation email within 5 minutes</li>
                                 <li>Receive an SMS confirmation to your registered mobile number</li>
                             </ul>
-                            <p>If you don't receive these confirmations, please check your spam folder or contact our
-                                support team.</p>
+                            <p>If you don't receive these confirmations, please check your spam folder or contact our support team.</p>
                         </div>
                     </div>
                 </div>
@@ -935,8 +820,7 @@
                                 <li><strong>Tier 2 Cities:</strong> 5-7 business days</li>
                                 <li><strong>Remote Areas:</strong> 7-10 business days</li>
                             </ul>
-                            <p>Custom or pre-order items may take 10-15 business days. You'll receive tracking details
-                                via email once your order ships.</p>
+                            <p>Custom or pre-order items may take 10-15 business days. You'll receive tracking details via email once your order ships.</p>
                         </div>
                     </div>
                 </div>
@@ -948,8 +832,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Yes! We offer free standard shipping on all orders above <strong>Rs. 5,000</strong>. For
-                                orders below this amount, a flat shipping fee of Rs. 150 applies.</p>
+                            <p>Yes! We offer free standard shipping on all orders above <strong>Rs. 5,000</strong>. For orders below this amount, a flat shipping fee of Rs. 150 applies.</p>
                             <p>Express shipping (1-2 days) is available for an additional Rs. 300 for metro cities.</p>
                         </div>
                     </div>
@@ -962,11 +845,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Yes, we ship worldwide! International shipping times range from 7-21 business days
-                                depending on the destination. Shipping costs are calculated at checkout based on weight
-                                and destination.</p>
-                            <p>Please note that international orders may be subject to customs duties and taxes, which
-                                are the responsibility of the customer.</p>
+                            <p>Yes, we ship worldwide! International shipping times range from 7-21 business days depending on the destination. Shipping costs are calculated at checkout based on weight and destination.</p>
+                            <p>Please note that international orders may be subject to customs duties and taxes, which are the responsibility of the customer.</p>
                         </div>
                     </div>
                 </div>
@@ -978,8 +858,7 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Once your order ships, you'll receive an email with a tracking number and link. You can
-                                also track your order by:</p>
+                            <p>Once your order ships, you'll receive an email with a tracking number and link. You can also track your order by:</p>
                             <ul>
                                 <li>Logging into your account and visiting "My Orders"</li>
                                 <li>Clicking the tracking link in your shipping confirmation email</li>
@@ -999,16 +878,14 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>We offer a hassle-free <strong>7-day return policy</strong> for unused items in original
-                                condition with all tags attached. Items must be:</p>
+                            <p>We offer a hassle-free <strong>7-day return policy</strong> for unused items in original condition with all tags attached. Items must be:</p>
                             <ul>
                                 <li>Unworn and unwashed</li>
                                 <li>In original packaging</li>
                                 <li>Free from any damage or alterations</li>
                                 <li>Accompanied by the original invoice</li>
                             </ul>
-                            <p>Custom orders, blouses, and sale items (marked final sale) are not eligible for return.
-                            </p>
+                            <p>Custom orders, blouses, and sale items (marked final sale) are not eligible for return.</p>
                         </div>
                     </div>
                 </div>
@@ -1028,8 +905,7 @@
                                 <li>Pack the item securely in original packaging</li>
                                 <li>Our courier will pick up the item within 2-3 business days</li>
                             </ol>
-                            <p>Alternatively, you can email us at <strong>returns@andham.com</strong> with your order
-                                number.</p>
+                            <p>Alternatively, you can email us at <strong>returns@andham.com</strong> with your order number.</p>
                         </div>
                     </div>
                 </div>
@@ -1041,13 +917,11 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Refunds are processed within 5-7 business days after we receive and inspect the returned
-                                item. The refund will be credited to your original payment method:</p>
+                            <p>Refunds are processed within 5-7 business days after we receive and inspect the returned item. The refund will be credited to your original payment method:</p>
                             <ul>
                                 <li><strong>Credit/Debit Cards:</strong> 5-10 business days</li>
                                 <li><strong>UPI/Net Banking:</strong> 3-5 business days</li>
-                                <li><strong>Cash on Delivery:</strong> Bank transfer within 7 days or store credit
-                                    immediately</li>
+                                <li><strong>Cash on Delivery:</strong> Bank transfer within 7 days or store credit immediately</li>
                             </ul>
                         </div>
                     </div>
@@ -1060,11 +934,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>We currently do not offer direct exchanges. If you'd like a different item, please return
-                                the original item for a refund and place a new order. This ensures faster processing and
-                                availability of your desired item.</p>
-                            <p>Store credit is issued immediately upon return approval, allowing you to reorder right
-                                away.</p>
+                            <p>We currently do not offer direct exchanges. If you'd like a different item, please return the original item for a refund and place a new order. This ensures faster processing and availability of your desired item.</p>
+                            <p>Store credit is issued immediately upon return approval, allowing you to reorder right away.</p>
                         </div>
                     </div>
                 </div>
@@ -1079,11 +950,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Yes! All our Kanjeevaram, Banarasi, and traditional silk sarees are certified handloom
-                                products sourced directly from weavers' cooperatives. Each piece comes with a Silk Mark
-                                certificate of authenticity.</p>
-                            <p>We work directly with artisan families to ensure fair wages and preserve traditional
-                                weaving techniques. Your purchase supports these artisan communities.</p>
+                            <p>Yes! All our Kanjeevaram, Banarasi, and traditional silk sarees are certified handloom products sourced directly from weavers' cooperatives. Each piece comes with a Silk Mark certificate of authenticity.</p>
+                            <p>We work directly with artisan families to ensure fair wages and preserve traditional weaving techniques. Your purchase supports these artisan communities.</p>
                         </div>
                     </div>
                 </div>
@@ -1095,12 +963,9 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p><strong>Kanjeevaram Silk:</strong> Heavier, more luxurious silk with gold/silver zari
-                                work. Traditional bridal choice. Stiffer drape. Weight: 700g-1.2kg.</p>
-                            <p><strong>Soft Silk:</strong> Lighter, more fluid silk that's easier to drape and carry.
-                                Suitable for daily wear and office. More affordable. Weight: 400-600g.</p>
-                            <p>Both use pure mulberry silk, but Kanjeevaram has a higher silk density and traditional
-                                temple border designs.</p>
+                            <p><strong>Kanjeevaram Silk:</strong> Heavier, more luxurious silk with gold/silver zari work. Traditional bridal choice. Stiffer drape. Weight: 700g-1.2kg.</p>
+                            <p><strong>Soft Silk:</strong> Lighter, more fluid silk that's easier to drape and carry. Suitable for daily wear and office. More affordable. Weight: 400-600g.</p>
+                            <p>Both use pure mulberry silk, but Kanjeevaram has a higher silk density and traditional temple border designs.</p>
                         </div>
                     </div>
                 </div>
@@ -1112,10 +977,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Yes, all our sarees come with an attached unstitched blouse piece (0.8-1 meter). The
-                                blouse fabric matches the saree border or body design.</p>
-                            <p>Some sarees come with "running blouse" (same fabric as saree body), while others have
-                                contrast blouses. This is mentioned in each product description.</p>
+                            <p>Yes, all our sarees come with an attached unstitched blouse piece (0.8-1 meter). The blouse fabric matches the saree border or body design.</p>
+                            <p>Some sarees come with "running blouse" (same fabric as saree body), while others have contrast blouses. This is mentioned in each product description.</p>
                             <p>Ready-made blouses are available separately in our Blouses section.</p>
                         </div>
                     </div>
@@ -1128,16 +991,13 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>We make every effort to display colors accurately, but slight variations may occur due
-                                to:</p>
+                            <p>We make every effort to display colors accurately, but slight variations may occur due to:</p>
                             <ul>
                                 <li>Screen calibration differences</li>
                                 <li>Photography lighting</li>
                                 <li>Dye lot variations in handloom fabrics</li>
                             </ul>
-                            <p>Handloom sarees may have slight irregularities in weaving or color, which are
-                                characteristic of authentic craftsmanship and not defects. We mention any significant
-                                variations in the product description.</p>
+                            <p>Handloom sarees may have slight irregularities in weaving or color, which are characteristic of authentic craftsmanship and not defects. We mention any significant variations in the product description.</p>
                         </div>
                     </div>
                 </div>
@@ -1231,10 +1091,8 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Click "Forgot Password" on the login page. Enter your registered email address, and we'll
-                                send you a password reset link valid for 24 hours.</p>
-                            <p>If you don't receive the email within 5 minutes, check your spam folder. For further
-                                assistance, contact <strong>support@andham.com</strong>.</p>
+                            <p>Click "Forgot Password" on the login page. Enter your registered email address, and we'll send you a password reset link valid for 24 hours.</p>
+                            <p>If you don't receive the email within 5 minutes, check your spam folder. For further assistance, contact <strong>support@andham.com</strong>.</p>
                         </div>
                     </div>
                 </div>
@@ -1246,16 +1104,14 @@
                     </button>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <p>Yes, we offer special pricing for bulk orders (5+ sarees) for weddings, corporate
-                                gifting, or retail. Benefits include:</p>
+                            <p>Yes, we offer special pricing for bulk orders (5+ sarees) for weddings, corporate gifting, or retail. Benefits include:</p>
                             <ul>
                                 <li>10-25% discount depending on quantity</li>
                                 <li>Custom bulk packaging</li>
                                 <li>Personalized service from our team</li>
                                 <li>Priority processing</li>
                             </ul>
-                            <p>Email <strong>wholesale@andham.com</strong> with your requirements for a custom quote.
-                            </p>
+                            <p>Email <strong>wholesale@andham.com</strong> with your requirements for a custom quote.</p>
                         </div>
                     </div>
                 </div>
@@ -1277,122 +1133,21 @@
         </div>
 
     </main>
-    <div class="mobile-nav">
-
-        <a href="index.html" class="mobile-nav-item">
-            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                <path
-                    d="M 24.960938 2.1015625 A 1.0001 1.0001 0 0 0 24.386719 2.3105469 L 1.3867188 20.210938 A 1.0001 1.0001 0 1 0 2.6132812 21.789062 L 4 20.708984 L 4 48 A 1.0001 1.0001 0 0 0 5 49 L 18.832031 49 A 1.0001 1.0001 0 0 0 19.158203 49 L 30.832031 49 A 1.0001 1.0001 0 0 0 31.158203 49 L 45 49 A 1.0001 1.0001 0 0 0 46 48 L 46 20.708984 L 47.386719 21.789062 A 1.0001 1.0001 0 1 0 48.613281 20.210938 L 25.613281 2.3105469 A 1.0001 1.0001 0 0 0 24.960938 2.1015625 z M 25 4.3671875 L 44 19.154297 L 44 47 L 32 47 L 32 29 A 1.0001 1.0001 0 0 0 31 28 L 19 28 A 1.0001 1.0001 0 0 0 18 29 L 18 47 L 6 47 L 6 19.154297 L 25 4.3671875 z M 20 30 L 30 30 L 30 47 L 20 47 L 20 30 z">
-                </path>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <button class="mobile-nav-item" onclick="toggleSearch()">
-            <svg viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <span>Search</span>
-        </button>
-
-        <button class="mobile-nav-item" onclick="toggleCart()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000"
-                stroke-linecap="round" stroke-linejoin="round" id="Shopping-Cart--Streamline-Lucide" height="24"
-                width="24">
-                <desc>
-                    Shopping Cart Streamline Icon: https://streamlinehq.com
-                </desc>
-                <path d="M7 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
-                <path d="M18 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95 -1.57l1.65 -7.43H5.12"
-                    stroke-width="2"></path>
-            </svg>
-            <span>Cart</span>
-        </button>
-
-        <button class="mobile-nav-item" onclick="handleAccountClick()">
-            <?xml version="1.0" encoding="utf-8"?>
-            <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.71997 11.28 8.71997 9.50998C8.71997 7.69998 10.18 6.22998 12 6.22998C13.81 6.22998 15.28 7.69998 15.28 9.50998C15.27 11.28 13.88 12.72 12.12 12.78Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path
-                    d="M18.74 19.3801C16.96 21.0101 14.6 22.0001 12 22.0001C9.40001 22.0001 7.04001 21.0101 5.26001 19.3801C5.36001 18.4401 5.96001 17.5201 7.03001 16.8001C9.77001 14.9801 14.25 14.9801 16.97 16.8001C18.04 17.5201 18.64 18.4401 18.74 19.3801Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path
-                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <span>Profile</span>
-        </button>
-
-    </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
-
-            <!-- Brand -->
-            <div class="footer-block">
-                <h3 class="footer-logo">Andham</h3>
-                <p class="footer-text">
-                    Discover timeless elegance with our curated collection of
-                    handcrafted sarees. Designed with tradition and styled for
-                    modern women.
-                </p>
-                <div class="footer-social">
-
-                    <!-- Instagram -->
-                    <a href="https://instagram.com/" class="social-icon" target="_blank" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5"></rect>
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <circle cx="17.5" cy="6.5" r="1"></circle>
-                        </svg>
-                    </a>
-
-                    <!-- YouTube -->
-                    <a href="https://youtube.com/" class="social-icon" target="_blank" aria-label="YouTube">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 
-            0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 
-            1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 
-            8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 
-            15.5v-7l6 3.5-6 3.5z" />
-                        </svg>
-                    </a>
-
-                    <!-- WhatsApp -->
-                    <a href="https://wa.me/919876543210?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
-                        class="social-icon" target="_blank" aria-label="WhatsApp">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-whatsapp" viewBox="0 0 16 16">
-                            <path
-                                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
-                        </svg>
-
-                    </a>
-
-                </div>
-            </div>
-
-            <!-- Shop -->
             <div class="footer-block">
                 <h3>Shop</h3>
                 <ul class="footer-links">
                     <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
                     <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
                     <li><a href="collection.html?filter=Banaras">Banaras</a></li>
-                    <li><a href="collection.html?filter=Fancy">Fancy Sarees</a></li>
-                    <li><a href="collection.html">All Collections</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
                 </ul>
             </div>
-
-            <!-- Support -->
             <div class="footer-block">
-                <h3>Customer Support</h3>
+                <h3>Help</h3>
                 <ul class="footer-links">
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="shipping.html">Shipping & Returns</a></li>
@@ -1400,26 +1155,27 @@
                     <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
-
-            <!-- Company -->
             <div class="footer-block">
-                <h3>Company</h3>
+                <!-- <h3>About</h3>
                 <ul class="footer-links">
-                    <li><a href="#">About Andham</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                </ul>
+                    <li><a href="our-story.html">Our Story</a></li>
+                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                </ul> -->
             </div>
-
+            <div class="footer-block">
+                <h3>Newsletter</h3>
+                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
+                    <input type="email" class="newsletter-input" placeholder="Email address" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
         </div>
-
         <div class="footer-bottom">
-            <div class="footer-copyright">
-                © 2026 Andham. All rights reserved.
-            </div>
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
         </div>
     </footer>
-
     <script>
         // Toggle Functions
         function toggleNav() {
@@ -1443,13 +1199,13 @@
         function toggleFAQ(button) {
             const item = button.parentElement;
             const isActive = item.classList.contains('active');
-
+            
             // Close all in same section
             const section = item.parentElement;
             section.querySelectorAll('.faq-item').forEach(faq => {
                 faq.classList.remove('active');
             });
-
+            
             // Toggle current
             if (!isActive) {
                 item.classList.add('active');
@@ -1463,13 +1219,13 @@
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
-
+            
             // Show section
             document.querySelectorAll('.faq-section').forEach(section => {
                 section.classList.remove('active');
             });
             document.getElementById(category).classList.add('active');
-
+            
             // Hide no results
             document.getElementById('noResults').classList.remove('show');
         }
@@ -1479,7 +1235,7 @@
             const searchTerm = document.getElementById('faqSearchInput').value.toLowerCase();
             const allItems = document.querySelectorAll('.faq-item');
             let hasResults = false;
-
+            
             // Show all sections for search
             document.querySelectorAll('.faq-section').forEach(section => {
                 section.classList.add('active');
@@ -1487,11 +1243,11 @@
             document.querySelectorAll('.category-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-
+            
             allItems.forEach(item => {
                 const question = item.querySelector('.faq-question span').textContent.toLowerCase();
                 const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
-
+                
                 if (question.includes(searchTerm) || answer.includes(searchTerm)) {
                     item.style.display = 'block';
                     hasResults = true;
@@ -1499,7 +1255,7 @@
                     item.style.display = 'none';
                 }
             });
-
+            
             // Show/hide no results message
             const noResults = document.getElementById('noResults');
             if (!hasResults && searchTerm !== '') {
@@ -1510,7 +1266,7 @@
         }
 
         // Search on Enter key
-        document.getElementById('faqSearchInput').addEventListener('keypress', function (e) {
+        document.getElementById('faqSearchInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 searchFAQs();
             }
@@ -1527,5 +1283,4 @@
         });
     </script>
 </body>
-
 </html>
