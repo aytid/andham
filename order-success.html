@@ -258,36 +258,12 @@
                         <line x1="3" y1="18" x2="21" y2="18" />
                     </svg>
                 </button>
-                <button class="icon-btn" onclick="toggleSearch()">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                </button>
             </div>
 
             <a href="index.html" class="logo">Andham</a>
-
-            <div class="header-right">
-                <button class="icon-btn" id="accountBtn" onclick="handleAccountClick()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
-                </button>
-
-                <button class="icon-btn" onclick="toggleCart()">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg>
-                    <span id="cartBadge"
-                        style="display: none; position: absolute; top: 0; right: 0; background: #8b0000; color: white; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; align-items: center; justify-content: center; font-weight: 600;">0</span>
-                </button>
-            </div>
         </div>
     </header>
+
 
     <!-- Navigation Drawer -->
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
@@ -426,7 +402,8 @@
             We're verifying your payment. You'll receive a confirmation email once verified.
         </div>
 
-        <p style="font-size: 14px; color: #666; margin: 30px 0;">Your items will be delivered within 5-7 business days.</p>
+        <p style="font-size: 14px; color: #666; margin: 30px 0;">Your items will be delivered within 5-7 business days.
+        </p>
 
         <a href="#" id="whatsappBtn" class="whatsapp-btn" style="display: none;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -443,20 +420,123 @@
             </a>
         </div>
     </div>
-        <!-- Footer -->
+    <div class="mobile-nav">
+
+        <a href="index.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
+                <path
+                    d="M 24.960938 2.1015625 A 1.0001 1.0001 0 0 0 24.386719 2.3105469 L 1.3867188 20.210938 A 1.0001 1.0001 0 1 0 2.6132812 21.789062 L 4 20.708984 L 4 48 A 1.0001 1.0001 0 0 0 5 49 L 18.832031 49 A 1.0001 1.0001 0 0 0 19.158203 49 L 30.832031 49 A 1.0001 1.0001 0 0 0 31.158203 49 L 45 49 A 1.0001 1.0001 0 0 0 46 48 L 46 20.708984 L 47.386719 21.789062 A 1.0001 1.0001 0 1 0 48.613281 20.210938 L 25.613281 2.3105469 A 1.0001 1.0001 0 0 0 24.960938 2.1015625 z M 25 4.3671875 L 44 19.154297 L 44 47 L 32 47 L 32 29 A 1.0001 1.0001 0 0 0 31 28 L 19 28 A 1.0001 1.0001 0 0 0 18 29 L 18 47 L 6 47 L 6 19.154297 L 25 4.3671875 z M 20 30 L 30 30 L 30 47 L 20 47 L 20 30 z">
+                </path>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <button class="mobile-nav-item" onclick="toggleSearch()">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span>Search</span>
+        </button>
+
+        <button class="mobile-nav-item" onclick="toggleCart()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000"
+                stroke-linecap="round" stroke-linejoin="round" id="Shopping-Cart--Streamline-Lucide" height="24"
+                width="24">
+                <desc>
+                    Shopping Cart Streamline Icon: https://streamlinehq.com
+                </desc>
+                <path d="M7 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
+                <path d="M18 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95 -1.57l1.65 -7.43H5.12"
+                    stroke-width="2"></path>
+            </svg>
+            <span>Cart</span>
+        </button>
+
+        <button class="mobile-nav-item" onclick="handleAccountClick()">
+            <?xml version="1.0" encoding="utf-8"?>
+            <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.71997 11.28 8.71997 9.50998C8.71997 7.69998 10.18 6.22998 12 6.22998C13.81 6.22998 15.28 7.69998 15.28 9.50998C15.27 11.28 13.88 12.72 12.12 12.78Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                    d="M18.74 19.3801C16.96 21.0101 14.6 22.0001 12 22.0001C9.40001 22.0001 7.04001 21.0101 5.26001 19.3801C5.36001 18.4401 5.96001 17.5201 7.03001 16.8001C9.77001 14.9801 14.25 14.9801 16.97 16.8001C18.04 17.5201 18.64 18.4401 18.74 19.3801Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Profile</span>
+        </button>
+
+    </div>
+
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
+
+            <!-- Brand -->
+            <div class="footer-block">
+                <h3 class="footer-logo">Andham</h3>
+                <p class="footer-text">
+                    Discover timeless elegance with our curated collection of
+                    handcrafted sarees. Designed with tradition and styled for
+                    modern women.
+                </p>
+                <div class="footer-social">
+
+                    <!-- Instagram -->
+                    <a href="https://instagram.com/" class="social-icon" target="_blank" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <circle cx="17.5" cy="6.5" r="1"></circle>
+                        </svg>
+                    </a>
+
+                    <!-- YouTube -->
+                    <a href="https://youtube.com/" class="social-icon" target="_blank" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 
+            0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 
+            1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 
+            8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 
+            15.5v-7l6 3.5-6 3.5z" />
+                        </svg>
+                    </a>
+
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/919876543210?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
+                        class="social-icon" target="_blank" aria-label="WhatsApp">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-whatsapp" viewBox="0 0 16 16">
+                            <path
+                                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                        </svg>
+
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Shop -->
             <div class="footer-block">
                 <h3>Shop</h3>
                 <ul class="footer-links">
                     <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
                     <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
                     <li><a href="collection.html?filter=Banaras">Banaras</a></li>
-                    <li><a href="collection.html?filter=Fancy">Fancy</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy Sarees</a></li>
+                    <li><a href="collection.html">All Collections</a></li>
                 </ul>
             </div>
+
+            <!-- Support -->
             <div class="footer-block">
-                <h3>Help</h3>
+                <h3>Customer Support</h3>
                 <ul class="footer-links">
                     <li><a href="contact.html">Contact Us</a></li>
                     <li><a href="shipping.html">Shipping & Returns</a></li>
@@ -464,25 +544,23 @@
                     <li><a href="faq.html">FAQs</a></li>
                 </ul>
             </div>
+
+            <!-- Company -->
             <div class="footer-block">
-                <!-- <h3>About</h3>
+                <h3>Company</h3>
                 <ul class="footer-links">
-                    <li><a href="our-story.html">Our Story</a></li>
-                    <li><a href="craftsmanship.html">Craftsmanship</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                </ul> -->
+                    <li><a href="#">About Andham</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
             </div>
-            <div class="footer-block">
-                <h3>Newsletter</h3>
-                <p class="footer-text">Subscribe for exclusive updates and offers.</p>
-                <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('Subscribed!')">
-                    <input type="email" class="newsletter-input" placeholder="Email address" required>
-                    <button type="submit" class="newsletter-btn">Subscribe</button>
-                </form>
-            </div>
+
         </div>
+
         <div class="footer-bottom">
-            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
+            <div class="footer-copyright">
+                © 2026 Andham. All rights reserved.
+            </div>
         </div>
     </footer>
 
