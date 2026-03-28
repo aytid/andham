@@ -239,20 +239,7 @@ function renderProducts(list) {
             ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" class="product-link">`}
 
                 <div class="product-image-wrapper">
-                    <span style="
-    position:absolute;
-    top:10px;
-    left:10px;
-    background:#8b0000;
-    color:#fff;
-    padding:4px 12px;
-    font-size:10px;
-    text-transform:uppercase;
-    z-index:2;
-">
-    ${p.category}
-</span>
-                    ${isOutOfStock ? `
+                          ${isOutOfStock ? `
                     <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
                         <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
                             Out of Stock
@@ -268,27 +255,21 @@ function renderProducts(list) {
 
             <div class="product-info">
 
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-
-                    <div style="font-size:11px; color:#999; font-family:monospace;">
-                        ${p.id}
-                    </div>
-
-                    ${isOutOfStock
-                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
-                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
-            }
-
-                </div>
-
                 <h3 class="product-title">${p.title}</h3>
 
-                <div class="product-price">
-                    ${p.originalPrice ? `<span class="price-original">Rs. ${p.originalPrice.toLocaleString()}.00</span>` : ''}
-                    <span class="price-current" style="color:${isOutOfStock ? '#999' : '#8b0000'};">
-                        Rs. ${p.price.toLocaleString()}.00
-                    </span>
-                </div>
+<div class="product-price-row">
+
+    <span class="price-current" style="color:${isOutOfStock ? '#999' : '#8b0000'};">
+        Rs. ${p.price.toLocaleString()}.00
+    </span>
+
+    ${isOutOfStock ? '' : `
+    <button class="add-cart-btn" onclick="addToCart('${p.id}')">
+        +
+    </button>
+    `}
+
+</div>
 
             </div>
 
@@ -324,25 +305,12 @@ function renderNewArrivals() {
 
         return `
         <div class="product-card" style="background:white; ${opacity}">
-        
 
-            ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">`}
+            ${isOutOfStock ? '' : `
+            <a href="product.html?id=${encodeURIComponent(p.id)}" style="text-decoration:none;color:inherit;">
+            `}
 
                 <div style="position:relative; overflow:hidden;">
-
-<span style="
-    position:absolute;
-    top:10px;
-    left:10px;
-    background:#8b0000;
-    color:#fff;
-    padding:4px 12px;
-    font-size:10px;
-    text-transform:uppercase;
-    z-index:2;
-">
-    ${p.category}
-</span>
 
                     ${isOutOfStock ? `
                     <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
@@ -352,43 +320,36 @@ function renderNewArrivals() {
                     </div>
                     ` : ''}
 
-                    <img src="${p.image}" style="width:100%; aspect-ratio:3/4; object-fit:cover;" alt="${p.title}">
+                    <img src="${p.image}" 
+                         style="width:100%; aspect-ratio:3/4; object-fit:cover;" 
+                         alt="${p.title}">
 
                 </div>
 
-                <div style="padding:20px;">
+            ${isOutOfStock ? '' : `</a>`}
 
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="padding:20px;">
 
-                        <div style="font-size:11px;color:#999;font-family:monospace;">
-                            ${p.id}
-                        </div>
+                <h3 style="font-family:var(--font-serif);font-size:16px;margin:10px 0;">
+                    ${p.title}
+                </h3>
 
-                        ${isOutOfStock
-                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
-                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
-            }
+                <div style="display:flex; justify-content:space-between; align-items:center;">
 
-                    </div>
+                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
+                        Rs. ${p.price.toLocaleString()}.00
+                    </span>
 
-                    <h3 style="font-family:var(--font-serif);font-size:16px;margin:10px 0;">
-                        ${p.title}
-                    </h3>
-
-                    <div>
-                        ${p.originalPrice ? `
-                        <span style="text-decoration:line-through;color:#999;margin-right:10px;">
-                            Rs. ${p.originalPrice.toLocaleString()}.00
-                        </span>` : ''}
-
-                        <span style="color:${isOutOfStock ? '#999' : '#8b0000'};font-weight:600;">
-                            Rs. ${p.price.toLocaleString()}.00
-                        </span>
-                    </div>
+                    ${isOutOfStock ? '' : `
+                    <button onclick="addToCart('${p.id}')" 
+                        style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        +
+                    </button>
+                    `}
 
                 </div>
 
-            ${isOutOfStock ? '' : '</a>'}
+            </div>
 
         </div>
         `;
@@ -773,11 +734,6 @@ function renderHomeProducts() {
 
             <div style="position:relative; overflow:hidden;">
 
-                <!-- Category Badge -->
-                <span style="position:absolute; top:10px; left:10px; background:#8b0000; color:#fff; padding:4px 12px; font-size:10px; text-transform:uppercase; z-index:2;">
-                    ${p.category}
-                </span>
-
                 <!-- Out of Stock Overlay -->
                 ${isOutOfStock ? `
                 <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
@@ -798,37 +754,24 @@ function renderHomeProducts() {
             ${isOutOfStock ? '' : `</a>`}
 
             <div style="padding:20px;">
-
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-
-                    <div style="font-size:11px; color:#999; font-family:monospace;">
-                        ${p.id}
-                    </div>
-
-                    ${isOutOfStock
-                ? `<button style="background:#ccc;border:none;padding:6px 12px;font-size:11px;cursor:not-allowed;">Add to Cart</button>`
-                : `<button onclick="addToCart('${p.id}')" style="background:#8b0000;color:white;border:none;padding:6px 12px;font-size:11px;cursor:pointer;">Add to Cart</button>`
-            }
-
-                </div>
-
                 <h3 style="font-family:var(--font-serif); font-size:16px; margin:10px 0;">
                     ${p.title}
                 </h3>
 
-                <div>
+<div style="display:flex; justify-content:space-between; align-items:center;">
 
-                    ${p.originalPrice ? `
-                    <span style="text-decoration:line-through; color:#999; margin-right:10px;">
-                        Rs. ${p.originalPrice.toLocaleString()}.00
-                    </span>
-                    ` : ''}
+    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
+        Rs. ${p.price.toLocaleString()}.00
+    </span>
 
-                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
-                        Rs. ${p.price.toLocaleString()}.00
-                    </span>
+    ${isOutOfStock ? '' : `
+    <button onclick="addToCart('${p.id}')" 
+        style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+        +
+    </button>
+    `}
 
-                </div>
+</div>
 
             </div>
 
