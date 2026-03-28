@@ -120,28 +120,29 @@ async function initProductPage() {
         .select("*")
         .eq("product_id", productId)
         .eq("available_for_customer", true)
-        .order('created_at', { ascending: false })
         .single();
 
     if (error || !data) {
-        console.error(error);
+        console.error("Product fetch error:", error);
         window.location.href = "collection.html";
         return;
     }
 
-    // Convert DB record → frontend object
-    window.products = data
-        .filter(p => p.available_for_customer)
-        .map(p => ({
-            id: p.product_id,
-            title: p.title,
-            price: p.price,
-            originalPrice: p.original_price,
-            category: p.category,
-            image: p.image,
-            stock: p.stock ? "in" : "out",
-            created_at: p.created_at
-        }));
+    // Convert DB record → frontend product object
+    window.currentProduct = {
+        id: data.product_id,
+        product_id: data.product_id,
+        title: data.title,
+        price: data.price,
+        originalPrice: data.original_price,
+        category: data.category,
+        image: data.image,
+        images: data.images,
+        description: data.description,
+        bullets: data.bullets,
+        stock: data.stock ? "in" : "out",
+        created_at: data.created_at
+    };
 
     const product = window.currentProduct;
 
@@ -149,7 +150,7 @@ async function initProductPage() {
     document.title = `${product.title} - Andham`;
 
     // Check stock
-    const isOutOfStock = !product.stock;
+    const isOutOfStock = product.stock !== "in";
 
     const stockBadge = document.getElementById("stockBadge");
     if (stockBadge) {
@@ -161,6 +162,7 @@ async function initProductPage() {
     const buyNowBtn = document.querySelector(".btn-secondary");
 
     if (isOutOfStock) {
+
         if (addToCartBtn) {
             addToCartBtn.disabled = true;
             addToCartBtn.textContent = "Out of Stock";
@@ -174,13 +176,13 @@ async function initProductPage() {
             buyNowBtn.style.opacity = "0.5";
             buyNowBtn.style.cursor = "not-allowed";
         }
+
     }
 
     // Render product UI
-    renderProductDetail();
+    loadProductDetail();
     setupGallery();
 }
-
 // Update breadcrumb on collection page
 function updateBreadcrumb(filter = null, search = null) {
     const breadcrumbFilter = document.getElementById('breadcrumbFilter');
@@ -218,7 +220,6 @@ function renderActiveFilter(currentFilter) {
     `).join('');
 }
 
-// Render products grid
 // Render products grid
 function renderProducts(list) {
     const grid = document.getElementById('productsGrid');
@@ -357,6 +358,7 @@ function renderNewArrivals() {
 
     }).join('');
 }
+
 // Product detail functions
 function changeMainImage(src, thumb) {
     const mainImage = document.getElementById('mainImage');
@@ -381,8 +383,6 @@ function updateDetailQty(change) {
 
 async function addToCartFromDetail() {
 
-    console.log("Add to cart clicked");
-
     const qtyEl = document.getElementById('detailQty');
     const quantity = parseInt(qtyEl?.textContent) || 1;
 
@@ -395,8 +395,6 @@ async function addToCartFromDetail() {
 
     const productId = product.id || product.product_id;
 
-    console.log("Checking stock for:", productId);
-
     // Check latest stock
     const { data, error } = await supabaseClient
         .from('products')
@@ -404,59 +402,27 @@ async function addToCartFromDetail() {
         .eq('product_id', productId)
         .single();
 
-    console.log("Stock response:", data, error);
-
     if (error) {
         showToast("Stock check failed");
         return;
     }
+
     if (!data.stock) {
         alert("Sorry! This item just went out of stock");
         return;
     }
 
-    // Load cart
-    let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+    const success = await addToCart(productId, quantity);
 
-    const existing = cart.find(item =>
-        item.id === productId || item.product_id === productId
-    );
-
-    if (existing) {
-        existing.quantity += quantity;
-    } else {
-
-        cart.push({
-            product_id: productId,
-            id: productId,
-            title: product.title,
-            price: product.price,
-            image: product.image,
-            category: product.category,
-            quantity: quantity
-        });
-
+    if (success) {
+        showToast(`Added ${quantity} item(s) to cart`);
+        toggleCart();
     }
 
-    localStorage.setItem('andham_cart', JSON.stringify(cart));
-
-    updateCartUI();
-
-    showToast(`Added ${quantity} item(s) to cart`);
-
-    toggleCart();
-
-    const user = getCurrentUser();
-
-    if (user) {
-        saveCartToDatabase(productId, existing ? existing.quantity : quantity);
-    }
-
-    if (qtyEl) qtyEl.textContent = '1';
+    if (qtyEl) qtyEl.textContent = "1";
 }
-
 async function saveCartToDatabase(productId, quantity) {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     if (!user) return;
 
     try {
@@ -485,32 +451,8 @@ function updateCartItemQty(id, change) {
             cart.splice(itemIndex, 1);
         }
         localStorage.setItem('andham_cart', JSON.stringify(cart));
-        updateCartUI(); // Refresh UI immediately
+        updateCartUI();
         updateCartBadge();
-
-        // Sync to database if logged in (async)
-        const user = getCurrentUser();
-        if (user && cart[itemIndex]) {
-            supabaseClient
-                .from('cart')
-                .upsert({
-                    user_id: user.user_id,
-                    product_id: id,
-                    quantity: cart[itemIndex].quantity,
-                    updated_at: new Date().toISOString()
-                }, {
-                    onConflict: 'user_id,product_id'
-                })
-                .catch(err => console.error('Failed to sync quantity:', err));
-        } else if (user && !cart[itemIndex]) {
-            // Item removed, delete from database
-            supabaseClient
-                .from('cart')
-                .delete()
-                .eq('user_id', user.user_id)
-                .eq('product_id', id)
-                .catch(err => console.error('Failed to delete from cart:', err));
-        }
     }
 }
 
@@ -518,18 +460,18 @@ function removeFromCart(id) {
     let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
     cart = cart.filter(i => i.id !== id && i.product_id !== id);
     localStorage.setItem('andham_cart', JSON.stringify(cart));
-    updateCartUI(); // Refresh UI immediately
+    updateCartUI();
     updateCartBadge();
+}
 
-    // Remove from database if logged in (async)
-    const user = getCurrentUser();
-    if (user) {
-        supabaseClient
-            .from('cart')
-            .delete()
-            .eq('user_id', user.user_id)
-            .eq('product_id', id)
-            .catch(err => console.error('Failed to remove from database cart:', err));
+function updateCartBadge() {
+    const cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+    const badge = document.getElementById('cartBadge');
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    if (badge) {
+        badge.textContent = totalItems;
+        badge.style.display = totalItems > 0 ? 'flex' : 'none';
     }
 }
 
@@ -541,57 +483,62 @@ function updateCartUI() {
     // Get cart from localStorage
     const cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
 
-    if (!badge) return;
-
     // Update badge
-    const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-    badge.textContent = totalQty;
-    badge.style.display = totalQty > 0 ? 'flex' : 'none';
-
-    if (!itemsContainer) return;
+    if (badge) {
+        const totalQty = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+        badge.textContent = totalQty;
+        badge.style.display = totalQty > 0 ? 'flex' : 'none';
+    }
 
     // Render cart items
+    if (!itemsContainer) return;
+
     if (cart.length === 0) {
         itemsContainer.innerHTML = `
             <div class="cart-empty">
-                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
-                <div style="font-family: 'Playfair Display', serif; font-style: italic;">Your cart is empty</div>
+                <div style="font-size:48px;margin-bottom:20px;">🛍️</div>
+                <div style="font-family:'Playfair Display',serif;font-style:italic;">
+                    Your cart is empty
+                </div>
             </div>
         `;
-        if (totalEl) totalEl.textContent = 'Rs. 0.00';
+        if (totalEl) totalEl.textContent = "Rs. 0.00";
         return;
     }
 
     let total = 0;
-
     itemsContainer.innerHTML = cart.map(item => {
         const itemTotal = (item.price || 0) * (item.quantity || 1);
         total += itemTotal;
 
-        const itemId = item.id || item.product_id;
-
         return `
-            <div class="cart-item" style="display: flex; gap: 15px; padding: 20px; border-bottom: 1px solid #eee;">
-                <img src="${item.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}" 
-                     class="cart-item-image" 
-                     style="width: 80px; height: 100px; object-fit: cover;" 
-                     alt="${item.title || 'Product'}"
-                     onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'">
-                <div class="cart-item-details" style="flex: 1;">
-                    <div class="cart-item-category" style="font-size: 10px; color: #8b0000; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${item.category || ''}</div>
-                    <div class="cart-item-id" style="font-size: 10px; color: #999; font-family: monospace; margin-bottom: 3px;">${itemId}</div>
-                    <div class="cart-item-title" style="font-size: 14px; margin-bottom: 5px;">${item.title || 'Unknown Product'}</div>
-                    <div class="cart-item-price" style="color: #8b0000; font-weight: 600; margin-bottom: 10px;">Rs. ${(item.price || 0).toLocaleString()}</div>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <div class="qty-selector" style="display: flex; align-items: center; border: 1px solid #ddd;">
-                            <button class="qty-btn" onclick="updateCartItemQty('${itemId}', -1)" style="width: 30px; height: 30px; border: none; background: #f5f5f5; cursor: pointer;">−</button>
-                            <span class="qty-value" style="padding: 0 15px; font-size: 13px;">${item.quantity || 1}</span>
-                            <button class="qty-btn" onclick="updateCartItemQty('${itemId}', 1)" style="width: 30px; height: 30px; border: none; background: #f5f5f5; cursor: pointer;">+</button>
-                        </div>
-                        <button class="remove-btn" onclick="removeFromCart('${itemId}')" style="background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 12px;">Remove</button>
+        <div class="cart-item" style="display:flex;gap:15px;padding:20px;border-bottom:1px solid #eee;">
+            <img src="${item.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}"
+                 style="width:80px;height:100px;object-fit:cover;"
+                 alt="${item.title}">
+            <div style="flex:1;">
+                <div style="font-size:10px;color:#8b0000;text-transform:uppercase;margin-bottom:5px;">
+                    ${item.category || ''}
+                </div>
+                <div style="font-size:14px;margin-bottom:5px;">${item.title}</div>
+                <div style="color:#8b0000;font-weight:600;margin-bottom:10px;">
+                    Rs. ${(item.price || 0).toLocaleString()}
+                </div>
+                <div style="display:flex;align-items:center;gap:15px;">
+                    <div style="display:flex;align-items:center;border:1px solid #ddd;">
+                        <button onclick="updateCartItemQty('${item.product_id || item.id}', -1)"
+                            style="width:30px;height:30px;border:none;background:#f5f5f5;cursor:pointer;">−</button>
+                        <span style="padding:0 15px;font-size:13px;">${item.quantity}</span>
+                        <button onclick="updateCartItemQty('${item.product_id || item.id}', 1)"
+                            style="width:30px;height:30px;border:none;background:#f5f5f5;cursor:pointer;">+</button>
                     </div>
+                    <button onclick="removeFromCart('${item.product_id || item.id}')"
+                        style="background:none;border:none;color:#999;text-decoration:underline;cursor:pointer;font-size:12px;">
+                        Remove
+                    </button>
                 </div>
             </div>
+        </div>
         `;
     }).join('');
 
@@ -599,7 +546,6 @@ function updateCartUI() {
         totalEl.textContent = `Rs. ${total.toLocaleString()}.00`;
     }
 }
-
 // Navigation and Search
 function toggleNav() {
     const drawer = document.getElementById('navDrawer');
@@ -790,7 +736,6 @@ function loadProductDetail() {
 
     const product = window.currentProduct;
     if (!product) return;
-    console.log(JSON.stringify(product));
 
     // Title
     document.getElementById("detailTitle").textContent = product.title;
@@ -864,76 +809,88 @@ function cleanProductData() {
 
 // Get current user from storage
 function getCurrentUser() {
-    const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
-    return user ? JSON.parse(user) : null;
+    try {
+        const user = localStorage.getItem("andham_user");
+        if (!user) return null;
+
+        const parsed = JSON.parse(user);
+
+        if (!parsed || !parsed.user_id) return null;
+
+        return parsed;
+    } catch (e) {
+        console.error("User parse error:", e);
+        return null;
+    }
 }
 
 // Add to cart (database + localStorage backup)
 async function addToCart(productId, quantity = 1) {
-    const user = getCurrentUser();
-
-    // 1. Fetch product details FIRST (needed for immediate UI display)
+    // Get product details from Supabase
     const { data: product, error: productError } = await supabaseClient
         .from('products')
-        .select('product_id, title, price, image, category')
+        .select('product_id, title, price, image, category, stock')
         .eq('product_id', productId)
         .single();
 
     if (productError || !product) {
         console.error('Product fetch error:', productError);
-        showToast('Product not found', 'error');
+        showToast('Product not found');
         return false;
     }
 
-    // 2. Update localStorage with complete product info
-    let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
-    const existingIndex = cart.findIndex(item => item.id === productId || item.product_id === productId);
-
-    if (existingIndex >= 0) {
-        cart[existingIndex].quantity += quantity;
-    } else {
-        cart.push({
-            id: productId,
-            product_id: productId,
-            title: product.title,
-            price: product.price,
-            image: product.image,
-            category: product.category,
-            quantity: quantity,
-            added_at: new Date().toISOString()
-        });
+    // Check stock
+    if (!product.stock) {
+        showToast('Sorry, this item is out of stock');
+        return false;
     }
 
-    localStorage.setItem('andham_cart', JSON.stringify(cart));
+    try {
+        // Get current cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+        
+        // Find if product already exists in cart
+        const existingIndex = cart.findIndex(item => 
+            item.product_id === productId || item.id === productId
+        );
 
-    // 3. Update UI IMMEDIATELY (before database call)
-    updateCartUI();
-    updateCartBadge();
-
-    // 4. If user logged in, save to database (async, don't wait)
-    if (user) {
-        try {
-            await supabaseClient
-                .from('cart')
-                .upsert({
-                    user_id: user.user_id,
-                    product_id: productId,
-                    quantity: cart.find(item => item.id === productId)?.quantity || quantity,
-                    updated_at: new Date().toISOString()
-                }, {
-                    onConflict: 'user_id,product_id'
-                });
-        } catch (err) {
-            console.error('Database save error:', err);
+        if (existingIndex >= 0) {
+            // Update quantity if already in cart
+            cart[existingIndex].quantity += quantity;
+        } else {
+            // Add new item to cart
+            cart.push({
+                product_id: productId,
+                id: productId,
+                title: product.title,
+                price: product.price,
+                image: product.image,
+                category: product.category,
+                quantity: quantity,
+                added_at: new Date().toISOString()
+            });
         }
-    }
 
-    showToast('Added to cart!', 'success');
-    return true;
+        // Save to localStorage
+        localStorage.setItem('andham_cart', JSON.stringify(cart));
+
+        // Update UI
+        updateCartUI();
+        updateCartBadge();
+
+        showToast('Added to cart!');
+        toggleCart();
+        return true;
+
+    } catch (err) {
+        console.error('Add to cart error:', err);
+        showToast('Failed to add to cart');
+        return false;
+    }
 }
 // Get cart (merge database + localStorage)
 async function getCart() {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     let cartItems = [];
 
     // Get from database if logged in
@@ -991,7 +948,7 @@ async function getCart() {
 }
 // Remove from cart
 async function removeFromCart(productId) {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
 
     // Remove from database if logged in
     if (user) {
@@ -1022,7 +979,7 @@ async function updateCartQuantity(productId, quantity) {
         return;
     }
 
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
 
     // Update localStorage
     let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
@@ -1077,25 +1034,13 @@ async function syncCartOnLogin(userId) {
     localStorage.removeItem('andham_cart');
 }
 
-// Update cart badge count
-function updateCartBadge() {
-    const cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
-    const badge = document.getElementById('cartBadge');
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-    if (badge) {
-        badge.textContent = totalItems;
-        badge.style.display = totalItems > 0 ? 'flex' : 'none';
-    }
-}
-
 // ============================================
 // ORDER FUNCTIONS
 // ============================================
 
 // Create order from cart
 async function createOrder(shippingAddress, paymentMethod) {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     const cartItems = await getCart();
 
     if (cartItems.length === 0) {
@@ -1166,7 +1111,7 @@ async function createOrder(shippingAddress, paymentMethod) {
 
 // Get user's orders
 async function getUserOrders() {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     if (!user) return [];
 
     const { data, error } = await supabaseClient
@@ -1260,8 +1205,8 @@ function toggleCart() {
     }
 }
 
-function updateHeader() {
-    const user = getCurrentUser();
+async function updateHeader() {
+    const user = await getCurrentUser();
     const accountBtn = document.getElementById('accountBtn');
     if (accountBtn && user) {
         accountBtn.innerHTML = `
@@ -1292,8 +1237,8 @@ function handleAccountClick() {
 
 }
 
-function updateHeaderAccount() {
-    const user = getCurrentUser();
+async function updateHeaderAccount() {
+    const user = await getCurrentUser();
     const accountBtn = document.getElementById('accountBtn');
 
     if (!accountBtn) return;
@@ -1332,7 +1277,7 @@ function updateHeaderAccount() {
 
 // Update on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
 
     if (user) {
         // CRITICAL: Sync cart from database when logged in
@@ -1347,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Fetch cart from Supabase and save to localStorage
 async function syncCartFromDatabase() {
-    const user = getCurrentUser();
+    const user = await getCurrentUser();
     if (!user) return;
 
     try {
