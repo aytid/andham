@@ -89,13 +89,14 @@ document.addEventListener('DOMContentLoaded', async function () {
             if (typeof updateCheckoutCards === 'function') updateCheckoutCards();
         }
     }
-    
+
     setupRealTimeValidation();
     checkReturnFromPayment();
 });
 
 // Load Cart
 async function loadCheckoutCart() {
+
     const user = getCurrentUser();
 
     if (!user) {
@@ -104,20 +105,45 @@ async function loadCheckoutCart() {
         return;
     }
 
+    // 🔹 1. Sync localStorage cart → Supabase
+    const localCart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+
+    if (localCart.length > 0) {
+
+        const payload = localCart.map(item => ({
+            user_id: user.user_id,
+            product_id: item.product_id || item.id,
+            quantity: item.quantity,
+            updated_at: new Date().toISOString()
+        }));
+
+        const { error: syncError } = await supabaseClient
+            .from('cart')
+            .upsert(payload, { onConflict: 'user_id,product_id' });
+
+        if (syncError) {
+            console.error("Cart sync error:", syncError);
+        }
+
+        // Prevent syncing again on refresh
+        localStorage.removeItem('andham_cart');
+    }
+
+    // 🔹 2. Load cart from Supabase
     const { data, error } = await supabaseClient
         .from("cart")
         .select(`
-            cart_id,
-            quantity,
+        cart_id,
+        quantity,
+        product_id,
+        products (
             product_id,
-            products (
-                product_id,
-                title,
-                price,
-                image,
-                category
-            )
-        `)
+            title,
+            price,
+            image,
+            category
+        )
+    `)
         .eq("user_id", user.user_id);
 
     if (error) {
@@ -125,20 +151,25 @@ async function loadCheckoutCart() {
         return;
     }
 
+    // 🔹 3. Map database data
     checkoutCart = data.map(item => ({
         product_id: item.product_id,
         quantity: item.quantity,
         product: item.products
     }));
 
+    // 🔹 4. Handle empty cart
     if (checkoutCart.length === 0) {
         document.getElementById('checkoutContainer').style.display = 'none';
         document.getElementById('emptyCart').style.display = 'block';
         return;
     }
 
+    // 🔹 5. Render order summary
     renderOrderSummary();
+
 }
+
 
 // Render Order Summary
 function renderOrderSummary() {
@@ -190,17 +221,17 @@ function validateField(fieldId) {
     const element = document.getElementById(fieldId);
     const formGroup = element?.closest('.form-group');
     const rule = validationRules[fieldId];
-    
+
     if (!element || !rule) return true;
-    
+
     const useDifferentAddress = document.getElementById('useDifferentAddress')?.checked || false;
-    
+
     if (rule.primaryOnly && useDifferentAddress) return true;
     if (rule.secondaryOnly && !useDifferentAddress) return true;
-    
+
     const value = element.value.trim();
     const isValid = !rule.required || (value && rule.validator(value));
-    
+
     if (formGroup) {
         formGroup.classList.remove('error', 'success');
         if (!isValid && value) {
@@ -209,25 +240,25 @@ function validateField(fieldId) {
             formGroup.classList.add('success');
         }
     }
-    
+
     return isValid;
 }
 
 // Main Validation Function
 function validateCheckoutForm() {
     clearAllErrors();
-    
+
     const useDifferentAddress = document.getElementById('useDifferentAddress')?.checked || false;
     const errors = [];
-    
+
     let fieldsToValidate = [];
-    
+
     for (const [fieldId, rule] of Object.entries(validationRules)) {
         if (rule.alwaysRequired) {
             fieldsToValidate.push(fieldId);
             continue;
         }
-        
+
         if (useDifferentAddress) {
             if (rule.secondaryOnly || fieldId === 'email') {
                 fieldsToValidate.push(fieldId);
@@ -238,13 +269,13 @@ function validateCheckoutForm() {
             }
         }
     }
-    
+
     for (const fieldId of fieldsToValidate) {
         const rule = validationRules[fieldId];
         const element = document.getElementById(fieldId);
         const value = element?.value?.trim() || '';
         const formGroup = element?.closest('.form-group');
-        
+
         if (!value) {
             errors.push({ fieldId, type: 'empty', message: rule.message });
             if (formGroup) formGroup.classList.add('error');
@@ -253,29 +284,30 @@ function validateCheckoutForm() {
             if (formGroup) formGroup.classList.add('error');
         }
     }
-    
+
     if (errors.length > 0) {
         const firstError = errors[0];
         const firstElement = document.getElementById(firstError.fieldId);
         const firstGroup = firstElement?.closest('.form-group');
-        
+
         if (firstElement) {
             firstElement.focus();
             firstElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
+
             if (firstGroup) {
                 firstGroup.classList.add('error-shake');
                 setTimeout(() => firstGroup.classList.remove('error-shake'), 500);
             }
         }
-        
+
         const errorCount = errors.length;
-        const message = errorCount === 1 
+        const message = errorCount === 1
             ? `Please fill the required field: ${getFieldLabel(firstError.fieldId)}`
             : `Please fill all required fields (${errorCount} remaining)`;
-        
+
         showValidationToast(message);
-        
+        toggleCoEdit('contact');
+
         errors.slice(1).forEach((error, index) => {
             setTimeout(() => {
                 const group = document.getElementById(error.fieldId)?.closest('.form-group');
@@ -285,10 +317,10 @@ function validateCheckoutForm() {
                 }
             }, (index + 1) * 100);
         });
-        
+
         return false;
     }
-    
+
     return true;
 }
 
@@ -312,7 +344,7 @@ function showValidationToast(message) {
     const toast = document.getElementById('toast');
     toast.textContent = message;
     toast.className = 'toast validation-toast show';
-    
+
     clearTimeout(toast.hideTimeout);
     toast.hideTimeout = setTimeout(() => {
         toast.classList.remove('show', 'validation-toast');
@@ -324,12 +356,12 @@ function setupRealTimeValidation() {
     for (const fieldId of Object.keys(validationRules)) {
         const element = document.getElementById(fieldId);
         if (!element) continue;
-        
+
         element.addEventListener('blur', () => {
             validateField(fieldId);
         });
-        
-        element.addEventListener('input', function() {
+
+        element.addEventListener('input', function () {
             const group = this.closest('.form-group');
             if (group) {
                 group.classList.remove('error', 'error-shake');
@@ -342,10 +374,10 @@ function setupRealTimeValidation() {
             }
         });
     }
-    
+
     const checkbox = document.getElementById('useDifferentAddress');
     if (checkbox) {
-        checkbox.addEventListener('change', function() {
+        checkbox.addEventListener('change', function () {
             clearAllErrors();
             document.querySelectorAll('.form-group').forEach(g => g.classList.remove('success'));
         });
@@ -357,19 +389,19 @@ function toggleAddressForm() {
     const checkbox = document.getElementById("useDifferentAddress");
     const primaryFields = document.getElementById("primaryAddressFields");
     const secondaryField = document.getElementById("secondaryAddressGroup");
-    
+
     clearAllErrors();
     document.querySelectorAll('.form-group').forEach(g => g.classList.remove('success'));
 
     if (checkbox.checked) {
         primaryFields.style.display = "none";
         secondaryField.style.display = "block";
-        
+
         const user = getCurrentUser();
         if (user && user.secondary_address) {
             document.getElementById("address2").value = user.secondary_address;
         }
-        
+
         setTimeout(() => document.getElementById("address2")?.focus(), 100);
     } else {
         primaryFields.style.display = "block";
@@ -464,12 +496,14 @@ function startRazorpayPayment(userId, orderNumber, amount) {
 }
 
 // Create Order
+// Updated Create Order Function with Inventory Management
 async function createOrder(userId, orderNumber, total, paymentId, paymentMethod, paymentStatus) {
     try {
         const useDifferentAddress = document.getElementById('useDifferentAddress')?.checked || false;
-        
+
         let shippingAddress;
-        
+
+        // Construct shipping address object based on toggle
         if (useDifferentAddress) {
             shippingAddress = {
                 name: document.getElementById('fullName').value.trim(),
@@ -496,7 +530,7 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
             };
         }
 
-        // Step 1: Insert order without .select() — RLS blocks read-back with anon key
+        // 1. Insert order record
         const { error: orderError } = await supabaseClient
             .from('orders')
             .insert({
@@ -512,7 +546,7 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
 
         if (orderError) throw orderError;
 
-        // Step 2: Fetch inserted order by order_number to get order_id for order_items
+        // 2. Fetch the generated order_id for line items
         const { data: order, error: fetchError } = await supabaseClient
             .from('orders')
             .select('order_id')
@@ -521,6 +555,7 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
 
         if (fetchError || !order) throw fetchError || new Error('Order not found after insert');
 
+        // 3. Prepare and insert order items
         const orderItems = checkoutCart.map(item => ({
             order_id: order.order_id,
             product_id: String(item.product_id),
@@ -536,14 +571,44 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
 
         if (itemsError) throw itemsError;
 
+        // 4. Update Product Inventory (Quantity and Stock Status)
+        for (const item of checkoutCart) {
+            const pId = String(item.product_id);
+            const qtyBought = parseInt(item.quantity);
+
+            // Fetch current quantity to calculate new balance
+            const { data: pData } = await supabaseClient
+                .from('products')
+                .select('quantity')
+                .eq('product_id', pId)
+                .single();
+
+            if (pData) {
+                const currentQty = parseInt(pData.quantity) || 0;
+                const newQty = Math.max(0, currentQty - qtyBought);
+
+                // Update quantity and toggle stock off if 0
+                await supabaseClient
+                    .from('products')
+                    .update({ 
+                        quantity: newQty,
+                        stock: newQty > 0, // Automatically set stock to false if qty is 0
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('product_id', pId);
+            }
+        }
+
+        // 5. Cleanup cart and local storage
         await supabaseClient.from('cart').delete().eq('user_id', userId);
         localStorage.removeItem('andham_cart');
         localStorage.removeItem('activePayment');
 
+        // Redirect to success page
         window.location.href = `order-success.html?order=${orderNumber}&payment=${paymentId || 'pending'}&method=${paymentMethod}&status=${paymentStatus}`;
 
     } catch (error) {
-        console.error('Create order error:', error);
+        console.error('Order creation/Inventory update error:', error);
         throw error;
     }
 }
@@ -565,7 +630,7 @@ function checkReturnFromPayment() {
     const urlParams = new URLSearchParams(window.location.search);
     const paymentStatus = urlParams.get('payment_status');
     const orderNumber = urlParams.get('order');
-    
+
     if (paymentStatus === 'success' && orderNumber) {
         showToast('Payment completed successfully!');
     } else if (paymentStatus === 'failed') {

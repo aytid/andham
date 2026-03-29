@@ -240,7 +240,7 @@ async function handleSignIn(e) {
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
             const redirect = urlParams.get('redirect') || 'index.html';
-            window.location.href = redirect;
+            window.location.href = "index.html";
         }, 1000);
 
         return true;

@@ -160,13 +160,13 @@
 
         <div class="products-grid" id="newArrivalsGrid"></div>
     </div>
+    
     <div class="home-section" style="background:#fafafa;">
         <div class="section-header">
             <h2 class="section-title">Our Collection</h2>
         </div>
 
         <div class="products-grid" id="homeProductsGrid"></div>
-        <!-- Supabase Configuration-->
         <script>
             async function loadProductsFromSupabase() {
 
@@ -180,7 +180,6 @@
                     return;
                 }
 
-                // Convert DB structure → your existing frontend structure
                 window.products = data
                     .filter(p => p.available_for_customer)
                     .map(p => ({
