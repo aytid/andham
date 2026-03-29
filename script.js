@@ -927,6 +927,7 @@ async function addToCart(productId, quantity = 1) {
     }
 
     showToast('Added to cart!', 'success');
+    toggleCart();
     return true;
 }
 // Get cart (merge database + localStorage)
