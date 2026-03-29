@@ -256,16 +256,16 @@ async function handleSignIn(e) {
 // LOGOUT
 // ============================================
 
-function logout() {
-    // Clear all storage
+async function logout() {
+    if (typeof supabaseClient !== 'undefined') {
+        await supabaseClient.auth.signOut();
+    }
     localStorage.removeItem('andham_user');
     sessionStorage.removeItem('andham_user');
     
-    // Optionally keep cart in localStorage for guest checkout
-    // or clear it: localStorage.removeItem('andham_cart');
+    localStorage.removeItem('andham_cart');
     
     showToast('You have been logged out', 'success');
-    
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1000);
