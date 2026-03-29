@@ -29,6 +29,7 @@ async function handleLogin(e) {
         .select("*")
         .eq("user_name", username)
         .eq("password", password)
+        .eq("type", "admin")
         .single();
 
     if (error || !data) {
