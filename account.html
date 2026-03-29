@@ -920,7 +920,7 @@
         function renderProfile(d) {
             document.getElementById('viewName').textContent = d.user_name || '—';
             document.getElementById('viewEmail').textContent = d.email || '—';
-            document.getElementById('viewPhone').textContent = d.phone ? '📞 ' + d.phone : '';
+            document.getElementById('viewPhone').textContent = d.phone ? '📞 ' + d.phone : 'Phone Number not Provided';
             const av = document.getElementById('userAvatar');
             if (av && d.user_name) av.textContent = d.user_name.charAt(0).toUpperCase();
             renderPrimaryAddr(d);

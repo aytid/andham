@@ -888,8 +888,17 @@ function cleanProductData() {
 
 // Get current user from storage
 function getCurrentUser() {
-    const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
-    return user ? JSON.parse(user) : null;
+    const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+    if (!userStr) return null;
+    
+    try {
+        const user = JSON.parse(userStr);
+        // Ensure we return null if the object exists but has no usable ID
+        if (!user.user_id && !user.id) return null; 
+        return user;
+    } catch (e) {
+        return null;
+    }
 }
 
 // Add to cart (database + localStorage backup)
@@ -1571,5 +1580,111 @@ function goToImage(index){
     });
 
     document.querySelectorAll('.thumbnail-wrapper')[index].classList.add("active");
-
 }
+
+// Add this helper to script.js to handle the return from Google
+async function initGoogleSession() {
+    // 1. Get the session from Supabase after the redirect back
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+        // 2. Check if local storage is already set to avoid loops
+        if (!localStorage.getItem('andham_user')) {
+            const gUser = session.user;
+            
+            // 3. Try to fetch additional profile info from your custom users table
+            const { data: profile } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('email', gUser.email)
+                .maybeSingle();
+
+            // 4. Create the standard andham_user object your code expects
+            const userData = {
+                user_id: profile ? profile.user_id : gUser.id,
+                user_name: profile ? profile.user_name : gUser.user_metadata.full_name,
+                email: gUser.email,
+                phone: profile ? profile.phone : null,
+                address: profile ? profile.address : null,
+                city: profile ? profile.city : null,
+                login_at: new Date().toISOString()
+            };
+
+            // 5. SET LOCAL STORAGE - Now your other code will work
+            localStorage.setItem('andham_user', JSON.stringify(userData));
+
+            // 6. Refresh UI
+            await syncCartFromDatabase();
+            updateHeaderAccount();
+            showToast(`Welcome, ${userData.user_name}!`, 'success');
+        }
+    }
+}
+
+// Ensure this runs on every page load
+document.addEventListener('DOMContentLoaded', initGoogleSession);
+// Add this to script.js
+async function handleGoogleRedirectSession() {
+    // 1. Get the current session from Supabase
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+    if (session && session.user) {
+        // 2. Check if we already have the local storage set to prevent redundant DB calls
+        if (localStorage.getItem('andham_user')) return;
+
+        const gUser = session.user;
+        console.log("Processing Google login for:", gUser.email);
+
+        try {
+            // 3. Fetch the full profile from your 'users' table using the Google email
+            const { data: profile, error: profileError } = await supabaseClient
+                .from('users')
+                .select('*')
+                .eq('email', gUser.email)
+                .maybeSingle();
+
+            let userData;
+
+            if (profile) {
+                // 4. Set localStorage with full database details
+                userData = {
+                    user_id:           profile.user_id,
+                    user_name:         profile.user_name,
+                    email:             profile.email,
+                    phone:             profile.phone,
+                    address:           profile.address || null,
+                    secondary_address: profile.secondary_address || null,
+                    city:              profile.city || null,
+                    state:             profile.state || null,
+                    pincode:           profile.pincode || null,
+                    country:           profile.country || 'India',
+                    login_at:          new Date().toISOString()
+                };
+            } else {
+                // Fallback if the user exists in Auth but not yet in your custom 'users' table
+                userData = {
+                    user_id:   gUser.id,
+                    user_name: gUser.user_metadata.full_name || 'User',
+                    email:     gUser.email,
+                    login_at:  new Date().toISOString()
+                };
+            }
+
+            // 5. SET THE STORAGE - Required for your other code to function
+            localStorage.setItem('andham_user', JSON.stringify(userData));
+            
+            // 6. Refresh UI elements
+            await syncCartFromDatabase();
+            updateHeaderAccount();
+            showToast(`Welcome, ${userData.user_name}!`, 'success');
+
+        } catch (err) {
+            console.error("Error syncing Google profile:", err);
+        }
+    }
+}
+
+// Ensure this runs when any page finishes loading
+document.addEventListener('DOMContentLoaded', () => {
+    handleGoogleRedirectSession();
+});
