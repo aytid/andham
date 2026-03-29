@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
-    <script src="script.js"></script>
     <script src="auth.js"></script>
+    <script src="script.js"></script>
 </head>
 
 <body>
@@ -417,23 +417,17 @@
                 "Rs. " + product.price.toLocaleString();
 
             const original = document.getElementById("detailOriginalPrice");
-            const badge = document.getElementById("discountBadge");
+            const badge    = document.getElementById("discountBadge");
 
-            if (product.originalPrice && product.originalPrice > product.price) {
-
+            if (original && badge && product.originalPrice && product.originalPrice > product.price) {
                 original.style.display = "block";
                 original.textContent = "Rs. " + product.originalPrice.toLocaleString();
-
-                const discount = Math.round(
-                    ((product.originalPrice - product.price) / product.originalPrice) * 100
-                );
-
+                const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
                 badge.style.display = "inline-block";
                 badge.textContent = discount + "% OFF";
-
             } else {
-                original.style.display = "none";
-                badge.style.display = "none";
+                if (original) original.style.display = "none";
+                if (badge)    badge.style.display    = "none";
             }
 
             document.getElementById("mainImage").src = product.image;
@@ -671,15 +665,15 @@
         }
         // Initialize cart badge on load
         document.addEventListener("DOMContentLoaded", async function () {
+            // 1. Sync cart
             const user = getCurrentUser();
             if (user) {
                 await syncCartFromDatabase();
             } else {
                 updateCartUI();
             }
-        });
-        document.addEventListener("DOMContentLoaded", async function () {
 
+            // 2. Load product
             const params = new URLSearchParams(window.location.search);
             const productId = params.get("id");
 
@@ -700,20 +694,21 @@
                 return;
             }
 
-            // store product globally
             window.currentProduct = {
-                id: data.product_id,
-                title: data.title,
-                price: data.price,
+                id:            data.product_id,
+                title:         data.title,
+                price:         data.price,
                 originalPrice: data.original_price,
-                category: data.category,
-                image: data.image,
+                category:      data.category,
+                image:         data.image,
                 images: data.images
                     ? data.images.split(",").map(img => img.trim())
                     : [],
                 description: data.description,
-                bullets: data.bullets ? data.bullets.split(",") : []
+                bullets: data.bullets ? data.bullets.split(",") : [],
+                stock: data.stock
             };
+
             setupGallery();
             renderProductDetail();
         });

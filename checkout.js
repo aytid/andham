@@ -85,7 +85,8 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.getElementById('city').value = data.city || '';
             document.getElementById('pincode').value = data.pincode || '';
             document.getElementById('state').value = data.state || '';
-
+            // Update card display after pre-filling
+            if (typeof updateCheckoutCards === 'function') updateCheckoutCards();
         }
     }
     
@@ -495,7 +496,8 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
             };
         }
 
-        const { data: order, error: orderError } = await supabaseClient
+        // Step 1: Insert order without .select() — RLS blocks read-back with anon key
+        const { error: orderError } = await supabaseClient
             .from('orders')
             .insert({
                 user_id: userId,
@@ -506,11 +508,18 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
                 payment_id: paymentId,
                 status: 'confirmed',
                 payment_status: paymentStatus
-            })
-            .select()
-            .single();
+            });
 
         if (orderError) throw orderError;
+
+        // Step 2: Fetch inserted order by order_number to get order_id for order_items
+        const { data: order, error: fetchError } = await supabaseClient
+            .from('orders')
+            .select('order_id')
+            .eq('order_number', orderNumber)
+            .single();
+
+        if (fetchError || !order) throw fetchError || new Error('Order not found after insert');
 
         const orderItems = checkoutCart.map(item => ({
             order_id: order.order_id,

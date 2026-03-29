@@ -209,14 +209,19 @@ async function handleSignIn(e) {
             return false;
         }
 
-        // Create user session data
+        // Create user session — store full profile so checkout can pre-fill without extra DB call
         const userData = {
-            user_id: user.user_id,
-            user_name: user.user_name,
-            email: user.email,
-            phone: user.phone,
-            login_at: new Date().toISOString(),
-            address: user.address || null
+            user_id:           user.user_id,
+            user_name:         user.user_name,
+            email:             user.email,
+            phone:             user.phone,
+            address:           user.address           || null,
+            secondary_address: user.secondary_address || null,
+            city:              user.city              || null,
+            state:             user.state             || null,
+            pincode:           user.pincode           || null,
+            country:           user.country           || 'India',
+            login_at:          new Date().toISOString()
         };
 
         // Store in appropriate storage
@@ -430,49 +435,3 @@ document.addEventListener('DOMContentLoaded', () => {
         redirectIfLoggedIn();
     }
 });
-
-
-
-// auth.js - Handle login and cart sync
-
-async function handleLogin(e) {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    
-    const { data, error } = await supabaseClient
-        .from("users")
-        .select("*")
-        .eq("user_name", username)
-        .eq("password", password)
-        .single();
-    
-    if (error || !data) {
-        showToast("Invalid credentials");
-        return;
-    }
-    
-    // Save user
-    localStorage.setItem('andham_user', JSON.stringify(data));
-    sessionStorage.setItem('andham_user', JSON.stringify(data));
-    
-    // CRITICAL: Sync cart from database before redirect
-    await syncCartFromDatabase();
-    
-    // Redirect
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('redirect') || 'index.html';
-    window.location.href = redirect;
-}
-
-function logout() {
-    localStorage.removeItem('andham_user');
-    sessionStorage.removeItem('andham_user');
-    localStorage.removeItem('andham_cart'); // Optional: clear cart on logout
-    location.href = 'index.html';
-}
-
-function getCurrentUser() {
-    return JSON.parse(localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user') || 'null');
-}

@@ -29,7 +29,8 @@ async function checkUser() {
     }
 }
 
-checkUser();
+
+
 
 async function getUserProfile() {
     const { data: { user } } = await supabaseClient.auth.getUser();
@@ -61,12 +62,10 @@ async function requireLogin() {
     }
 
 }
+
 async function handleGoogleSession() {
-
     const { data: { user } } = await supabaseClient.auth.getUser();
-
     if (!user) return;
-
     const userData = {
         user_id: user.id,
         user_name: user.user_metadata.full_name,
@@ -79,9 +78,10 @@ async function handleGoogleSession() {
         country: "India",
         login_at: new Date().toISOString()
     };
-
     localStorage.setItem("andham_user", JSON.stringify(userData));
-
 }
 
-handleGoogleSession();
+// Note: checkUser() and handleGoogleSession() are NOT auto-called.
+// The app uses custom auth (users table), not Supabase OAuth.
+// Calling supabaseClient.auth.getUser() on every page causes noisy
+// "No user logged in" console errors since there is no OAuth session.

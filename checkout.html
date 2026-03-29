@@ -14,389 +14,345 @@
     <script src="script.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
+        /* ── Layout ─────────────────────────────────────────── */
         .checkout-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-            padding-top: 80px;
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 80px 16px 60px;
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 40px;
+            grid-template-columns: 1fr 340px;
+            gap: 20px;
+            align-items: start;
+        }
+        @media (max-width: 720px) {
+            .checkout-container { grid-template-columns: 1fr; }
         }
 
-        @media (max-width: 768px) {
-            .checkout-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        /* ── Section card ────────────────────────────────────── */
         .checkout-section {
-            background: #fafafa;
-            padding: 30px;
-            margin-bottom: 20px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
         }
-
         .checkout-section h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0 0 14px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #f0f0f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        /* ── Form groups ─────────────────────────────────────── */
+        .form-group { margin-bottom: 12px; }
         .form-group label {
             display: block;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
-            color: #666;
+            margin-bottom: 5px;
+            color: #888;
         }
-
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 9px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            background: white;
+            font-size: 13px;
+            background: #fafafa;
+            color: #222;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
         }
-
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
-            outline: none;
             border-color: #8b0000;
+            background: #fff;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        @media (max-width: 480px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .payment-methods {
-            display: flex;
-            flex-direction: column;
             gap: 10px;
         }
+        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
 
-        .payment-method {
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: white;
-        }
-
-        .payment-method:hover {
-            border-color: #8b0000;
-        }
-
-        .payment-method.active {
-            border-color: #8b0000;
-            background: #fff5f5;
-        }
-
-        .payment-method input[type="radio"] {
-            margin-right: 15px;
-        }
-
-        .payment-icon {
-            width: 40px;
-            height: 40px;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-
-        .payment-details {
-            display: none;
-            padding: 20px;
-            background: white;
-            border: 1px solid #ddd;
-            margin-top: -1px;
-        }
-
-        .payment-details.active {
-            display: block;
-        }
-
-        .upi-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .upi-option {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .upi-option:hover,
-        .upi-option.active {
-            border-color: #8b0000;
-            background: #fff5f5;
-        }
-
+        /* ── Order summary (right col) ───────────────────────── */
         .order-summary {
-            background: #fafafa;
-            padding: 30px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 16px 18px;
             position: sticky;
-            top: 100px;
+            top: 80px;
             height: fit-content;
         }
-
         .order-summary h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 20px;
-            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0 0 12px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #e5e5e5;
+            border-bottom: 1px solid #f0f0f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
+        /* ── Cart items in summary ───────────────────────────── */
         .cart-summary-item {
             display: flex;
-            gap: 15px;
-            padding: 15px 0;
-            border-bottom: 1px solid #e5e5e5;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            transition: background 0.15s;
         }
-
+        .cart-summary-item:last-child { border-bottom: none; }
         .cart-summary-item img {
-            width: 60px;
-            height: 80px;
+            width: 44px;
+            height: 58px;
             object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
         }
+        .cart-summary-details { flex: 1; min-width: 0; }
+        .cart-summary-title { font-size: 12px; font-weight: 500; color: #222; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cart-summary-meta  { font-size: 11px; color: #888; }
+        .cart-summary-price { font-size: 12px; font-weight: 600; color: #8b0000; margin-top: 2px; }
 
-        .cart-summary-details {
-            flex: 1;
-        }
-
-        .cart-summary-title {
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .cart-summary-meta {
-            font-size: 12px;
-            color: #666;
-        }
-
-        .cart-summary-price {
-            color: #8b0000;
-            font-weight: 600;
-        }
-
+        /* ── Totals ──────────────────────────────────────────── */
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
-            font-size: 14px;
+            padding: 7px 0;
+            font-size: 13px;
+            color: #555;
         }
-
         .summary-row.total {
-            font-size: 18px;
-            font-weight: 600;
-            border-top: 2px solid #333;
-            margin-top: 10px;
-            padding-top: 15px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a1a1a;
+            border-top: 1.5px solid #222;
+            margin-top: 8px;
+            padding-top: 10px;
         }
 
+        /* ── Place order button ──────────────────────────────── */
         .place-order-btn {
             width: 100%;
-            padding: 16px;
+            padding: 13px;
             background: #8b0000;
-            color: white;
+            color: #fff;
             border: none;
-            font-size: 14px;
+            border-radius: 7px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background 0.3s;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
         }
-
-        .place-order-btn:hover {
-            background: #6b0000;
-        }
-
-        .place-order-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
+        .place-order-btn:hover    { background: #6b0000; }
+        .place-order-btn:disabled { background: #ccc; cursor: not-allowed; }
 
         .secure-badge {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
-            font-size: 12px;
-            color: #666;
+            gap: 6px;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #aaa;
         }
 
-        .card-element {
-            padding: 12px;
-            border: 1px solid #ddd;
-            background: white;
-        }
-
-        .error-message {
-            color: #8b0000;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-        }
-
+        /* ── Loading spinner (inside button) ─────────────────── */
         .loading-spinner {
             display: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #fff;
-            border-top-color: transparent;
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 10px;
+            animation: spin 0.8s linear infinite;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .empty-cart {
-            text-align: center;
-            padding: 60px 20px;
-        }
-
-        .empty-cart a {
-            color: #8b0000;
-            text-decoration: underline;
-        }
-
-        .address-toggle {
-            margin-top: 20px;
-        }
-
+        /* ── Address toggle ──────────────────────────────────── */
+        .address-toggle { margin-top: 8px; }
         .address-checkbox {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 14px;
+            gap: 8px;
+            font-size: 13px;
             color: #555;
             cursor: pointer;
         }
+        .address-checkbox input { width: 14px; height: 14px; cursor: pointer; }
 
-        .address-checkbox input {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
+        /* ── Empty cart ──────────────────────────────────────── */
+        .empty-cart { text-align: center; padding: 60px 20px; }
+        .empty-cart a { color: #8b0000; text-decoration: underline; }
 
-        /* Validation Styles */
+        /* ── Validation ──────────────────────────────────────── */
         .form-group.error input,
         .form-group.error select,
         .form-group.error textarea {
             border-color: #dc2626;
             background-color: #fef2f2;
         }
+        .form-group.error label { color: #dc2626; }
+        .form-group.success input,
+        .form-group.success select { border-color: #16a34a; }
 
-        .form-group.error label {
-            color: #dc2626;
-        }
-
-        .error-shake {
-            animation: shake 0.5s ease-in-out;
-        }
-
+        .error-shake { animation: shake 0.5s ease-in-out; }
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            75% {
-                transform: translateX(5px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25%       { transform: translateX(-4px); }
+            75%       { transform: translateX(4px); }
         }
 
-        /* Enhanced Toast for Validation */
-        .toast.validation-toast {
-            background: #dc2626;
-            color: white;
-            font-weight: 500;
-        }
-
-        .toast.validation-toast::before {
-            content: '⚠️ ';
-            margin-right: 8px;
-        }
-
-        /* Field focus animation */
-        .form-group input:focus,
-        .form-group select:focus {
-            transition: all 0.2s ease;
-        }
-
-        .form-group.error input:focus,
-        .form-group.error select:focus {
-            border-color: #dc2626;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-        }
-
-        /* Smooth scroll to first error */
-        html {
-            scroll-behavior: smooth;
-        }
+        .toast.validation-toast { background: #dc2626; color: #fff; font-weight: 500; }
+        .toast.validation-toast::before { content: '⚠️ '; margin-right: 6px; }
 
         .inline-error {
             color: #dc2626;
-            font-size: 12px;
-            margin-top: 6px;
+            font-size: 11px;
+            margin-top: 4px;
             display: flex;
             align-items: center;
             gap: 4px;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.3s ease;
+            transform: translateY(-6px);
+            transition: all 0.2s ease;
+        }
+        .form-group.error .inline-error { opacity: 1; transform: translateY(0); }
+        .inline-error::before { content: '•'; font-size: 8px; }
+
+        html { scroll-behavior: smooth; }
+
+        /* ── Step badge on card headings ─────────────────────── */
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px; height: 20px;
+            background: #8b0000;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+            font-family: 'Inter', sans-serif;
+            flex-shrink: 0;
+        }
+        .checkout-section h2 {
+            display: flex;
+            align-items: center;
         }
 
-        .inline-error::before {
-            content: '•';
-            font-size: 8px;
+        /* ── Account-style info cards ────────────────────────── */
+        .co-card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
         }
+        .co-card-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+        .co-card-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .co-card-info { flex: 1; min-width: 0; }
+        .co-card-primary {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1a1a;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .co-card-primary.empty { color: #bbb; font-style: italic; font-weight: 400; }
+        .co-card-secondary { font-size: 12px; color: #888; margin-top: 2px; }
+        .co-addr-name { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
+        .co-edit-btn {
+            flex-shrink: 0;
+            background: transparent;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #555;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+        .co-edit-btn:hover { border-color: #999; color: #222; }
 
-        .form-group.error .inline-error {
-            opacity: 1;
-            transform: translateY(0);
+        /* ── Edit panel (like account.html) ──────────────────── */
+        .co-edit-panel {
+            display: none;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 12px;
+            padding-top: 4px;
+            animation: coFadeDown 0.18s ease;
         }
+        .co-edit-panel.open { display: block; }
+        @keyframes coFadeDown {
+            from { opacity: 0; transform: translateY(-4px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .co-panel-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .co-confirm-btn {
+            padding: 8px 16px;
+            background: #8b0000;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+        .co-confirm-btn:hover { background: #6b0000; }
+        .co-cancel-btn {
+            padding: 8px 14px;
+            background: transparent;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            color: #666;
+            cursor: pointer;
+        }
+        .co-cancel-btn:hover { border-color: #aaa; color: #333; }
     </style>
 </head>
 
@@ -435,8 +391,7 @@
             <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
                     onclick="toggleNav()">Banaras
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
-                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy <span>›</span></a></div>
         </div>
     </div>
 
@@ -459,81 +414,111 @@
     <div id="toast" class="toast"></div>
 
     <div class="checkout-container" id="checkoutContainer">
-        <!-- Left Column: Forms -->
+        <!-- Left Column: Cards -->
         <div class="checkout-left">
-            <!-- Contact Information -->
-            <div class="checkout-section">
-                <h2>Contact Information</h2>
-                <div class="form-group" id="emailGroup">
-                    <label>Email *</label>
-                    <input type="email" id="email" required placeholder="your@email.com">
-                    <span class="inline-error">Please enter a valid email address</span>
+
+            <!-- ① Contact Information card -->
+            <div class="co-card">
+                <div class="co-card-label">Contact Information</div>
+                <div class="co-card-row">
+                    <div class="co-card-info">
+                        <div class="co-card-primary" id="cardEmail">—</div>
+                        <div class="co-card-secondary" id="cardPhone"></div>
+                    </div>
+                    <button class="co-edit-btn" onclick="toggleCoEdit('contact')">✏️ Edit</button>
                 </div>
-                <div class="form-group" id="phoneGroup">
-                    <label>Phone *</label>
-                    <input type="tel" id="phone" required maxlength="10" placeholder="10-digit mobile number">
-                    <span class="inline-error">Please enter a valid 10-digit phone number</span>
+
+                <!-- Contact edit panel -->
+                <div class="co-edit-panel" id="contactEdit">
+                    <div class="form-row" style="margin-top:12px;">
+                        <div class="form-group" id="emailGroup">
+                            <label>Email *</label>
+                            <input type="email" id="email" required placeholder="your@email.com">
+                            <span class="inline-error">Please enter a valid email address</span>
+                        </div>
+                        <div class="form-group" id="phoneGroup">
+                            <label>Phone *</label>
+                            <input type="tel" id="phone" required maxlength="10" placeholder="10-digit number">
+                            <span class="inline-error">Please enter a valid 10-digit number</span>
+                        </div>
+                    </div>
+                    <div class="co-panel-actions">
+                        <button type="button" class="co-confirm-btn" onclick="confirmContact()">✓ Use this</button>
+                        <button type="button" class="co-cancel-btn" onclick="toggleCoEdit('contact')">Cancel</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Shipping Address -->
-            <div class="checkout-section">
-                <h2>Shipping Address</h2>
-
-                <div class="form-group" id="fullNameGroup">
-                    <label>Full Name *</label>
-                    <input type="text" id="fullName" required placeholder="Enter your full name">
-                    <span class="inline-error">Please enter your full name (min 3 characters)</span>
-                </div>
-
-                <div id="primaryAddressFields">
-
-                    <div class="form-group" id="address1Group">
-                        <label>Address *</label>
-                        <input type="text" id="address1" placeholder="Street address, P.O. box, company name" required>
-                        <span class="inline-error">Please enter your street address</span>
+            <!-- ② Shipping Address card -->
+            <div class="co-card">
+                <div class="co-card-label">Shipping Address</div>
+                <div class="co-card-row">
+                    <div class="co-card-info">
+                        <div class="co-addr-name" id="cardName">—</div>
+                        <div class="co-card-primary empty" id="cardAddr">Not set — click Edit to add address</div>
                     </div>
+                    <button class="co-edit-btn" onclick="toggleCoEdit('address')">✏️ Edit</button>
+                </div>
 
-                    <div class="form-row">
-                        <div class="form-group" id="cityGroup">
-                            <label>City *</label>
-                            <input type="text" id="city" required placeholder="City name">
-                            <span class="inline-error">Please enter your city</span>
+                <!-- Address edit panel -->
+                <div class="co-edit-panel" id="addressEdit">
+                    <div style="margin-top:12px;">
+                        <div class="form-group" id="fullNameGroup">
+                            <label>Full Name *</label>
+                            <input type="text" id="fullName" required placeholder="Enter your full name">
+                            <span class="inline-error">Please enter your full name (min 3 characters)</span>
                         </div>
-                        <div class="form-group" id="stateGroup">
-                            <label>State *</label>
-                            <input type="text" id="state" placeholder="Enter your state" required>
-                            <span class="inline-error">Please enter your state</span>
+
+                        <div id="primaryAddressFields">
+                            <div class="form-group" id="address1Group">
+                                <label>Street / House No. / Area *</label>
+                                <input type="text" id="address1" placeholder="House no., street, area" required>
+                                <span class="inline-error">Please enter your street address</span>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group" id="cityGroup">
+                                    <label>City *</label>
+                                    <input type="text" id="city" required placeholder="City">
+                                    <span class="inline-error">Please enter your city</span>
+                                </div>
+                                <div class="form-group" id="stateGroup">
+                                    <label>State *</label>
+                                    <input type="text" id="state" placeholder="State" required>
+                                    <span class="inline-error">Please enter your state</span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group" id="pincodeGroup">
+                                    <label>PIN Code *</label>
+                                    <input type="text" id="pincode" maxlength="6" required placeholder="6-digit PIN">
+                                    <span class="inline-error">Please enter a valid 6-digit PIN code</span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Country</label>
+                                    <input type="text" value="India" readonly style="background:#f0f0f0;cursor:not-allowed;color:#888;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="address-toggle">
+                            <label class="address-checkbox">
+                                <input type="checkbox" id="useDifferentAddress" onchange="toggleAddressForm()">
+                                <span>Deliver to a different address</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group" id="secondaryAddressGroup" style="display:none;margin-top:10px;">
+                            <label>Alternate Delivery Address</label>
+                            <input type="text" id="address2" placeholder="Full alternate delivery address">
+                            <span class="inline-error">Please enter your delivery address</span>
+                        </div>
+
+                        <div class="co-panel-actions">
+                            <button type="button" class="co-confirm-btn" onclick="confirmAddress()">✓ Use this address</button>
+                            <button type="button" class="co-cancel-btn" onclick="toggleCoEdit('address')">Cancel</button>
                         </div>
                     </div>
-
-                    <div class="form-row">
-                        <div class="form-group" id="pincodeGroup">
-                            <label>PIN Code *</label>
-                            <input type="text" id="pincode" maxlength="6" required placeholder="6-digit PIN">
-                            <span class="inline-error">Please enter a valid 6-digit PIN code</span>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Country</label>
-                            <input type="text" value="India" readonly style="background: #f5f5f5; cursor: not-allowed;">
-                        </div>
-                    </div>
-
                 </div>
-
-                <div class="form-group address-toggle">
-                    <label class="address-checkbox">
-                        <input type="checkbox" id="useDifferentAddress" onchange="toggleAddressForm()">
-                        <span>Deliver to a different address</span>
-                    </label>
-                </div>
-
-                <div class="form-group" id="secondaryAddressGroup" style="display:none;">
-                    <label>Address</label>
-                    <input type="text" id="address2" placeholder="Apartment, suite, unit, building, floor, etc.">
-                </div>
-
             </div>
 
         </div>
@@ -724,7 +709,62 @@
         </div>
     </footer>
 
+    <script>
+        /* ── Card toggle & confirm functions ───────────────────── */
+        function toggleCoEdit(section) {
+            const panel = document.getElementById(section + 'Edit');
+            panel.classList.toggle('open');
+        }
+
+        function confirmContact() {
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const emailEl = document.getElementById('cardEmail');
+            const phoneEl = document.getElementById('cardPhone');
+            emailEl.textContent = email || '—';
+            emailEl.classList.toggle('empty', !email);
+            phoneEl.textContent = phone ? '📞 ' + phone : '';
+            document.getElementById('contactEdit').classList.remove('open');
+        }
+
+        function confirmAddress() {
+            const name   = document.getElementById('fullName').value.trim();
+            const addr   = document.getElementById('address1').value.trim();
+            const city   = document.getElementById('city').value.trim();
+            const state  = document.getElementById('state').value.trim();
+            const pin    = document.getElementById('pincode').value.trim();
+            const useAlt = document.getElementById('useDifferentAddress').checked;
+            const alt    = document.getElementById('address2').value.trim();
+
+            const nameEl = document.getElementById('cardName');
+            const addrEl = document.getElementById('cardAddr');
+
+            nameEl.textContent = name || '—';
+
+            if (useAlt && alt) {
+                addrEl.textContent = alt;
+                addrEl.classList.remove('empty');
+            } else {
+                const parts = [addr, city, state, pin ? pin + ', India' : 'India'].filter(Boolean);
+                if (parts.length > 1) {
+                    addrEl.textContent = parts.join(', ');
+                    addrEl.classList.remove('empty');
+                } else {
+                    addrEl.textContent = 'Not set — click Edit to add address';
+                    addrEl.classList.add('empty');
+                }
+            }
+            document.getElementById('addressEdit').classList.remove('open');
+        }
+
+        /* Called by checkout.js after pre-filling fields from DB */
+        function updateCheckoutCards() {
+            confirmContact();
+            confirmAddress();
+        }
+    </script>
     <script src="checkout.js"></script>
+
 </body>
 
 </html>

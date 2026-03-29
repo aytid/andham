@@ -1,80 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>My Account - Andham</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Inter:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="auth.js"></script>
     <script src="script.js"></script>
-</head>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
 
+        .acct-main {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 24px 16px 100px;
+        }
+        .acct-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(20px, 5vw, 28px);
+            color: #1a1a1a;
+            margin: 0 0 20px;
+        }
+
+        /* Tabs */
+        .acct-tabs {
+            display: flex;
+            border-bottom: 2px solid #ececec;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .acct-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            flex-shrink: 0;
+            background: none;
+            border: none;
+            padding: 11px 18px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #999;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tab-btn.active { color: #8b0000; border-bottom-color: #8b0000; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+        .card-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #aaa;
+            margin-bottom: 12px;
+        }
+
+        /* Compact profile row */
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .user-avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b0000, #c0392b);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; color: #fff;
+            font-family: 'Playfair Display', serif;
+            flex-shrink: 0;
+        }
+        .profile-info { flex: 1; min-width: 0; }
+        .profile-name  { font-size: 15px; font-weight: 600; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .profile-email { font-size: 12px; color: #999; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .profile-phone { font-size: 12px; color: #555; margin-top: 2px; }
+
+        /* Address cards */
+        .addr-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 560px) { .addr-grid { grid-template-columns: 1fr; } }
+        .addr-card {
+            border: 1.5px solid #eee;
+            border-radius: 9px;
+            padding: 14px 16px;
+            background: #fafafa;
+        }
+        .addr-badge {
+            display: inline-block;
+            font-size: 9px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px;
+            padding: 3px 9px; border-radius: 20px; margin-bottom: 8px;
+        }
+        .badge-primary   { background: #fff0f0; color: #8b0000; }
+        .badge-secondary { background: #f0f4ff; color: #1a3a8b; }
+        .addr-text { font-size: 13px; color: #333; line-height: 1.6; word-break: break-word; }
+        .addr-text.empty { color: #ccc; font-style: italic; }
+        .addr-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+        /* Edit panels */
+        .edit-panel {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            border: 1.5px solid #8b0000;
+            border-radius: 9px;
+            background: #fffafa;
+            animation: fadeDown 0.18s ease;
+        }
+        .edit-panel.open { display: block; }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .edit-panel-title {
+            font-size: 12px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            color: #8b0000; margin: 0 0 12px;
+        }
+
+        /* Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+        .fg { display: flex; flex-direction: column; gap: 4px; }
+        .fg.full { grid-column: 1 / -1; }
+        .fg label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #888; }
+        .fg input, .fg textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1.5px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #222;
+            background: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .fg input:focus, .fg textarea:focus { border-color: #8b0000; }
+        .fg textarea { min-height: 80px; resize: vertical; }
+        .form-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px; font-weight: 500;
+            cursor: pointer; border: none;
+            transition: all 0.18s;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #8b0000; color: #fff; }
+        .btn-primary:hover { background: #6b0000; }
+        .btn-outline { background: transparent; color: #555; border: 1.5px solid #ddd; }
+        .btn-outline:hover { border-color: #999; color: #222; }
+        .btn-ghost { background: transparent; color: #c0392b; border: 1.5px solid #e8c0c0; }
+        .btn-ghost:hover { background: #fff0f0; }
+        .btn-sm { padding: 6px 12px; font-size: 11px; }
+
+        /* Orders */
+        .order-card { border: 1px solid #e5e5e5; border-radius: 10px; overflow: hidden; margin-bottom: 14px; background: #fff; }
+        .order-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 13px 16px; background: #f8f8f8; border-bottom: 1px solid #eee; flex-wrap: wrap; gap: 8px; }
+        .order-number { font-family: monospace; font-size: 13px; font-weight: 700; color: #222; }
+        .order-meta { display: flex; gap: 12px; font-size: 11px; color: #888; margin-top: 3px; }
+        .order-status { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .status-confirmed, .status-paid { background: #e8f5e9; color: #2e7d32; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-cancelled { background: #fce4ec; color: #c62828; }
+        .status-delivered { background: #e3f2fd; color: #1565c0; }
+        .order-item-row { display: flex; gap: 12px; padding: 12px 16px; border-bottom: 1px solid #f5f5f5; text-decoration: none; color: inherit; transition: background 0.15s; align-items: center; }
+        .order-item-row:hover { background: #fafafa; }
+        .order-item-row:last-child { border-bottom: none; }
+        .order-item-img { width: 50px; height: 65px; object-fit: cover; border-radius: 5px; flex-shrink: 0; }
+        .order-item-name { font-size: 13px; font-weight: 500; color: #222; margin-bottom: 3px; }
+        .order-item-detail { font-size: 11px; color: #888; }
+        .order-item-price { font-size: 13px; font-weight: 600; color: #8b0000; margin-top: 3px; }
+        .order-footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #f8f8f8; border-top: 1px solid #eee; flex-wrap: wrap; gap: 8px; }
+        .order-total { font-size: 14px; color: #333; }
+        .view-btn { display: inline-block; padding: 7px 15px; background: #8b0000; color: #fff; text-decoration: none; font-size: 11px; border-radius: 5px; font-family: 'Inter', sans-serif; font-weight: 600; transition: background 0.2s; }
+        .view-btn:hover { background: #6b0000; }
+        .no-orders { text-align: center; padding: 50px 20px; color: #aaa; font-size: 14px; }
+
+        /* Misc */
+        .spinner { width: 32px; height: 32px; border: 3px solid #ececec; border-top-color: #8b0000; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 40px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .logout-btn { background: none; border: 1.5px solid #e8c0c0; color: #c0392b; padding: 9px 22px; border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .logout-btn:hover { background: #fff0f0; }
+        #acctToast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(16px); background: #1a1a1a; color: #fff; padding: 10px 22px; border-radius: 7px; font-size: 13px; font-family: 'Inter', sans-serif; z-index: 5000; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none; white-space: nowrap; max-width: 90vw; text-align: center; }
+        #acctToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
 <body>
+
     <header class="header">
         <div class="header-inner">
             <div class="header-left">
                 <button class="icon-btn" onclick="toggleNav()">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="3" y1="12" x2="21" y2="12" />
-                        <line x1="3" y1="6" x2="21" y2="6" />
-                        <line x1="3" y1="18" x2="21" y2="18" />
-                    </svg>
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
             </div>
-
             <a href="index.html" class="logo">Andham</a>
         </div>
     </header>
 
-
     <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
     <div class="nav-drawer" id="navDrawer">
-        <div class="drawer-header">
-            <span class="drawer-title">Menu</span>
-            <button class="close-btn" onclick="toggleNav()">×</button>
-        </div>
+        <div class="drawer-header"><span class="drawer-title">Menu</span><button class="close-btn" onclick="toggleNav()">×</button></div>
         <div class="nav-content">
-            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
-            </div>
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
-                    <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
-                    onclick="toggleNav()">Kanchipattu <span></span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
-                    <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
-                    onclick="toggleNav()">Banaras
-                    <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
-                    <span>›</span></a></div>
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link" onclick="toggleNav()">Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link" onclick="toggleNav()">Banaras <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy <span>›</span></a></div>
         </div>
     </div>
 
-    <!-- Search Modal -->
     <div class="search-modal" id="searchModal">
         <button class="search-close" onclick="toggleSearch()">×</button>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
-                    onkeyup="handleSearch(event)">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput" onkeyup="handleSearch(event)">
             </div>
-            <div
-                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
-                Popular Searches</div>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="quickSearch('Kanchipattu')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
-                <button onclick="quickSearch('Gadwal')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Banaras')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
-                <button onclick="quickSearch('Fancy')"
-                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
+            <div style="font-size:12px;color:#999;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;">Popular Searches</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;">
+                <button onclick="quickSearch('Kanchipattu')" style="padding:8px 16px;border:1px solid #e5e5e5;background:none;cursor:pointer;font-size:13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')" style="padding:8px 16px;border:1px solid #e5e5e5;background:none;cursor:pointer;font-size:13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')" style="padding:8px 16px;border:1px solid #e5e5e5;background:none;cursor:pointer;font-size:13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')" style="padding:8px 16px;border:1px solid #e5e5e5;background:none;cursor:pointer;font-size:13px;">Fancy</button>
             </div>
             <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
@@ -82,278 +259,168 @@
 
     <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-drawer" id="cartDrawer">
-        <div class="drawer-header">
-            <span class="drawer-title">Shopping Cart</span>
-            <button class="close-btn" onclick="toggleCart()">×</button>
-        </div>
+        <div class="drawer-header"><span class="drawer-title">Shopping Cart</span><button class="close-btn" onclick="toggleCart()">×</button></div>
         <div class="cart-items" id="cartItems"></div>
         <div class="cart-footer">
-            <div class="cart-subtotal">
-                <span>Subtotal</span>
-                <span id="cartTotal">Rs. 0.00</span>
-            </div>
+            <div class="cart-subtotal"><span>Subtotal</span><span id="cartTotal">Rs. 0.00</span></div>
             <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast"
-        style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 15px 30px; border-radius: 4px; z-index: 3000; opacity: 0; transition: all 0.3s; font-family: 'Inter', sans-serif;">
-    </div>
+    <div id="acctToast"></div>
 
-    <main style="max-width: 900px; margin: 40px auto; padding: 0 20px;">
-        <h1 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">My Account</h1>
+    <main class="acct-main">
+        <h1 class="acct-title">My Account</h1>
 
-        <!-- Tab Navigation -->
-        <div class="account-tabs">
-            <button class="tab-btn active" onclick="switchTab('profile')">My Profile</button>
-            <button class="tab-btn" onclick="switchTab('orders')">My Orders</button>
+        <div class="acct-tabs">
+            <button class="tab-btn active" id="tabProfile" onclick="switchTab('profile')">Profile &amp; Addresses</button>
+            <button class="tab-btn" id="tabOrders" onclick="switchTab('orders')">My Orders</button>
         </div>
 
-        <!-- My Profile Tab -->
+        <!-- PROFILE & ADDRESS TAB -->
         <div id="profileTab" class="tab-content active">
-            <div class="profile-section">
-                <h3>Profile Information</h3>
 
-                <div class="success-message" id="profileSuccess">Profile updated successfully!</div>
-                <div class="error-message" id="profileError">Error updating profile. Please try again.</div>
-
-                <!-- View Mode -->
-                <div id="profileView">
-
-                    <div class="profile-grid">
-
-                        <div class="profile-field">
-                            <label>Full Name</label>
-                            <div class="value" id="viewName">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>Email Address</label>
-                            <div class="value" id="viewEmail">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>Phone Number</label>
-                            <div class="value" id="viewPhone">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>Primary Address</label>
-                            <div class="value" id="viewAddress">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>City</label>
-                            <div class="value" id="viewCity">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>Pincode</label>
-                            <div class="value" id="viewPincode">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>State</label>
-                            <div class="value" id="viewState">-</div>
-                        </div>
-
-                        <div class="profile-field">
-                            <label>Country</label>
-                            <div class="value" id="viewCountry">India</div>
-                        </div>
-
+            <!-- Compact profile card -->
+            <div class="card">
+                <div class="card-label">Account</div>
+                <div class="profile-row">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="profile-info">
+                        <div class="profile-name"  id="viewName">—</div>
+                        <div class="profile-email" id="viewEmail">—</div>
+                        <div class="profile-phone" id="viewPhone"></div>
                     </div>
-
-                    <div class="profile-field" style="margin-top:20px;">
-                        <label>Secondary Address</label>
-                        <div class="value" id="viewSecondaryAddress">-</div>
-                    </div>
-
-                    <button class="edit-profile-btn" onclick="toggleEditProfile()">Edit Profile</button>
-
+                    <button class="btn btn-outline btn-sm" onclick="toggleProfileEdit()" style="flex-shrink:0;">✏️ Edit</button>
                 </div>
 
-                <!-- Edit Mode -->
-                <div id="profileEdit" class="edit-profile-form">
-
+                <!-- Edit panel -->
+                <div class="edit-panel" id="profileEdit">
+                    <p class="edit-panel-title">Edit Profile</p>
                     <form id="profileForm" onsubmit="saveProfile(event)">
-
-                        <div class="profile-grid">
-
-                            <div class="profile-field">
-                                <label>Full Name</label>
-                                <input type="text" id="editName" name="user_name" required>
-                            </div>
-
-                            <div class="profile-field">
-                                <label>Email Address</label>
-                                <input type="email" id="editEmail" name="email" required>
-                            </div>
-
-                            <div class="profile-field">
-                                <label>Phone Number</label>
-                                <input type="tel" id="editPhone" name="phone">
-                            </div>
-
-                            <div class="profile-field">
-                                <label>Primary Address</label>
-                                <input type="text" id="editAddress" name="address">
-                            </div>
-
-                            <div class="profile-field">
-                                <label>City</label>
-                                <input type="text" id="editCity" name="city">
-                            </div>
-
-                            <div class="profile-field">
-                                <label>Pincode</label>
-                                <input type="text" id="editPincode" name="pincode">
-                            </div>
-
-                            <div class="profile-field">
-                                <label>State</label>
-                                <input type="text" id="editState" name="state">
-                            </div>
-
-                            <div class="profile-field">
-                                <label>Country</label>
-                                <input type="text" id="editCountry" name="country" value="India">
-                            </div>
-
+                        <div class="form-grid">
+                            <div class="fg"><label>Full Name</label><input type="text" id="editName" required placeholder="Your full name"></div>
+                            <div class="fg"><label>Email</label><input type="email" id="editEmail" required placeholder="your@email.com"></div>
+                            <div class="fg"><label>Phone</label><input type="tel" id="editPhone" placeholder="10-digit number"></div>
+                            <div class="fg"><label>Country</label><input type="text" id="editCountry" placeholder="Country" value="India"></div>
                         </div>
-
-                        <div class="profile-field" style="margin-top:20px;">
-                            <label>Secondary Address</label>
-                            <input type="text" id="editSecondaryAddress" name="secondary_address">
-                        </div>
-
                         <div class="form-actions">
-                            <button type="submit" class="save-btn">Save Changes</button>
-                            <button type="button" class="cancel-btn" onclick="toggleEditProfile()">Cancel</button>
+                            <button type="submit" class="btn btn-primary" id="saveProfileBtn">Save</button>
+                            <button type="button" class="btn btn-outline" onclick="toggleProfileEdit()">Cancel</button>
                         </div>
-
                     </form>
-
                 </div>
             </div>
 
-            <div class="logout-section">
-                <button onclick="logout()" class="logout-btn">Logout</button>
+            <!-- Address cards -->
+            <div class="card">
+                <div class="card-label">Addresses</div>
+                <div class="addr-grid">
+                    <div class="addr-card">
+                        <span class="addr-badge badge-primary">Primary</span>
+                        <div class="addr-text empty" id="viewPrimaryAddr">Not added yet</div>
+                        <div class="addr-actions">
+                            <button class="btn btn-outline btn-sm" onclick="openAddrEdit('primary')">✏️ Edit</button>
+                            <button class="btn btn-ghost btn-sm" onclick="clearAddr('primary')">🗑</button>
+                        </div>
+                    </div>
+                    <div class="addr-card">
+                        <span class="addr-badge badge-secondary">Secondary</span>
+                        <div class="addr-text empty" id="viewSecondaryAddr">Not added yet</div>
+                        <div class="addr-actions">
+                            <button class="btn btn-outline btn-sm" onclick="openAddrEdit('secondary')">✏️ Edit</button>
+                            <button class="btn btn-ghost btn-sm" onclick="clearAddr('secondary')">🗑</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Primary address form (separate DB columns) -->
+                <div class="edit-panel" id="primaryAddrEdit">
+                    <p class="edit-panel-title">Edit Primary Address</p>
+                    <form id="primaryAddrForm" onsubmit="savePrimaryAddr(event)">
+                        <div class="form-grid">
+                            <div class="fg full"><label>Street / House No. / Area</label><input type="text" id="addrStreet" placeholder="e.g. 12, MG Road, Banjara Hills" required></div>
+                            <div class="fg"><label>City</label><input type="text" id="addrCity" placeholder="City" required></div>
+                            <div class="fg"><label>State</label><input type="text" id="addrState" placeholder="State" required></div>
+                            <div class="fg"><label>Pincode</label><input type="text" id="addrPincode" placeholder="6-digit pincode" maxlength="6" required></div>
+                            <div class="fg"><label>Country</label><input type="text" id="addrCountry" value="India"></div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="savePrimaryAddrBtn">Save</button>
+                            <button type="button" class="btn btn-outline" onclick="closeAddrEdit('primary')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Secondary address form (plain string) -->
+                <div class="edit-panel" id="secondaryAddrEdit">
+                    <p class="edit-panel-title">Edit Secondary Address</p>
+                    <form id="secondaryAddrForm" onsubmit="saveSecondaryAddr(event)">
+                        <div class="fg">
+                            <label>Full Address</label>
+                            <textarea id="addrSecondaryText" placeholder="Enter your complete secondary / alternate address" required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="saveSecondaryAddrBtn">Save</button>
+                            <button type="button" class="btn btn-outline" onclick="closeAddrEdit('secondary')">Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
+
+            <div><button onclick="logout()" class="logout-btn">Sign Out</button></div>
         </div>
 
-        <!-- My Orders Tab -->
+        <!-- ORDERS TAB -->
         <div id="ordersTab" class="tab-content">
-            <div class="orders-section">
-                <h3>Order History</h3>
-                <div id="loadingSpinner" class="loading-spinner" style="display: block; margin: 40px auto;"></div>
-                <div id="orderList"></div>
-            </div>
+            <div id="ordersSpinner" class="spinner" style="display:none;"></div>
+            <div id="orderList"></div>
         </div>
     </main>
-    <div class="mobile-nav">
 
+    <!-- Mobile nav -->
+    <div class="mobile-nav">
         <a href="index.html" class="mobile-nav-item">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 50 50">
-                <path
-                    d="M 24.960938 2.1015625 A 1.0001 1.0001 0 0 0 24.386719 2.3105469 L 1.3867188 20.210938 A 1.0001 1.0001 0 1 0 2.6132812 21.789062 L 4 20.708984 L 4 48 A 1.0001 1.0001 0 0 0 5 49 L 18.832031 49 A 1.0001 1.0001 0 0 0 19.158203 49 L 30.832031 49 A 1.0001 1.0001 0 0 0 31.158203 49 L 45 49 A 1.0001 1.0001 0 0 0 46 48 L 46 20.708984 L 47.386719 21.789062 A 1.0001 1.0001 0 1 0 48.613281 20.210938 L 25.613281 2.3105469 A 1.0001 1.0001 0 0 0 24.960938 2.1015625 z M 25 4.3671875 L 44 19.154297 L 44 47 L 32 47 L 32 29 A 1.0001 1.0001 0 0 0 31 28 L 19 28 A 1.0001 1.0001 0 0 0 18 29 L 18 47 L 6 47 L 6 19.154297 L 25 4.3671875 z M 20 30 L 30 30 L 30 47 L 20 47 L 20 30 z">
-                </path>
+                <path d="M 24.960938 2.1015625 A 1.0001 1.0001 0 0 0 24.386719 2.3105469 L 1.3867188 20.210938 A 1.0001 1.0001 0 1 0 2.6132812 21.789062 L 4 20.708984 L 4 48 A 1.0001 1.0001 0 0 0 5 49 L 18.832031 49 A 1.0001 1.0001 0 0 0 19.158203 49 L 30.832031 49 A 1.0001 1.0001 0 0 0 31.158203 49 L 45 49 A 1.0001 1.0001 0 0 0 46 48 L 46 20.708984 L 47.386719 21.789062 A 1.0001 1.0001 0 1 0 48.613281 20.210938 L 25.613281 2.3105469 A 1.0001 1.0001 0 0 0 24.960938 2.1015625 z M 25 4.3671875 L 44 19.154297 L 44 47 L 32 47 L 32 29 A 1.0001 1.0001 0 0 0 31 28 L 19 28 A 1.0001 1.0001 0 0 0 18 29 L 18 47 L 6 47 L 6 19.154297 L 25 4.3671875 z M 20 30 L 30 30 L 30 47 L 20 47 L 20 30 z"/>
             </svg>
             <span>Home</span>
         </a>
-
         <button class="mobile-nav-item" onclick="toggleSearch()">
-            <svg viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <span>Search</span>
         </button>
-
         <button class="mobile-nav-item" onclick="toggleCart()">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000"
-                stroke-linecap="round" stroke-linejoin="round" id="Shopping-Cart--Streamline-Lucide" height="24"
-                width="24">
-                <desc>
-                    Shopping Cart Streamline Icon: https://streamlinehq.com
-                </desc>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" height="24" width="24">
                 <path d="M7 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
                 <path d="M18 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
-                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95 -1.57l1.65 -7.43H5.12"
-                    stroke-width="2"></path>
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" stroke-width="2"></path>
             </svg>
             <span>Cart</span>
         </button>
-
         <button class="mobile-nav-item" onclick="handleAccountClick()">
-            <?xml version="1.0" encoding="utf-8"?>
-            <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.71997 11.28 8.71997 9.50998C8.71997 7.69998 10.18 6.22998 12 6.22998C13.81 6.22998 15.28 7.69998 15.28 9.50998C15.27 11.28 13.88 12.72 12.12 12.78Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path
-                    d="M18.74 19.3801C16.96 21.0101 14.6 22.0001 12 22.0001C9.40001 22.0001 7.04001 21.0101 5.26001 19.3801C5.36001 18.4401 5.96001 17.5201 7.03001 16.8001C9.77001 14.9801 14.25 14.9801 16.97 16.8001C18.04 17.5201 18.64 18.4401 18.74 19.3801Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                <path
-                    d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.72 11.28 8.72 9.51C8.72 7.7 10.18 6.23 12 6.23C13.81 6.23 15.28 7.7 15.28 9.51C15.27 11.28 13.88 12.72 12.12 12.78Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.74 19.38C16.96 21.01 14.6 22 12 22C9.4 22 7.04 21.01 5.26 19.38C5.36 18.44 5.96 17.52 7.03 16.8C9.77 14.98 14.25 14.98 16.97 16.8C18.04 17.52 18.64 18.44 18.74 19.38Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <span>Profile</span>
         </button>
-
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
-
-            <!-- Brand -->
             <div class="footer-block">
                 <h3 class="footer-logo">Andham</h3>
-                <p class="footer-text">
-                    Discover timeless elegance with our curated collection of
-                    handcrafted sarees. Designed with tradition and styled for
-                    modern women.
-                </p>
+                <p class="footer-text">Discover timeless elegance with our curated collection of handcrafted sarees.</p>
                 <div class="footer-social">
-
-                    <!-- Instagram -->
                     <a href="https://instagram.com/" class="social-icon" target="_blank" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5"></rect>
-                            <circle cx="12" cy="12" r="4"></circle>
-                            <circle cx="17.5" cy="6.5" r="1"></circle>
-                        </svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg>
                     </a>
-
-                    <!-- YouTube -->
-                    <a href="https://youtube.com/" class="social-icon" target="_blank" aria-label="YouTube">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 
-            0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 
-            1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 
-            8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 
-            15.5v-7l6 3.5-6 3.5z" />
-                        </svg>
+                    <a href="https://wa.me/919876543210" class="social-icon" target="_blank" aria-label="WhatsApp">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326z"/></svg>
                     </a>
-
-                    <!-- WhatsApp -->
-                    <a href="https://wa.me/919876543210?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
-                        class="social-icon" target="_blank" aria-label="WhatsApp">
-
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                            class="bi bi-whatsapp" viewBox="0 0 16 16">
-                            <path
-                                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
-                        </svg>
-
-                    </a>
-
                 </div>
             </div>
-
-            <!-- Shop -->
             <div class="footer-block">
                 <h3>Shop</h3>
                 <ul class="footer-links">
@@ -364,420 +431,340 @@
                     <li><a href="collection.html">All Collections</a></li>
                 </ul>
             </div>
-
-            <!-- Support -->
-            <div class="footer-block">
-                <h3>Customer Support</h3>
-                <ul class="footer-links">
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="shipping.html">Shipping & Returns</a></li>
-                    <li><a href="sizeguide.html">Size Guide</a></li>
-                    <li><a href="faq.html">FAQs</a></li>
-                </ul>
-            </div>
-
-            <!-- Company -->
             <div class="footer-block">
                 <h3>Company</h3>
                 <ul class="footer-links">
                     <li><a href="#">About Andham</a></li>
                     <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
+                    <li><a href="#">Terms &amp; Conditions</a></li>
                 </ul>
             </div>
-
         </div>
-
         <div class="footer-bottom">
-            <div class="footer-copyright">
-                © 2026 Andham. All rights reserved.
-            </div>
+            <div class="footer-copyright">© 2026 Andham. All rights reserved.</div>
         </div>
     </footer>
 
     <script>
-        async function loadAccount() {
+        /* Auth guard */
+        (function () {
+            const u = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+            if (!u) window.location.href = 'login.html?redirect=account.html';
+        })();
 
-            const user = await getCurrentUser();
+        let userData = null;
 
-            if (!user) {
-                window.location.href = "login.html";
-                return;
+        /* Toast */
+        function toast(msg) {
+            const el = document.getElementById('acctToast');
+            el.textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        /* Tab switch */
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+            document.getElementById(name + 'Tab').classList.add('active');
+            if (name === 'orders' && !document.getElementById('orderList').innerHTML) loadOrders();
+        }
+
+        /* Render profile (compact row) */
+        function renderProfile(d) {
+            document.getElementById('viewName').textContent  = d.user_name || '—';
+            document.getElementById('viewEmail').textContent = d.email     || '—';
+            document.getElementById('viewPhone').textContent = d.phone     ? '📞 ' + d.phone : '';
+            const av = document.getElementById('userAvatar');
+            if (av && d.user_name) av.textContent = d.user_name.charAt(0).toUpperCase();
+            renderPrimaryAddr(d);
+            renderSecondaryAddr(d);
+        }
+
+        /* Primary address: assemble separate DB columns */
+        function renderPrimaryAddr(d) {
+            const el = document.getElementById('viewPrimaryAddr');
+            const parts = [d.address, d.city, d.state, d.pincode, d.country].filter(p => p && p.trim());
+            if (parts.length) {
+                el.textContent = parts.join(', ');
+                el.classList.remove('empty');
+            } else {
+                el.textContent = 'Not added yet';
+                el.classList.add('empty');
             }
-
-            document.getElementById("accountEmail").innerText = user.email;
-            document.getElementById("accountName").innerText = user.user_metadata.full_name;
-
         }
 
-        loadAccount();
-        // Auth functions
-        if (typeof isLoggedIn !== 'function') {
-            window.isLoggedIn = function () {
-                return !!(localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user'));
-            };
-        }
-
-        if (typeof getCurrentUser !== 'function') {
-            window.getCurrentUser = function () {
-                const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
-                return user ? JSON.parse(user) : null;
-            };
-        }
-
-        if (typeof logout !== 'function') {
-            window.logout = function () {
-                localStorage.removeItem('andham_user');
-                sessionStorage.removeItem('andham_user');
-                window.location.href = 'index.html';
-            };
-        }
-
-        // Check login
-        if (!isLoggedIn()) {
-            window.location.href = 'login.html?redirect=account.html';
-        }
-
-        let currentUserData = null;
-
-        // Load user profile from Supabase
-        async function loadUserProfile() {
-            if (typeof supabaseClient === 'undefined') {
-                showToast('Database not connected');
-                return;
+        /* Secondary address: plain varchar */
+        function renderSecondaryAddr(d) {
+            const el = document.getElementById('viewSecondaryAddr');
+            if (d.secondary_address && d.secondary_address.trim()) {
+                el.textContent = d.secondary_address;
+                el.classList.remove('empty');
+            } else {
+                el.textContent = 'Not added yet';
+                el.classList.add('empty');
             }
+        }
 
+        /* Toggle profile edit */
+        function toggleProfileEdit() {
+            const panel = document.getElementById('profileEdit');
+            const isOpen = panel.classList.contains('open');
+            panel.classList.toggle('open', !isOpen);
+            if (!isOpen && userData) {
+                document.getElementById('editName').value    = userData.user_name || '';
+                document.getElementById('editEmail').value   = userData.email     || '';
+                document.getElementById('editPhone').value   = userData.phone     || '';
+                document.getElementById('editCountry').value = userData.country   || 'India';
+            }
+        }
+
+        /* ── Save profile ──────────────────────────────────────────
+           NOTE: No .select().single() — Supabase RLS blocks read-back
+           with anon key. Apply payload to userData locally instead.   */
+        async function saveProfile(e) {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user || !user.user_id) { toast('Not logged in'); return; }
+
+            const btn = document.getElementById('saveProfileBtn');
+            btn.textContent = 'Saving…'; btn.disabled = true;
+
+            const payload = {
+                user_name: document.getElementById('editName').value.trim(),
+                email:     document.getElementById('editEmail').value.trim(),
+                phone:     document.getElementById('editPhone').value.trim(),
+                country:   document.getElementById('editCountry').value.trim() || 'India'
+            };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update(payload)
+                    .eq('user_id', user.user_id);
+                if (error) throw error;
+                userData = { ...userData, ...payload };
+                renderProfile(userData);
+                localStorage.setItem('andham_user', JSON.stringify({ ...user, ...userData }));
+                document.getElementById('profileEdit').classList.remove('open');
+                toast('Profile updated ✓');
+            } catch (err) {
+                console.error(err);
+                toast('Failed to save. Try again.');
+            } finally {
+                btn.textContent = 'Save'; btn.disabled = false;
+            }
+        }
+
+        /* Open address edit panel */
+        function openAddrEdit(type) {
+            document.getElementById('primaryAddrEdit').classList.remove('open');
+            document.getElementById('secondaryAddrEdit').classList.remove('open');
+            if (type === 'primary') {
+                document.getElementById('addrStreet').value  = userData?.address  || '';
+                document.getElementById('addrCity').value    = userData?.city     || '';
+                document.getElementById('addrState').value   = userData?.state    || '';
+                document.getElementById('addrPincode').value = userData?.pincode  || '';
+                document.getElementById('addrCountry').value = userData?.country  || 'India';
+                const p = document.getElementById('primaryAddrEdit');
+                p.classList.add('open');
+                p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                document.getElementById('addrSecondaryText').value = userData?.secondary_address || '';
+                const p = document.getElementById('secondaryAddrEdit');
+                p.classList.add('open');
+                p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function closeAddrEdit(type) {
+            document.getElementById(type === 'primary' ? 'primaryAddrEdit' : 'secondaryAddrEdit').classList.remove('open');
+        }
+
+        /* ── Save primary address (separate DB columns) ────────── */
+        async function savePrimaryAddr(e) {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user || !user.user_id) { toast('Not logged in'); return; }
+
+            const btn = document.getElementById('savePrimaryAddrBtn');
+            btn.textContent = 'Saving…'; btn.disabled = true;
+
+            const payload = {
+                address: document.getElementById('addrStreet').value.trim(),
+                city:    document.getElementById('addrCity').value.trim(),
+                state:   document.getElementById('addrState').value.trim(),
+                pincode: document.getElementById('addrPincode').value.trim(),
+                country: document.getElementById('addrCountry').value.trim() || 'India'
+            };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update(payload)
+                    .eq('user_id', user.user_id);
+                if (error) throw error;
+                userData = { ...userData, ...payload };
+                renderPrimaryAddr(userData);
+                localStorage.setItem('andham_user', JSON.stringify({ ...user, ...userData }));
+                closeAddrEdit('primary');
+                toast('Primary address saved ✓');
+            } catch (err) {
+                console.error(err);
+                toast('Failed to save. Try again.');
+            } finally {
+                btn.textContent = 'Save'; btn.disabled = false;
+            }
+        }
+
+        /* ── Save secondary address (plain varchar string) ─────── */
+        async function saveSecondaryAddr(e) {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user || !user.user_id) { toast('Not logged in'); return; }
+
+            const btn = document.getElementById('saveSecondaryAddrBtn');
+            btn.textContent = 'Saving…'; btn.disabled = true;
+
+            const payload = {
+                secondary_address: document.getElementById('addrSecondaryText').value.trim()
+            };
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update(payload)
+                    .eq('user_id', user.user_id);
+                if (error) throw error;
+                userData = { ...userData, ...payload };
+                renderSecondaryAddr(userData);
+                localStorage.setItem('andham_user', JSON.stringify({ ...user, ...userData }));
+                closeAddrEdit('secondary');
+                toast('Secondary address saved ✓');
+            } catch (err) {
+                console.error(err);
+                toast('Failed to save. Try again.');
+            } finally {
+                btn.textContent = 'Save'; btn.disabled = false;
+            }
+        }
+
+        /* ── Clear address ─────────────────────────────────────── */
+        async function clearAddr(type) {
+            if (!confirm('Remove this address?')) return;
             const user = getCurrentUser();
             if (!user || !user.user_id) return;
 
+            const payload = type === 'primary'
+                ? { address: null, city: null, state: null, pincode: null }
+                : { secondary_address: null };
+
             try {
-                const { data, error } = await supabaseClient
+                const { error } = await supabaseClient
                     .from('users')
-                    .select('*')
-                    .eq('user_id', user.user_id)
-                    .single();
-
-                if (error) {
-                    console.error('Error fetching user:', error);
-                    // Fallback to localStorage data
-                    populateProfileView(user);
-                    return;
-                }
-
-                currentUserData = data;
-                populateProfileView(data);
-                populateEditForm(data);
-
-                // Update localStorage with fresh data
-                localStorage.setItem('andham_user', JSON.stringify({
-                    ...user,
-                    ...data
-                }));
-
+                    .update(payload)
+                    .eq('user_id', user.user_id);
+                if (error) throw error;
+                userData = { ...userData, ...payload };
+                type === 'primary' ? renderPrimaryAddr(userData) : renderSecondaryAddr(userData);
+                localStorage.setItem('andham_user', JSON.stringify({ ...user, ...userData }));
+                closeAddrEdit(type);
+                toast('Address removed.');
             } catch (err) {
-                console.error('Error:', err);
-                populateProfileView(user);
+                console.error(err);
+                toast('Failed. Try again.');
             }
         }
 
-        // Populate profile view
-        function populateProfileView(data) {
-            const setValue = (id, value) => {
-                const el = document.getElementById(id);
-                if (el) {
-                    if (value && value.trim() !== '') {
-                        el.textContent = value;
-                        el.classList.remove('empty');
-                    } else {
-                        el.textContent = 'Not provided';
-                        el.classList.add('empty');
-                    }
-                }
-            };
-
-            setValue('viewName', data.user_name);
-            setValue('viewEmail', data.email);
-            setValue('viewPhone', data.phone);
-            setValue('viewAddress', data.address);
-            setValue('viewSecondaryAddress', data.secondary_address);
-            setValue('viewCity', data.city);
-            setValue('viewState', data.state);
-            setValue('viewPincode', data.pincode);
-            setValue('viewCountry', data.country || 'India');
-        }
-
-        // Populate edit form
-        function populateEditForm(data) {
-            document.getElementById('editName').value = data.user_name || '';
-            document.getElementById('editEmail').value = data.email || '';
-            document.getElementById('editPhone').value = data.phone || '';
-            document.getElementById('editAddress').value = data.address || '';
-            document.getElementById('editSecondaryAddress').value = data.secondary_address || '';
-            document.getElementById('editCity').value = data.city || '';
-            document.getElementById('editState').value = data.state || '';
-            document.getElementById('editPincode').value = data.pincode || '';
-            document.getElementById('editCountry').value = data.country || 'India';
-        }
-
-        // Toggle edit profile form
-        function toggleEditProfile() {
-            const viewMode = document.getElementById('profileView');
-            const editMode = document.getElementById('profileEdit');
-
-            if (editMode.classList.contains('active')) {
-                editMode.classList.remove('active');
-                viewMode.style.display = 'block';
-            } else {
-                editMode.classList.add('active');
-                viewMode.style.display = 'none';
-                // Refresh form data
-                if (currentUserData) {
-                    populateEditForm(currentUserData);
-                }
-            }
-        }
-
-        // Save profile changes
-        async function saveProfile(event) {
-            event.preventDefault();
-
-            if (typeof supabaseClient === 'undefined') {
-                showToast('Database not connected');
-                return;
-            }
-
+        /* ── Load profile from DB ──────────────────────────────── */
+        async function loadUserProfile() {
             const user = getCurrentUser();
             if (!user || !user.user_id) {
-                showToast('Please login again');
+                window.location.href = 'login.html?redirect=account.html';
                 return;
             }
-
-            const formData = {
-                user_name: document.getElementById('editName').value.trim(),
-                email: document.getElementById('editEmail').value.trim(),
-                phone: document.getElementById('editPhone').value.trim(),
-                address: document.getElementById('editAddress').value.trim(),
-                secondary_address: document.getElementById('editSecondaryAddress').value.trim(),
-                city: document.getElementById('editCity').value.trim(),
-                state: document.getElementById('editState').value.trim(),
-                pincode: document.getElementById('editPincode').value.trim(),
-                country: document.getElementById('editCountry').value.trim() || 'India'
-            };
-
             try {
                 const { data, error } = await supabaseClient
-                    .from('users')
-                    .update(formData)
-                    .eq('user_id', user.user_id)
-                    .select()
-                    .single();
-
-                if (error) {
-                    console.error('Error updating profile:', error);
-                    document.getElementById('profileError').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('profileError').style.display = 'none';
-                    }, 3000);
-                    return;
-                }
-
-                // Update current data and view
-                currentUserData = data;
-                populateProfileView(data);
-                toggleEditProfile();
-
-                // Update localStorage
-                localStorage.setItem('andham_user', JSON.stringify({
-                    ...user,
-                    ...data
-                }));
-
-                // Show success message
-                document.getElementById('profileSuccess').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('profileSuccess').style.display = 'none';
-                }, 3000);
-
-                showToast('Profile updated successfully!');
-
+                    .from('users').select('*').eq('user_id', user.user_id).single();
+                if (error) throw error;
+                userData = data;
             } catch (err) {
-                console.error('Error:', err);
-                document.getElementById('profileError').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('profileError').style.display = 'none';
-                }, 3000);
+                console.error(err);
+                userData = user; // fallback to session
             }
+            renderProfile(userData);
         }
 
-        // Tab switching
-        function switchTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            if (tab === 'profile') {
-                document.getElementById('profileTab').classList.add('active');
-            } else if (tab === 'orders') {
-                document.getElementById('ordersTab').classList.add('active');
-                // Load orders if not already loaded
-                if (document.getElementById('orderList').innerHTML === '') {
-                    loadOrders();
-                }
-            }
-        }
-
-        // Load orders with items and product images
+        /* ── Load orders ───────────────────────────────────────── */
         async function loadOrders() {
-            if (typeof supabaseClient === 'undefined') {
-                document.getElementById('orderList').innerHTML = '<div class="no-orders">Database not connected</div>';
-                document.getElementById('loadingSpinner').style.display = 'none';
-                return;
-            }
-
+            const spinner = document.getElementById('ordersSpinner');
+            const list    = document.getElementById('orderList');
+            spinner.style.display = 'block';
             const user = getCurrentUser();
             if (!user || !user.user_id) return;
 
             try {
-                // Fetch orders with order_items
                 const { data: orders, error } = await supabaseClient
                     .from('orders')
-                    .select(`
-                        *,
-                        order_items (
-                            item_id,
-                            product_id,
-                            product_name,
-                            quantity,
-                            unit_price,
-                            total_price
-                        )
-                    `)
+                    .select('*, order_items(item_id, product_id, product_name, quantity, unit_price, total_price)')
                     .eq('user_id', user.user_id)
                     .order('created_at', { ascending: false });
 
-                if (error) {
-                    console.error('Error fetching orders:', error);
-                    document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
-                    document.getElementById('loadingSpinner').style.display = 'none';
+                spinner.style.display = 'none';
+                if (error) throw error;
+
+                if (!orders?.length) {
+                    list.innerHTML = '<div class="no-orders">No orders yet. <a href="collection.html" style="color:#8b0000;">Start shopping!</a></div>';
                     return;
                 }
 
-                const orderList = document.getElementById('orderList');
-                document.getElementById('loadingSpinner').style.display = 'none';
-
-                if (!orders || orders.length === 0) {
-                    orderList.innerHTML = '<div class="no-orders">No orders yet. <a href="collection.html" style="color: #8b0000;">Start shopping!</a></div>';
-                    return;
+                const ids = [...new Set(orders.flatMap(o => (o.order_items || []).map(i => i.product_id)))];
+                let imgMap = {};
+                if (ids.length) {
+                    const { data: prods } = await supabaseClient.from('products').select('product_id,image').in('product_id', ids);
+                    (prods || []).forEach(p => { imgMap[p.product_id] = p.image; });
                 }
 
-                // Get all product IDs from all orders
-                const allProductIds = [];
-                orders.forEach(order => {
-                    if (order.order_items) {
-                        order.order_items.forEach(item => {
-                            allProductIds.push(item.product_id);
-                        });
-                    }
-                });
-
-                // Fetch product images
-                let productImages = {};
-                if (allProductIds.length > 0) {
-                    const { data: products, error: productsError } = await supabaseClient
-                        .from('products')
-                        .select('product_id, image')
-                        .in('product_id', allProductIds);
-
-                    if (!productsError && products) {
-                        products.forEach(product => {
-                            productImages[product.product_id] = product.image;
-                        });
-                    }
-                }
-
-                // Render orders
-                orderList.innerHTML = orders.map(order => {
-                    const orderDate = new Date(order.created_at).toLocaleDateString('en-IN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-
-                    const statusClass = `status-${order.status || 'pending'}`;
-
-                    // Build items HTML
-                    let itemsHtml = '';
-                    if (order.order_items && order.order_items.length > 0) {
-                        itemsHtml = order.order_items.map(item => {
-                            const productImage = productImages[item.product_id] || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg';
-                            return `
-                                <a href="product.html?id=${item.product_id}" class="order-item-row">
-                                    <img src="${productImage}" alt="${item.product_name}" class="order-item-image">
-                                    <div class="order-item-info">
-                                        <div class="order-item-name">${item.product_name}</div>
-                                        <div class="order-item-details">Qty: ${item.quantity} × Rs. ${item.unit_price}</div>
-                                        <div class="order-item-price">Rs. ${item.total_price}</div>
-                                        <div class="click-hint">Click to view product →</div>
-                                    </div>
-                                </a>
-                            `;
-                        }).join('');
-                    } else {
-                        itemsHtml = '<div style="padding: 20px; color: #666;">No items in this order</div>';
-                    }
-
-                    return `
-                        <div class="order-card">
-                            <div class="order-header">
-                                <div>
-                                    <div class="order-number">${order.order_number}</div>
-                                    <div class="order-meta">
-                                        <span>${orderDate}</span>
-                                        <span>${order.order_items ? order.order_items.length : 0} items</span>
-                                    </div>
-                                </div>
-                                <span class="order-status ${statusClass}">${order.status || 'Pending'}</span>
+                list.innerHTML = orders.map(order => {
+                    const date = new Date(order.created_at).toLocaleDateString('en-IN', { year:'numeric', month:'short', day:'numeric' });
+                    const itemsHtml = (order.order_items || []).map(item => `
+                        <a href="product.html?id=${item.product_id}" class="order-item-row">
+                            <img src="${imgMap[item.product_id] || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}" alt="${item.product_name}" class="order-item-img">
+                            <div>
+                                <div class="order-item-name">${item.product_name}</div>
+                                <div class="order-item-detail">Qty: ${item.quantity} × Rs. ${Number(item.unit_price).toLocaleString()}</div>
+                                <div class="order-item-price">Rs. ${Number(item.total_price).toLocaleString()}</div>
                             </div>
-                            <div class="order-items">
-                                ${itemsHtml}
+                        </a>`).join('') || '<div style="padding:12px 16px;color:#999;">No items</div>';
+
+                    return `<div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-number">#${order.order_number}</div>
+                                <div class="order-meta"><span>${date}</span><span>${(order.order_items||[]).length} item(s)</span></div>
                             </div>
-                            <div class="order-footer">
-                                <div class="order-total">
-                                    Total: <strong>Rs. ${order.total_amount}</strong>
-                                </div>
-                                <a href="order-success.html?order=${order.order_number}" class="view-order-btn">View Details</a>
-                            </div>
+                            <span class="order-status status-${order.status||'pending'}">${order.status||'Pending'}</span>
                         </div>
-                    `;
+                        <div>${itemsHtml}</div>
+                        <div class="order-footer">
+                            <div class="order-total">Total: <strong>Rs. ${Number(order.total_amount).toLocaleString()}</strong></div>
+                            <a href="order-success.html?order=${order.order_number}" class="view-btn">View Details</a>
+                        </div>
+                    </div>`;
                 }).join('');
 
             } catch (err) {
-                console.error('Error:', err);
-                document.getElementById('orderList').innerHTML = '<div class="no-orders">Error loading orders</div>';
-                document.getElementById('loadingSpinner').style.display = 'none';
+                console.error(err);
+                spinner.style.display = 'none';
+                list.innerHTML = '<div class="no-orders">Error loading orders. Please refresh.</div>';
             }
         }
 
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', () => {
             loadUserProfile();
-            // Orders will load when tab is clicked
+            if (typeof updateCartUI === 'function') updateCartUI();
         });
-
-        // Update cart badge
-        if (typeof updateCartBadge === 'function') {
-            updateCartBadge();
-        } else if (typeof updateCartUI === 'function') {
-            updateCartUI();
-        }
     </script>
 </body>
-
 </html>

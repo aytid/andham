@@ -1261,7 +1261,6 @@ async function updatePriceMobile(id) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadProductsFromSupabase();
     const user = localStorage.getItem("admin_user");
     if (user) {
         document.getElementById("loginScreen").style.display = "none";
@@ -1270,8 +1269,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const u = JSON.parse(user);
         document.getElementById("adminName").textContent = u.user_name;
 
-        // Delay to ensure supabaseClient is ready
-        setTimeout(loadProductsFromSupabase, 100);
+        loadProductsFromSupabase();
     }
 
     // Image preview handlers
@@ -1654,7 +1652,7 @@ async function loadInventoryHealth() {
         healthy: products?.filter(p => p.stock && p.quantity > 3) || []
     };
 
-    const healthScore = Math.round((health.healthy.length / products.length) * 100);
+    const healthScore = products?.length ? Math.round((health.healthy.length / products.length) * 100) : 0;
 
     document.getElementById('inventoryHealth').innerHTML = `
         <div class="health-score">
