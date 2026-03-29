@@ -1797,7 +1797,7 @@ body {
 }
 
 .auth-container {
-    padding-top: 20px;
+    padding-top: 10px;
     min-height: calc(100vh - 70px);
 }
 
