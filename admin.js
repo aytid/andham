@@ -48,7 +48,10 @@ async function handleLogin(e) {
     await loadProductsFromSupabase();
     loadDashboard();
 }
-
+function adminLogout(){
+    localStorage.removeItem("admin_user");
+    location.reload();
+}
 function logout() {
     localStorage.removeItem("admin_user");
     location.reload();
