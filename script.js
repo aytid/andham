@@ -586,7 +586,11 @@ function updateCartUI() {
                             <span class="qty-value" style="padding: 0 15px; font-size: 13px;">${item.quantity || 1}</span>
                             <button class="qty-btn" onclick="updateCartItemQty('${itemId}', 1)" style="width: 30px; height: 30px; border: none; background: #f5f5f5; cursor: pointer;">+</button>
                         </div>
-                        <button class="remove-btn" onclick="removeFromCart('${itemId}')" style="background: none; border: none; color: #999; text-decoration: underline; cursor: pointer; font-size: 12px;">Remove</button>
+                        <span class="remove-icon" onclick="removeFromCart('${item.product_id}')" style="cursor:pointer;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff4d4d" viewBox="0 0 24 24">
+    <path d="M9 3V4H4V6H5V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V6H20V4H15V3H9ZM7 6H17V20H7V6ZM9 8V18H11V8H9ZM13 8V18H15V8H13Z"/>
+  </svg>
+</span>
                     </div>
                 </div>
             </div>
