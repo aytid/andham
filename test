@@ -1,0 +1,15 @@
+create table public.users (
+  user_id uuid not null default gen_random_uuid (),
+  created_at timestamp with time zone not null default now(),
+  user_name character varying null,
+  password character varying null,
+  phone character varying null,
+  email character varying null,
+  address character varying null,
+  secondary_address character varying null,
+  city character varying null,
+  state character varying null,
+  pincode character varying null,
+  country character varying null default 'India'::character varying,
+  constraint Users_pkey primary key (user_id)
+) TABLESPACE pg_default;
