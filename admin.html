@@ -467,6 +467,14 @@
                     </svg>
                     Customers
                 </li>
+                <li class="nav-item" onclick="adminLogout()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Sign Out
+                </li>
             </ul>
         </aside>
 
@@ -657,10 +665,6 @@
                                     <option value="Fancy">Fancy</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <!-- STEP 2: Product ID Auto-Generated -->
-                        <div class="form-row">
                             <div class="form-group">
                                 <label>Product ID (Auto-Generated)</label>
                                 <input type="text" id="newProductID" style="color: #666; font-family: monospace;">
@@ -673,17 +677,9 @@
                                 <label>Product Title *</label>
                                 <input type="text" id="newProductTitle" required placeholder="Enter product name">
                             </div>
-                        </div>
-
-                        <!-- Pricing -->
-                        <div class="form-row">
                             <div class="form-group">
                                 <label>Price (₹) *</label>
                                 <input type="number" id="newProductPrice" required min="0" placeholder="0">
-                            </div>
-                            <div class="form-group">
-                                <label>Original Price (₹)</label>
-                                <input type="number" id="newProductOriginalPrice" min="0" placeholder="0">
                             </div>
                         </div>
 
@@ -714,22 +710,6 @@
                         <div class="form-group full">
                             <label>Description</label>
                             <textarea id="newProductDescription" placeholder="Enter product description..."></textarea>
-                        </div>
-
-                        <!-- Product Features -->
-                        <div class="form-group full">
-                            <label>Product Features</label>
-                            <div class="bullet-inputs" id="bulletInputs">
-                                <div class="bullet-row">
-                                    <input type="text" placeholder="Feature 1" class="bullet-point">
-                                    <button type="button" class="btn btn-danger btn-small"
-                                        onclick="removeBullet(this)">×</button>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-secondary btn-small" onclick="addBullet()"
-                                style="margin-top: 8px;">
-                                + Add Feature
-                            </button>
                         </div>
 
                         <!-- Action Buttons -->
@@ -805,49 +785,12 @@
                                 <th>Product</th>
                                 <th>Current</th>
                                 <th>New Price</th>
-                                <th>Discount</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="priceTable">
                             <!-- Price manager items rendered here -->
                         </tbody>
                     </table>
-                </div>
-
-                <div style="margin-top: 20px; background: var(--card-bg); padding: 20px; border-radius: 8px;">
-                    <h3 style="margin-bottom: 15px; font-family: 'Playfair Display', serif;">Bulk Price Operations</h3>
-                    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: end;">
-                        <div style="flex: 1; min-width: 140px;">
-                            <label
-                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Operation</label>
-                            <select id="bulkOperation"
-                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
-                                <option value="increase">Increase by %</option>
-                                <option value="decrease">Decrease by %</option>
-                                <option value="fixed">Set Fixed Amount</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1; min-width: 100px;">
-                            <label
-                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Value</label>
-                            <input type="number" id="bulkValue" placeholder="0"
-                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
-                        </div>
-                        <div style="flex: 1; min-width: 140px;">
-                            <label
-                                style="display: block; margin-bottom: 6px; font-size: 11px; text-transform: uppercase;">Category</label>
-                            <select id="bulkCategory"
-                                style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
-                                <option value="all">All Products</option>
-                                <option value="Kanchipattu">Kanchipattu</option>
-                                <option value="Gadwal">Gadwal</option>
-                                <option value="Banaras">Banaras</option>
-                                <option value="Fancy">Fancy</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" onclick="applyBulkPricing()">Apply</button>
-                    </div>
                 </div>
 
                 <!-- Mobile Cards -->
@@ -1099,82 +1042,64 @@
     </div>
 
     <!-- Edit Product Modal -->
-    <div class="modal" id="editModal">
-        <div class="modal-content" style="max-width: 800px;">
-            <div class="modal-header">
-                <h3>Edit Product</h3>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
-            </div>
-            <form id="editForm" onsubmit="updateProduct(event)">
-                <input type="hidden" id="editProductId">
-
-                <div class="form-row">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Title</label>
-                        <input type="text" id="editTitle" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Category</label>
-                        <select id="editCategory">
-                            <option value="Kanchipattu">Kanchipattu</option>
-                            <option value="Gadwal">Gadwal</option>
-                            <option value="Banaras">Banaras</option>
-                            <option value="Fancy">Fancy</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Collection</label>
-                        <select id="editCollection">
-                            <option value="Kanchipattu">Kanchipattu</option>
-                            <option value="Gadwal">Gadwal</option>
-                            <option value="Banaras">Banaras</option>
-                            <option value="Fancy">Fancy</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Price (₹)</label>
-                        <input type="number" id="editPrice" required>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Original Price (₹)</label>
-                        <input type="number" id="editOriginalPrice">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Main Image URL</label>
-                    <input type="url" id="editImage" required placeholder="https://..."
-                        onchange="previewImage(this.value, 'editMainPreview')">
-                    <div id="editMainPreview" class="image-preview"></div>
-                </div>
-
-                <div class="form-group">
-                    <label>Additional Images (comma separated)</label>
-                    <input type="text" id="editImages" placeholder="https://..., https://..."
-                        onchange="previewMultipleImages(this.value, 'editAdditionalPreview')">
-                    <div id="editAdditionalPreview" class="image-preview"></div>
-                </div>
-
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="editDescription" style="height: 80px;"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Features (separated by ,)</label>
-                    <input type="text" id="editBullets" placeholder="Feature 1, Feature 2">
-                </div>
-
-                <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                </div>
-            </form>
+<div class="modal" id="editModal">
+    <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-header">
+            <h3>Edit Product</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
         </div>
+        <form id="editForm" onsubmit="updateProduct(event)">
+            <input type="hidden" id="editProductId">
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label>Title</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Category</label>
+                    <select id="editCategory">
+                        <option value="Kanchipattu">Kanchipattu</option>
+                        <option value="Gadwal">Gadwal</option>
+                        <option value="Banaras">Banaras</option>
+                        <option value="Fancy">Fancy</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" id="editPrice" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Main Product Image</label>
+                <div id="editMainPreview" class="image-preview" style="margin-bottom: 10px;"></div>
+                <input type="file" id="editMainFileInput" accept="image/*">
+                <p style="font-size: 11px; color: #666; margin-top: 5px;">Uploading a new file will replace the current image.</p>
+            </div>
+
+            <div class="form-group">
+                <label>Additional Gallery Images</label>
+                <div id="editAdditionalPreview" class="image-preview" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"></div>
+                <input type="file" id="editGalleryFileInput" accept="image/*" multiple>
+                <button type="button" class="btn btn-danger btn-small" onclick="clearGallerySelection()" style="margin-top: 5px;">Remove All Gallery Images</button>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="editDescription" style="height: 100px;"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            </div>
+        </form>
     </div>
+</div>
 
     <!-- Order Detail Modal -->
     <div class="modal order-detail-modal" id="orderDetailModal">
