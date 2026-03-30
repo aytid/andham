@@ -744,13 +744,22 @@ async function changeCheckoutQty(productId, change) {
         return;
     }
 
-    const item = checkoutCart.find(i => i.product_id === productId);
-    if (!item) {
+    // 🔹 get latest quantity from DB
+    const { data, error } = await supabaseClient
+        .from("cart")
+        .select("quantity")
+        .eq("user_id", user.user_id)
+        .eq("product_id", productId)
+        .single();
+
+    if (error || !data) {
+        console.error("Failed to fetch quantity", error);
         qtyUpdating = false;
         return;
     }
 
-    const newQty = item.quantity + change;
+    const currentQty = data.quantity || 1;
+    const newQty = currentQty + change;
 
     if (newQty <= 0) {
         await removeCheckoutItem(productId);
@@ -758,23 +767,28 @@ async function changeCheckoutQty(productId, change) {
         return;
     }
 
-    const { error } = await supabaseClient
-        .from('cart')
+    const { error: updateError } = await supabaseClient
+        .from("cart")
         .update({
             quantity: newQty,
             updated_at: new Date().toISOString()
         })
-        .eq('user_id', user.user_id)
-        .eq('product_id', productId);
+        .eq("user_id", user.user_id)
+        .eq("product_id", productId);
 
-    if (!error) {
-        await loadCheckoutCart();
-
-        showToast(change > 0 ? 
-            "Item quantity increased" : 
-            "Item quantity decreased"
-        );
+    if (updateError) {
+        console.error("Update failed", updateError);
+        showToast("Failed to update quantity", "error");
+        qtyUpdating = false;
+        return;
     }
+
+    await loadCheckoutCart();
+
+    showToast(change > 0 ? 
+        "Item quantity increased" : 
+        "Item quantity decreased"
+    );
 
     qtyUpdating = false;
 }
