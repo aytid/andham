@@ -52,10 +52,9 @@ async function checkAuth() {
     }
 
 }
-async function getCurrentUser() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    return user;
-}
+
+// NOTE: getCurrentUser() is defined in script.js and auth.js for custom auth (users table)
+// Not used: supabaseClient.auth.getUser() - that's for OAuth, which this app doesn't use
 
 async function requireLogin() {
     const { data: { user } } = await supabaseClient.auth.getUser();

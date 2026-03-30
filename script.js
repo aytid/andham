@@ -519,21 +519,36 @@ async function removeFromCart(id) {
 
     // 3. Sync with Supabase
     const user = getCurrentUser();
-    if (user && user.user_id) {
-        try {
-            
-            const { error, status } = await supabaseClient
-                .from('cart')
-                .delete()
-                .eq('user_id', user.user_id)
-                .eq('product_id', id);
+    if (!user) {
+        console.log('User not logged in. Item removed from local cart only.');
+        return;
+    }
 
-            if (error) throw error;
-        
-        } catch (err) {
-            console.error('Failed to remove from database cart:', err);
-            // Optional: notify user that database sync failed
+    if (!user.user_id) {
+        console.error('User object missing user_id. Cannot sync deletion:', user);
+        showToast('Session error: Cart deletion not synced. Please log in again', 'error');
+        return;
+    }
+
+    try {
+        const { error, data } = await supabaseClient
+            .from('cart')
+            .delete()
+            .eq('user_id', user.user_id)
+            .eq('product_id', id);
+
+        if (error) {
+            console.error('Supabase delete error:', error);
+            showToast('Failed to remove item from cart database', 'error');
+            throw error;
         }
+        
+        console.log('Item removed from Supabase cart:', id);
+        showToast('Item removed from cart', 'success');
+    
+    } catch (err) {
+        console.error('Failed to remove from database cart:', err);
+        showToast('Error: Could not sync removal with database', 'error');
     }
 }
 
@@ -894,16 +909,23 @@ function getCurrentUser() {
     try {
         const user = JSON.parse(userStr);
         // Ensure we return null if the object exists but has no usable ID
-        if (!user.user_id && !user.id) return null; 
+        if (!user.user_id && !user.id) {
+            console.warn('User object exists but has no user_id:', user);
+            return null;
+        }
+        // Normalize user_id if only id exists
+        if (!user.user_id && user.id) {
+            user.user_id = user.id;
+        }
         return user;
     } catch (e) {
+        console.error('Error parsing user from storage:', e);
         return null;
     }
 }
 
 // Add to cart (database + localStorage backup)
 async function addToCart(productId, quantity = 1) {
-    toggleCart();
     const user = getCurrentUser();
 
     // 1. Fetch latest stock quantity directly from DB
@@ -932,7 +954,7 @@ async function addToCart(productId, quantity = 1) {
 
     if (totalRequested > product.quantity) {
         showToast(`Only ${product.quantity} units available. You already have ${currentInCart} in cart.`, 'warning');
-        openCart(); // <-- CHANGED: Always open cart to show current items
+        toggleCart(); // Open cart to show current items
         return false;
     }
 
@@ -957,17 +979,21 @@ async function addToCart(productId, quantity = 1) {
     updateCartBadge();
 
     // 5. Sync to Database if logged in
-    if (user) {
-        supabaseClient.from('cart').upsert({
-            user_id: user.user_id,
-            product_id: productId,
-            quantity: totalRequested,
-            updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,product_id' }).catch(err => console.error(err));
+    if (user && user.user_id) {
+        try {
+            await supabaseClient.from('cart').upsert({
+                user_id: user.user_id,
+                product_id: productId,
+                quantity: totalRequested,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id,product_id' });
+        } catch (err) {
+            console.error('Failed to sync cart to database:', err);
+        }
     }
 
     showToast('Added to cart!', 'success');
-    openCart(); // <-- CHANGED: Use openCart instead of toggleCart
+    toggleCart(); // Open cart after adding item
     return true;
 }
 // Get cart (merge database + localStorage)
@@ -1385,7 +1411,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Fetch cart from Supabase and merge with local cart (race-safe)
 async function syncCartFromDatabase() {
     const user = getCurrentUser();
-    if (!user) return;
+    if (!user) {
+        console.log('No user logged in, skipping cart sync');
+        return;
+    }
+
+    // Validate user_id exists and is not undefined
+    if (!user.user_id) {
+        console.error('User object has no user_id:', user);
+        showToast('Session error: Please log in again', 'error');
+        return;
+    }
 
     try {
         // Step 1: Fetch DB cart FIRST before reading localStorage.
