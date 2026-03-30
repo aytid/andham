@@ -29,7 +29,6 @@ async function handleLogin(e) {
         .select("*")
         .eq("user_name", username)
         .eq("password", password)
-        .eq("type", "admin")
         .single();
 
     if (error || !data) {
@@ -48,59 +47,59 @@ async function handleLogin(e) {
     await loadProductsFromSupabase();
     loadDashboard();
 }
-function adminLogout(){
-    localStorage.removeItem("admin_user");
-    location.reload();
-}
+
 function logout() {
     localStorage.removeItem("admin_user");
     location.reload();
 }
 
 // Show section
-async function showSection(sectionId, e) {
+function showSection(sectionId, e) {
+    // Save current section to localStorage
     localStorage.setItem('andham_admin_current_section', sectionId);
 
-    // 1. Ensure core product data is loaded before showing product-related sections
-    if (['dashboard', 'products', 'inventory', 'priceManager', 'analytics'].includes(sectionId)) {
-        if (!products || products.length === 0) {
-            await loadProductsFromSupabase();
-        }
-    }
-
-    // 2. UI Switching Logic
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(sectionId).classList.add('active');
 
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    // (Keep your existing nav item highlighting logic here...)
 
-    // 3. Section-Specific Loading
-    switch (sectionId) {
-        case 'dashboard':
-            loadDashboard();
-            break;
-        case 'products':
-            renderProductsTable();
-            break;
-        case 'inventory':
-            renderInventory();
-            break;
-        case 'priceManager':
-            renderPriceManager();
-            break;
-        case 'analytics':
-            loadAllAnalytics();
-            break;
-        case 'customers':
-            await loadCustomersFromSupabase();
-            break;
-        case 'orders':
-            await loadOrders();
-            break;
+    // Handle nav item highlighting
+    if (e && e.target) {
+        const navItem = e.target.closest('.nav-item');
+        if (navItem) navItem.classList.add('active');
+    } else {
+        // If no event (on page load), find nav item by onclick attribute
+        document.querySelectorAll('.nav-item').forEach(n => {
+            const onclickAttr = n.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.includes(`'${sectionId}'`)) {
+                n.classList.add('active');
+            }
+        });
     }
 
+    const titles = {
+        dashboard: 'Dashboard',
+        products: 'All Products',
+        addProduct: 'Add Product',
+        inventory: 'Inventory',
+        priceManager: 'Price Manager',
+        analytics: 'Analytics',
+        customers: 'Customers',
+        orders: 'Orders',
+    };
+    document.getElementById('pageTitle').textContent = titles[sectionId] || sectionId;
+
+    // Close mobile sidebar
     closeSidebarMobile();
+
+    // Load data
+    if (sectionId === 'dashboard') loadDashboard();
+    if (sectionId === 'products') renderProductsTable();
+    if (sectionId === 'inventory') renderInventory();
+    if (sectionId === 'priceManager') renderPriceManager();
+    if (sectionId === 'analytics') loadAllAnalytics();
+    if (sectionId === 'customers') loadCustomersFromSupabase();
+    if (sectionId === 'orders') loadOrders();
 }
 
 // Dashboard
@@ -127,7 +126,7 @@ function renderProductsTable(searchTerm = '') {
     if (typeof products === 'undefined') return;
 
     // Filter: only show products that are BOTH available to customers AND in stock
-    let filtered = products.filter(p => p.available_for_customer && p.quantity > 0);
+    let filtered = products.filter(p => p.available_for_customer && p.stock);
 
     if (searchTerm) {
         filtered = filtered.filter(p =>
@@ -723,6 +722,10 @@ function renderPriceManager(searchTerm = '', categoryFilter = '') {
                         <button class="btn btn-primary btn-small" onclick="updatePrice('${p.id}')">Update</button>
                     </div>
                 </td>
+                <td>${discount > 0 ? `<span style="color: var(--success);">${discount}% OFF</span>` : '-'}</td>
+                <td>
+                    <button class="btn btn-secondary btn-small" onclick="setDiscount('${p.id}')">Discount</button>
+                </td>
             </tr>
         `;
     }).join('');
@@ -854,7 +857,7 @@ async function applyBulkPricing() {
 
 // Analytics
 async function loadAnalytics() {
-
+    
     if (!products || products.length === 0) {
         await loadProductsFromSupabase();
     }
@@ -1321,92 +1324,61 @@ function editProduct(id) {
     document.getElementById("editProductId").value = product.id;
     document.getElementById("editTitle").value = product.title;
     document.getElementById("editPrice").value = product.price;
+    document.getElementById("editOriginalPrice").value = product.originalPrice || "";
     document.getElementById("editCategory").value = product.category;
+    document.getElementById("editImage").value = product.image;
+    document.getElementById("editImages").value = product.images ? product.images.join(", ") : "";
     document.getElementById("editDescription").value = product.description || "";
+    document.getElementById("editBullets").value = product.bullets ? product.bullets.join(" | ") : "";
 
-    // Show current main image
-    const mainPreview = document.getElementById('editMainPreview');
-    mainPreview.innerHTML = product.image ? `<img src="${product.image}" style="width: 100px; height: 120px; object-fit: cover; border-radius: 4px;">` : 'No image';
+    // NEW: Set collection value
+    if (document.getElementById("editCollection")) {
+        document.getElementById("editCollection").value = product.collection || "";
+    }
 
-    // Show current gallery images
-    const galleryPreview = document.getElementById('editAdditionalPreview');
-    galleryPreview.innerHTML = product.images && product.images.length > 0
-        ? product.images.map(img => `<img src="${img}" style="width: 60px; height: 70px; object-fit: cover; border-radius: 4px;">`).join('')
-        : 'No gallery images';
-
-    // Reset file inputs
-    document.getElementById("editMainFileInput").value = "";
-    document.getElementById("editGalleryFileInput").value = "";
+    // Show image previews
+    previewImage(product.image, 'editMainPreview');
+    previewMultipleImages(product.images ? product.images.join(", ") : "", 'editAdditionalPreview');
 
     document.getElementById("editModal").classList.add("active");
-}
-
-// Helper to clear gallery
-function clearGallerySelection() {
-    if (confirm("This will remove all additional images from this product. Continue?")) {
-        document.getElementById('editAdditionalPreview').innerHTML = 'Gallery Cleared (Click Save to confirm)';
-        // We will handle the actual data removal in the updateProduct function
-        window.clearGalleryRequested = true;
-    }
 }
 
 async function updateProduct(e) {
     e.preventDefault();
 
     const id = document.getElementById("editProductId").value;
-    const product = products.find(p => p.id === id);
 
-    const mainFile = document.getElementById("editMainFileInput").files[0];
-    const galleryFiles = document.getElementById("editGalleryFileInput").files;
+    const updatedData = {
+        title: document.getElementById("editTitle").value,
+        price: parseInt(document.getElementById("editPrice").value),
+        original_price: parseInt(document.getElementById("editOriginalPrice").value) || null,
+        category: document.getElementById("editCategory").value,
+        image: document.getElementById("editImage").value,
+        images: document.getElementById("editImages").value.split(',').map(u => u.trim()).filter(u => u).join(','),
+        description: document.getElementById("editDescription").value,
+        bullets: document.getElementById("editBullets").value.split('|').map(b => b.trim()).filter(b => b).join('|')
+    };
 
-    try {
-        let mainImageUrl = product.image; // Default to existing
-        let galleryUrls = window.clearGalleryRequested ? [] : [...(product.images || [])];
-
-        // 1. Upload new Main Image if selected
-        if (mainFile) {
-            const fileName = `edit-${Date.now()}-${mainFile.name}`;
-            const { error: uploadError } = await supabaseClient.storage.from("product-images").upload(fileName, mainFile);
-            if (uploadError) throw uploadError;
-            const { data } = supabaseClient.storage.from("product-images").getPublicUrl(fileName);
-            mainImageUrl = data.publicUrl;
-        }
-
-        // 2. Upload new Gallery Images if selected
-        if (galleryFiles.length > 0) {
-            for (const file of galleryFiles) {
-                const fileName = `gallery-${Date.now()}-${file.name}`;
-                const { error } = await supabaseClient.storage.from("product-images").upload(fileName, file);
-                if (!error) {
-                    const { data } = supabaseClient.storage.from("product-images").getPublicUrl(fileName);
-                    galleryUrls.push(data.publicUrl);
-                }
-            }
-        }
-
-        const updatedData = {
-            title: document.getElementById("editTitle").value,
-            price: parseInt(document.getElementById("editPrice").value),
-            category: document.getElementById("editCategory").value,
-            image: mainImageUrl,
-            images: galleryUrls.length > 0 ? galleryUrls.join(',') : null,
-            description: document.getElementById("editDescription").value,
-            // Removing requested fields by excluding them from the update object
-        };
-
-        const { error } = await supabaseClient.from("products").update(updatedData).eq("product_id", id);
-
-        if (error) throw error;
-
-        window.clearGalleryRequested = false;
-        showToast("Product updated successfully!");
-        await loadProductsFromSupabase();
-        closeModal();
-
-    } catch (err) {
-        showToast("Update failed: " + err.message);
-        console.error(err);
+    // NEW: Add collection if field exists
+    if (document.getElementById("editCollection")) {
+        updatedData.collection = document.getElementById("editCollection").value || null;
     }
+
+    const { error } = await supabaseClient
+        .from("products")
+        .update(updatedData)
+        .eq("product_id", id)
+        .select();
+
+    if (error) {
+        showToast("Update failed: " + error.message);
+        return;
+    }
+
+    logActivity('Updated product', id, 'Product details modified');
+    await loadProductsFromSupabase();
+    closeModal();
+    showToast("Product updated successfully!");
 }
 // Open inventory quick edit modal
 function openInventoryEdit(id) {
@@ -1479,23 +1451,23 @@ function closeDeleteModal() {
 // Delete product from Supabase
 async function deleteProduct(id) {
 
-    console.log("Deleting product:", id);
+  console.log("Deleting product:", id);
 
-    const { error } = await supabaseClient
-        .from("products")
-        .delete()
-        .eq("product_id", id);
+  const { error } = await supabaseClient
+    .from("products")
+    .delete()
+    .eq("product_id", id);
 
-    if (error) {
-        console.error(error);
-        showToast("Delete failed");
-        return;
-    }
+  if (error) {
+    console.error(error);
+    showToast("Delete failed");
+    return;
+  }
 
-    showToast("Product deleted successfully");
+  showToast("Product deleted successfully");
 
-    await loadProductsFromSupabase();
-    renderProductsTable();
+  await loadProductsFromSupabase();
+  renderProductsTable();
 }
 
 async function loadSalesTrend() {
@@ -1510,7 +1482,7 @@ async function loadSalesTrend() {
     // Group by date (last 30 days)
     const last30Days = {};
     const today = new Date();
-
+    
     for (let i = 29; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
@@ -1530,27 +1502,27 @@ async function loadSalesTrend() {
     // Create canvas chart
     const canvas = document.getElementById('salesTrendChart');
     const ctx = canvas.getContext('2d');
-
+    
     // Simple bar chart rendering
     const maxVal = Math.max(...values) || 1;
     const barWidth = (canvas.width - 60) / labels.length;
     const chartHeight = canvas.height - 40;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
     // Draw bars with gradient
     values.forEach((val, i) => {
         const height = (val / maxVal) * chartHeight;
         const x = 30 + i * barWidth;
         const y = canvas.height - 20 - height;
-
+        
         const gradient = ctx.createLinearGradient(0, y, 0, canvas.height - 20);
         gradient.addColorStop(0, '#6366f1');
         gradient.addColorStop(1, '#8b5cf6');
-
+        
         ctx.fillStyle = gradient;
         ctx.fillRect(x + 2, y, barWidth - 4, height);
-
+        
         // Hover effect data attribute
         canvas.dataset[`tooltip${i}`] = `₹${val.toLocaleString()} on ${labels[i]}`;
     });
@@ -1565,7 +1537,7 @@ async function loadCategoryChart() {
 
     // Get product categories
     const productIds = [...new Set(items?.map(i => i.product_id) || [])];
-
+    
     const { data: products } = await supabaseClient
         .from("products")
         .select("product_id, category")
@@ -1589,15 +1561,15 @@ async function loadCategoryChart() {
         const angle = (val / total) * 360;
         const startAngle = currentAngle;
         currentAngle += angle;
-
+        
         // SVG arc path calculation
         const x1 = 100 + 80 * Math.cos(Math.PI * startAngle / 180);
         const y1 = 100 + 80 * Math.sin(Math.PI * startAngle / 180);
         const x2 = 100 + 80 * Math.cos(Math.PI * currentAngle / 180);
         const y2 = 100 + 80 * Math.sin(Math.PI * currentAngle / 180);
-
+        
         const largeArc = angle > 180 ? 1 : 0;
-
+        
         return `
             <path d="M100,100 L${x1},${y1} A80,80 0 ${largeArc},1 ${x2},${y2} Z" 
                   fill="${colors[i % colors.length]}" 
@@ -1605,7 +1577,7 @@ async function loadCategoryChart() {
                   data-category="${cat}"
                   data-value="₹${val.toLocaleString()}"
                   class="chart-segment">
-                <title>${cat}: ₹${val.toLocaleString()} (${Math.round(val / total * 100)}%)</title>
+                <title>${cat}: ₹${val.toLocaleString()} (${Math.round(val/total*100)}%)</title>
             </path>
         `;
     }).join('');
@@ -1635,7 +1607,7 @@ async function loadHourlyHeatmap() {
 
     // Group by hour of day (0-23)
     const hourlyData = new Array(24).fill(0).map(() => ({ count: 0, revenue: 0 }));
-
+    
     orders?.forEach(o => {
         const hour = new Date(o.created_at).getHours();
         hourlyData[hour].count++;
@@ -1647,8 +1619,8 @@ async function loadHourlyHeatmap() {
     const heatmapHtml = hourlyData.map((data, hour) => {
         const intensity = data.revenue / maxRevenue;
         const opacity = 0.2 + (intensity * 0.8);
-        const timeLabel = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour - 12} PM`;
-
+        const timeLabel = hour === 0 ? '12 AM' : hour < 12 ? `${hour} AM` : hour === 12 ? '12 PM' : `${hour-12} PM`;
+        
         return `
             <div class="heatmap-cell" 
                  style="background: rgba(99, 102, 241, ${opacity})"
@@ -1726,7 +1698,7 @@ async function loadRecentActivity() {
         const timeAgo = getTimeAgo(new Date(order.created_at));
         const icon = order.payment_status === 'paid' ? '💰' : '⏳';
         const statusClass = order.payment_status === 'paid' ? 'success' : 'pending';
-
+        
         return `
             <div class="activity-item ${statusClass}">
                 <div class="activity-icon">${icon}</div>
@@ -1760,7 +1732,7 @@ function showProductList(type) {
     } else if (type === 'lowStock') {
         filtered = products.filter(p => p.stock && p.quantity > 0 && p.quantity <= 3);
     }
-
+    
     // Switch to inventory section and show filtered
     showSection('inventory');
     document.getElementById('inventorySearch').value = type === 'outOfStock' ? 'out of stock' : 'low stock';

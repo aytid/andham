@@ -9,17 +9,15 @@ async function addProduct(name, price) {
         .insert([{ name: name, price: price }]);
 }
 async function loginWithGoogle() {
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-            redirectTo: window.location.origin + '/index.html' 
-        }
+
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google"
     });
 
     if (error) {
         console.error("Google login error:", error);
-        showToast("Google login failed", "error");
     }
+
 }
 async function checkUser() {
     const { data: { user } } = await supabaseClient.auth.getUser();

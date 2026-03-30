@@ -239,8 +239,8 @@ async function handleSignIn(e) {
         // Redirect after short delay
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);
-            const redirect = urlParams.get('redirect') || 'index.html';
-            window.location.href = "index.html";
+            const redirect = 'index.html';
+            window.location.href = redirect;
         }, 1000);
 
         return true;
@@ -256,16 +256,16 @@ async function handleSignIn(e) {
 // LOGOUT
 // ============================================
 
-async function logout() {
-    if (typeof supabaseClient !== 'undefined') {
-        await supabaseClient.auth.signOut();
-    }
+function logout() {
+    // Clear all storage
     localStorage.removeItem('andham_user');
     sessionStorage.removeItem('andham_user');
     
-    localStorage.removeItem('andham_cart');
+    // Optionally keep cart in localStorage for guest checkout
+    // or clear it: localStorage.removeItem('andham_cart');
     
     showToast('You have been logged out', 'success');
+    
     setTimeout(() => {
         window.location.href = 'index.html';
     }, 1000);
@@ -415,7 +415,7 @@ function requireAuth(redirectUrl = window.location.href) {
 function redirectIfLoggedIn() {
     if (isLoggedIn()) {
         const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect') || 'index.html';
+        const redirect = 'index.html';
         window.location.href = redirect;
         return true;
     }

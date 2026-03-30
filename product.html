@@ -128,9 +128,8 @@
                 <div class="thumbnail-list" id="thumbnailList">
                 </div>
 
-                <div class="main-image-container" id="imageSlider"></div>
-                <div class="image-progress">
-                    <div class="image-progress-bar" id="imageProgressBar"></div>
+                <div class="main-image-container">
+                    <img src="" alt="" class="main-image" id="mainImage">
                 </div>
 
             </div>
@@ -243,14 +242,6 @@
             </div>
         </div>
     </div>
-    <!-- Similar Products -->
-    <section class="home-section" style="background:#fafafa;">
-        <div class="section-header">
-            <h2 class="section-title">Browse Similar Products</h2>
-        </div>
-
-        <div class="products-grid" id="similarProductsGrid"></div>
-    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -267,7 +258,7 @@
                 <div class="footer-social">
 
                     <!-- Instagram -->
-                    <a href="https://instagram.com/" class="social-icon" target="_blank" aria-label="Instagram">
+                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr" class="social-icon" target="_blank" aria-label="Instagram">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="5"></rect>
                             <circle cx="12" cy="12" r="4"></circle>
@@ -276,7 +267,7 @@
                     </a>
 
                     <!-- YouTube -->
-                    <a href="https://youtube.com/" class="social-icon" target="_blank" aria-label="YouTube">
+                    <a href="https://www.youtube.com/@Andhamm" class="social-icon" target="_blank" aria-label="YouTube">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 
             0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 
@@ -287,7 +278,7 @@
                     </a>
 
                     <!-- WhatsApp -->
-                    <a href="https://wa.me/919876543210?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
+                    <a href="https://wa.me/918106662341?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
                         class="social-icon" target="_blank" aria-label="WhatsApp">
 
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -324,15 +315,7 @@
                 </ul>
             </div>
 
-            <!-- Company -->
-            <div class="footer-block">
-                <h3>Company</h3>
-                <ul class="footer-links">
-                    <li><a href="#">About Andham</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms & Conditions</a></li>
-                </ul>
-            </div>
+
 
         </div>
 
@@ -397,8 +380,7 @@
         </button>
 
     </div>
-    <div id="toast" class="toast"
-        style="position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10002;"></div>
+
     <script>
         // Product Detail Page Logic
         let currentQty = 1;
@@ -421,14 +403,13 @@
             if (!product) return;
 
             document.getElementById("detailTitle").textContent = product.title;
-            document.getElementById("breadcrumbProduct").textContent = product.title;
-            document.getElementById("productId").textContent = "Product ID: " + product.id;
+            document.getElementById("productId").textContent = product.id;
 
             document.getElementById("detailPrice").textContent =
                 "Rs. " + product.price.toLocaleString();
 
             const original = document.getElementById("detailOriginalPrice");
-            const badge = document.getElementById("discountBadge");
+            const badge    = document.getElementById("discountBadge");
 
             if (original && badge && product.originalPrice && product.originalPrice > product.price) {
                 original.style.display = "block";
@@ -438,8 +419,10 @@
                 badge.textContent = discount + "% OFF";
             } else {
                 if (original) original.style.display = "none";
-                if (badge) badge.style.display = "none";
+                if (badge)    badge.style.display    = "none";
             }
+
+            document.getElementById("mainImage").src = product.image;
 
             // Description
             document.getElementById("detailDescription").innerHTML =
@@ -465,19 +448,22 @@
         }
         // Setup image gallery
         function setupGallery() {
-
-            const slider = document.getElementById('imageSlider');
+            const mainImage = document.getElementById('mainImage');
             const thumbnailList = document.getElementById('thumbnailList');
-            const progressBar = document.getElementById('imageProgressBar');
             const product = window.currentProduct;
 
             if (!product) return;
 
+            // Collect all images
             let allImages = [];
 
-            if (product.image) allImages.push(product.image);
+            // Add main image
+            if (product.image) {
+                allImages.push(product.image);
+            }
 
-            if (product.images) {
+            // Add additional images
+            if (product.images && Array.isArray(product.images)) {
                 product.images.forEach(img => {
                     if (img && !allImages.includes(img)) {
                         allImages.push(img);
@@ -485,67 +471,26 @@
                 });
             }
 
-            // Render slider images
-            slider.innerHTML = allImages.map(img =>
-                `<img src="${img}" class="slider-image">`
-            ).join("");
-
-            // Render thumbnails
-            thumbnailList.innerHTML = allImages.map((img, index) =>
-                `<img src="${img}" class="thumbnail ${index === 0 ? 'active' : ''}" onclick="goToImage(${index})">`
-            ).join("");
-
-            // Wait for images to load before setting scroll
-            const firstImage = slider.querySelector(".slider-image");
-
-            if (firstImage) {
-                firstImage.onload = () => {
-
-                    const maxScroll = slider.scrollWidth - slider.clientWidth;
-
-                    const start = maxScroll * 0.1;
-
-                    slider.scrollLeft = start;
-
-                    const percent = (start / maxScroll) * 100;
-
-                    progressBar.style.width = percent + "%";
-
-                };
+            // If no images, use placeholder
+            if (allImages.length === 0) {
+                allImages.push('https://via.placeholder.com/600x800?text=No+Image');
             }
 
-            // Progress bar
-            slider.addEventListener("scroll", () => {
+            // Set main image
+            mainImage.src = allImages[0];
+            mainImage.alt = product.title;
 
-                const scrollLeft = slider.scrollLeft;
-                const maxScroll = slider.scrollWidth - slider.clientWidth;
+            // Generate thumbnails
+            thumbnailList.innerHTML = allImages.map((img, index) => `
+            <div class="thumbnail-wrapper ${index === 0 ? 'active' : ''}" onclick="switchImage('${img}', this)">
+                <img src="${img}" alt="${product.title} - ${index + 1}" class="thumbnail" onerror="this.style.display='none'; this.parentElement.style.display='none'">
+            </div>
+        `).join('');
 
-                const percent = (scrollLeft / maxScroll) * 100;
-
-                progressBar.style.width = percent + "%";
-
-            });
-
+            thumbnailList.style.display = allImages.length > 1 ? 'flex' : 'none';
         }
 
-        function goToImage(index) {
-
-            const slider = document.getElementById('imageSlider');
-            const width = slider.clientWidth;
-
-            slider.scrollTo({
-                left: width * index,
-                behavior: "smooth"
-            });
-
-            document.querySelectorAll('.thumbnail').forEach(el => {
-                el.classList.remove('active');
-            });
-
-            document.querySelectorAll('.thumbnail')[index].classList.add('active');
-
-        }
-        //Switch main image
+        // Switch main image
         function switchImage(src, thumbnailEl) {
             const mainImage = document.getElementById('mainImage');
             mainImage.src = src;
@@ -556,31 +501,15 @@
             thumbnailEl.classList.add('active');
         }
 
-        // Updated Quantity updater with Dynamic Stock Check
-
+        // Quantity updater
         function updateDetailQty(change) {
-
-            const qtyElement = document.getElementById('detailQty');
-            let currentVal = parseInt(qtyElement.textContent) || 1;
-
-            const maxAvailable = (window.currentProduct && window.currentProduct.quantity)
-                ? window.currentProduct.quantity
-                : 1;
-
-
-            const nextVal = currentVal + change;
-
-            if (nextVal < 1) {
-                return;
-            }
-
-            if (nextVal > maxAvailable) {
-                showToast(`Only ${maxAvailable} items available in stock`, "warning");
-                return;
-            }
-
-            qtyElement.textContent = nextVal;
+            currentQty += change;
+            if (currentQty < 1) currentQty = 1;
+            if (currentQty > 10) currentQty = 10;
+            document.getElementById('detailQty').textContent = currentQty;
         }
+
+        // Accordion toggle
         function toggleAccordion(header) {
             const content = header.nextElementSibling;
             const icon = header.querySelector('.accordion-icon');
@@ -609,33 +538,12 @@
         }
 
         // Toast notification
-        function showToast(message, type = 'info') {
-
+        function showToast(message) {
             const toast = document.getElementById('toast');
-            if (!toast) return;
-
-            // 1. Force Reset and Content
             toast.textContent = message;
-            toast.style.display = 'block'; // Force visible
-            toast.style.opacity = '1';
-            toast.className = 'toast show';
-
-            // 2. Set colors based on type
-            if (type === 'warning') toast.style.backgroundColor = '#ff9800';
-            else if (type === 'success') toast.style.backgroundColor = '#16a34a';
-            else if (type === 'error') toast.style.backgroundColor = '#dc2626';
-            else toast.style.backgroundColor = '#1a1a1a';
-
-            // 3. Ensure it's above EVERYTHING else (Drawers are usually 1000-2000)
-            toast.style.zIndex = "20000";
-
-            clearTimeout(window.toastTimeout);
-            window.toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
-                // Wait for CSS transition before hiding the element entirely
-                setTimeout(() => {
-                    if (!toast.classList.contains('show')) toast.style.display = 'none';
-                }, 500);
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
             }, 3000);
         }
 
@@ -681,12 +589,13 @@
             window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
         }
 
-        // Updated in product.html
         async function buyNowProduct() {
+
             const product = window.currentProduct;
             if (!product) return;
 
             const user = getCurrentUser();
+
             if (!user) {
                 window.location.href = "login.html?redirect=" + encodeURIComponent(window.location.href);
                 return;
@@ -695,69 +604,76 @@
             const qty = parseInt(document.getElementById("detailQty").textContent) || 1;
 
             try {
-                // 1. Check latest stock and exact quantity
+
+                // 🔵 Check latest stock from database
                 const { data, error: stockError } = await supabaseClient
                     .from("products")
-                    .select("stock, quantity")
+                    .select("stock")
                     .eq("product_id", product.id)
                     .single();
 
-                if (stockError || !data) {
-                    showToast("Unable to verify product availability", "error");
+                if (stockError) {
+                    console.error(stockError);
+                    alert("Unable to verify product availability");
                     return;
                 }
 
-                // 2. Respond with respective toast messages
-                if (!data.stock || data.quantity <= 0) {
-                    showToast("Sorry! This item just went out of stock", "warning");
+                // 🔴 Stop if out of stock
+                if (!data.stock) {
+                    alert("Sorry! This item just went out of stock");
                     return;
                 }
 
-                if (qty > data.quantity) {
-                    showToast(`Only ${data.quantity} units available for this item`, "warning");
+                // clear existing cart so only this item remains
+                await supabaseClient
+                    .from("cart")
+                    .delete()
+                    .eq("user_id", user.user_id);
+
+                // insert product into cart
+                const { error } = await supabaseClient
+                    .from("cart")
+                    .insert({
+                        user_id: user.user_id,
+                        product_id: product.id,
+                        quantity: qty
+                    });
+
+                if (error) {
+                    console.error(error);
+                    alert("Could not add product to cart");
                     return;
                 }
-
-                // 3. Clear existing cart and insert this item
-                await supabaseClient.from("cart").delete().eq("user_id", user.user_id);
-
-                const { error } = await supabaseClient.from("cart").insert({
-                    user_id: user.user_id,
-                    product_id: product.id,
-                    quantity: qty
-                });
-
-                if (error) throw error;
 
                 window.location.href = "checkout.html";
 
             } catch (err) {
-                console.error(err);
-                showToast("Something went wrong", "error");
-            }
-        }
 
+                console.error(err);
+                alert("Something went wrong");
+
+            }
+
+        }
         // Initialize cart badge on load
         document.addEventListener("DOMContentLoaded", async function () {
-            // 1. Setup basic UI
+            // 1. Sync cart
             const user = getCurrentUser();
             if (user) {
                 await syncCartFromDatabase();
             } else {
                 updateCartUI();
             }
-            updateHeaderAccount();
 
-            // 2. Get Product ID from URL
+            // 2. Load product
             const params = new URLSearchParams(window.location.search);
             const productId = params.get("id");
 
             if (!productId) {
-                showToast("Product not found", "error");
+                showToast("Product not found");
                 return;
             }
 
-            // 3. Fetch fresh data from Supabase
             const { data, error } = await supabaseClient
                 .from("products")
                 .select("*")
@@ -765,42 +681,28 @@
                 .single();
 
             if (error || !data) {
-                console.error("Fetch Error:", error);
-                document.getElementById("detailTitle").textContent = "Product Not Available";
+                console.error(error);
+                showToast("Product not found");
                 return;
             }
 
-            // 4. Map data to the global window.currentProduct
-            // We MUST include 'quantity' here for your updateDetailQty function to work
             window.currentProduct = {
-                id: data.product_id,
-                product_id: data.product_id,
-                title: data.title,
-                price: data.price,
+                id:            data.product_id,
+                title:         data.title,
+                price:         data.price,
                 originalPrice: data.original_price,
-                category: data.category,
-                image: data.image,
-                images: data.images ? data.images.split(",").map(img => img.trim()) : [],
+                category:      data.category,
+                image:         data.image,
+                images: data.images
+                    ? data.images.split(",").map(img => img.trim())
+                    : [],
                 description: data.description,
                 bullets: data.bullets ? data.bullets.split(",") : [],
-                stock: data.stock,
-                quantity: data.quantity || 0 // This maps the DB quantity
+                stock: data.stock
             };
 
-            // 5. Render the UI ONLY after data is ready
-            renderProductDetail();
             setupGallery();
-            loadSimilarProducts();
-
-            // 6. Final Stock Check for Buttons
-            if (!window.currentProduct.stock || window.currentProduct.quantity <= 0) {
-                const cartBtn = document.querySelector(".btn-primary");
-                if (cartBtn) {
-                    cartBtn.disabled = true;
-                    cartBtn.textContent = "Out of Stock";
-                    cartBtn.style.opacity = "0.5";
-                }
-            }
+            renderProductDetail();
         });
 
     </script>

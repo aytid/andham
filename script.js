@@ -233,48 +233,47 @@ function renderProducts(list) {
         const opacity = isOutOfStock ? 'opacity:0.6; pointer-events:none;' : '';
 
         return `
-<div class="product-card ${isOutOfStock ? 'out' : ''}">
+        <div class="product-card" style="${opacity}">
 
-    <div class="product-image-wrapper">
+            ${isOutOfStock ? '' : `<a href="product.html?id=${encodeURIComponent(p.id)}" class="product-link">`}
 
-        ${!isOutOfStock ? `
-        <a href="product.html?id=${encodeURIComponent(p.id)}" class="product-link">
-        ` : ''}
+                <div class="product-image-wrapper">
+                          ${isOutOfStock ? `
+                    <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
+                        <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
+                            Out of Stock
+                        </span>
+                    </div>
+                    ` : ''}
 
-            <img src="${p.image}" class="product-img" alt="${p.title}">
+                    <img src="${p.image}" class="product-img" alt="${p.title}">
 
-        ${!isOutOfStock ? `</a>` : ''}
+                </div>
 
-        ${isOutOfStock ? `
-        <div class="stock-overlay">
-            Out of Stock
-        </div>
-        ` : ''}
+            ${isOutOfStock ? '' : `</a>`}
 
-    </div>
+            <div class="product-info">
 
-    <div class="product-info">
+                <h3 class="product-title">${p.title}</h3>
 
-        <h3 class="product-title">${p.title}</h3>
+<div class="product-price-row">
 
-        <div class="product-price-row">
+    <span class="price-current" style="color:${isOutOfStock ? '#999' : '#8b0000'};">
+        Rs. ${p.price.toLocaleString()}.00
+    </span>
 
-            <span class="price-current">
-                Rs. ${p.price.toLocaleString()}
-            </span>
-
-            ${isOutOfStock ? '' : `
-            <button class="add-cart-btn" onclick="addToCart('${p.id}')">
-                +
-            </button>
-            `}
-
-        </div>
-
-    </div>
+    ${isOutOfStock ? '' : `
+    <button class="add-cart-btn" onclick="addToCart('${p.id}')">
+        +
+    </button>
+    `}
 
 </div>
-`;
+
+            </div>
+
+        </div>
+        `;
 
     }).join('');
 }
@@ -336,7 +335,7 @@ function renderNewArrivals() {
 
                 <div style="display:flex; justify-content:space-between; align-items:center;">
 
-                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'};">
+                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
                         Rs. ${p.price.toLocaleString()}.00
                     </span>
 
@@ -379,55 +378,52 @@ function updateDetailQty(change) {
 }
 
 async function addToCartFromDetail() {
-    
+
+    console.log("Add to cart clicked");
+
     const qtyEl = document.getElementById('detailQty');
-    const requestedQty = parseInt(qtyEl?.textContent) || 1;
+    const quantity = parseInt(qtyEl?.textContent) || 1;
+
     const product = window.currentProduct;
 
     if (!product) {
-        console.error("DEBUG: window.currentProduct is NULL. Rendering failed.");
-        showToast("Product data not loaded", "error");
+        showToast("Product not loaded");
         return;
     }
 
     const productId = product.id || product.product_id;
 
-    // Fetch latest stock quantity from Supabase
+    console.log("Checking stock for:", productId);
+
+    // Check latest stock
     const { data, error } = await supabaseClient
         .from('products')
-        .select('quantity, stock')
+        .select('stock')
         .eq('product_id', productId)
         .single();
 
-    if (error || !data) {
-        console.error("DEBUG: Supabase Fetch Error:", error);
-        showToast("Could not verify stock", "error");
+    console.log("Stock response:", data, error);
+
+    if (error) {
+        showToast("Stock check failed");
+        return;
+    }
+    if (!data.stock) {
+        alert("Sorry! This item just went out of stock");
         return;
     }
 
-
+    // Load cart
     let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
-    const existing = cart.find(item => item.id === productId || item.product_id === productId);
-    const inCart = existing ? existing.quantity : 0;
 
-    // Validation Logic
-    if (!data.stock || data.quantity <= 0) {
-        console.warn("DEBUG: Validation Failed - Out of Stock flag or 0 qty.");
-        showToast("Sorry, this item is out of stock", "warning");
-        return;
-    }
+    const existing = cart.find(item =>
+        item.id === productId || item.product_id === productId
+    );
 
-    if ((inCart + requestedQty) > data.quantity) {
-        console.warn(`DEBUG: Validation Failed - Exceeds Stock. In Cart: ${inCart}, Requested: ${requestedQty}, Max: ${data.quantity}`);
-        showToast(`Only ${data.quantity} units available. You have ${inCart} in cart.`, "warning");
-        toggleCart(); // Open cart to show current quantity
-        return;
-    }
-
-    // Update Local Cart
     if (existing) {
-        existing.quantity += requestedQty;
+        existing.quantity += quantity;
     } else {
+
         cart.push({
             product_id: productId,
             id: productId,
@@ -435,18 +431,28 @@ async function addToCartFromDetail() {
             price: product.price,
             image: product.image,
             category: product.category,
-            quantity: requestedQty
+            quantity: quantity
         });
+
     }
 
     localStorage.setItem('andham_cart', JSON.stringify(cart));
-    
+
     updateCartUI();
-    updateCartBadge();
-    showToast(`Added ${requestedQty} item(s) to cart`, "success");
-    
-    toggleCart(); 
+
+    showToast(`Added ${quantity} item(s) to cart`);
+
+    toggleCart();
+
+    const user = getCurrentUser();
+
+    if (user) {
+        saveCartToDatabase(productId, existing ? existing.quantity : quantity);
+    }
+
+    if (qtyEl) qtyEl.textContent = '1';
 }
+
 async function saveCartToDatabase(productId, quantity) {
     const user = getCurrentUser();
     if (!user) return;
@@ -467,73 +473,61 @@ async function saveCartToDatabase(productId, quantity) {
     }
 }
 
-// Updated in script.js
-async function updateCartItemQty(id, change) {
+function updateCartItemQty(id, change) {
     let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
     const itemIndex = cart.findIndex(i => i.id === id || i.product_id === id);
 
     if (itemIndex >= 0) {
-        const newQty = cart[itemIndex].quantity + change;
-
-        if (newQty <= 0) {
-            removeFromCart(id);
-            return;
+        cart[itemIndex].quantity += change;
+        if (cart[itemIndex].quantity <= 0) {
+            cart.splice(itemIndex, 1);
         }
-
-        // If increasing, check stock
-        if (change > 0) {
-            const { data: product } = await supabaseClient
-                .from('products')
-                .select('quantity')
-                .eq('product_id', id)
-                .single();
-
-            if (product && newQty > product.quantity) {
-                showToast(`Limit reached: Only ${product.quantity} items in stock`, 'warning');
-                return;
-            }
-        }
-
-        cart[itemIndex].quantity = newQty;
         localStorage.setItem('andham_cart', JSON.stringify(cart));
-        updateCartUI();
+        updateCartUI(); // Refresh UI immediately
         updateCartBadge();
 
-        // Sync to database
+        // Sync to database if logged in (async)
         const user = getCurrentUser();
-        if (user) {
-            await saveCartToDatabase(id, newQty);
-        }
-    }
-}
-async function removeFromCart(id) {
-    // 1. Update Local Storage immediately for UI responsiveness
-    let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
-    // Filter out by both possible ID keys to be safe
-    cart = cart.filter(i => i.id !== id && i.product_id !== id);
-    localStorage.setItem('andham_cart', JSON.stringify(cart));
-    
-    // 2. Refresh the UI
-    if (typeof updateCartUI === 'function') updateCartUI();
-    if (typeof updateCartBadge === 'function') updateCartBadge();
-
-    // 3. Sync with Supabase
-    const user = getCurrentUser();
-    if (user && user.user_id) {
-        try {
-            
-            const { error, status } = await supabaseClient
+        if (user && cart[itemIndex]) {
+            supabaseClient
+                .from('cart')
+                .upsert({
+                    user_id: user.user_id,
+                    product_id: id,
+                    quantity: cart[itemIndex].quantity,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,product_id'
+                })
+                .catch(err => console.error('Failed to sync quantity:', err));
+        } else if (user && !cart[itemIndex]) {
+            // Item removed, delete from database
+            supabaseClient
                 .from('cart')
                 .delete()
                 .eq('user_id', user.user_id)
-                .eq('product_id', id);
-
-            if (error) throw error;
-        
-        } catch (err) {
-            console.error('Failed to remove from database cart:', err);
-            // Optional: notify user that database sync failed
+                .eq('product_id', id)
+                .catch(err => console.error('Failed to delete from cart:', err));
         }
+    }
+}
+
+function removeFromCart(id) {
+    let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
+    cart = cart.filter(i => i.id !== id && i.product_id !== id);
+    localStorage.setItem('andham_cart', JSON.stringify(cart));
+    updateCartUI(); // Refresh UI immediately
+    updateCartBadge();
+
+    // Remove from database if logged in (async)
+    const user = getCurrentUser();
+    if (user) {
+        supabaseClient
+            .from('cart')
+            .delete()
+            .eq('user_id', user.user_id)
+            .eq('product_id', id)
+            .catch(err => console.error('Failed to remove from database cart:', err));
     }
 }
 
@@ -665,15 +659,13 @@ async function handleSearch(event) {
     displaySearchResults(data);
 }
 
-// function quickSearch(term) {
-//     const searchInput = document.getElementById('searchInput');
-//     searchInput.value = term;
-//     // Manually trigger the search function
-//     handleSearch({ target: { value: term } });
-// }
 function quickSearch(term) {
-    window.location.href = `collection.html?filter=${encodeURIComponent(term)}`;
+    const searchInput = document.getElementById('searchInput');
+    searchInput.value = term;
+    // Manually trigger the search function
+    handleSearch({ target: { value: term } });
 }
+
 function toggleAccordion(btn) {
     const item = btn.parentElement;
     if (item) {
@@ -697,28 +689,13 @@ function shareProduct() {
     }
 }
 
-function showToast(message, type = 'info') {
+function showToast(message) {
     const toast = document.getElementById('toast');
     if (!toast) return;
 
     toast.textContent = message;
-    toast.style.display = 'block'; // Ensure it's visible
-    toast.className = 'toast show'; 
-
-    // Set colors based on type
-    if (type === 'warning') toast.style.backgroundColor = '#ff9800'; 
-    else if (type === 'success') toast.style.backgroundColor = '#16a34a'; 
-    else if (type === 'error') toast.style.backgroundColor = '#dc2626'; 
-    else toast.style.backgroundColor = '#1a1a1a';
-
-    toast.style.zIndex = "10001"; // Stay above drawers
-
-    clearTimeout(window.toastTimeout);
-    window.toastTimeout = setTimeout(() => {
-        toast.classList.remove('show');
-        // Wait for the CSS fade-out before hiding display
-        setTimeout(() => { toast.style.display = 'none'; }, 300); 
-    }, 3000);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 // Close on escape
@@ -786,7 +763,7 @@ function renderHomeProducts() {
 
 <div style="display:flex; justify-content:space-between; align-items:center;">
 
-    <span style="color:${isOutOfStock ? '#999' : '#8b0000'};">
+    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:600;">
         Rs. ${p.price.toLocaleString()}.00
     </span>
 
@@ -815,6 +792,7 @@ function loadProductDetail() {
 
     const product = window.currentProduct;
     if (!product) return;
+    console.log(JSON.stringify(product));
 
     // Title
     document.getElementById("detailTitle").textContent = product.title;
@@ -888,55 +866,33 @@ function cleanProductData() {
 
 // Get current user from storage
 function getCurrentUser() {
-    const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
-    if (!userStr) return null;
-    
-    try {
-        const user = JSON.parse(userStr);
-        // Ensure we return null if the object exists but has no usable ID
-        if (!user.user_id && !user.id) return null; 
-        return user;
-    } catch (e) {
-        return null;
-    }
+    const user = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+    return user ? JSON.parse(user) : null;
 }
 
 // Add to cart (database + localStorage backup)
 async function addToCart(productId, quantity = 1) {
     const user = getCurrentUser();
 
-    // 1. Fetch latest stock quantity directly from DB
+    // 1. Fetch product details FIRST (needed for immediate UI display)
     const { data: product, error: productError } = await supabaseClient
         .from('products')
-        .select('product_id, title, price, image, category, quantity, stock')
+        .select('product_id, title, price, image, category')
         .eq('product_id', productId)
         .single();
 
     if (productError || !product) {
+        console.error('Product fetch error:', productError);
         showToast('Product not found', 'error');
         return false;
     }
 
-    // 2. Check if item is out of stock
-    if (!product.stock || product.quantity <= 0) {
-        showToast('Sorry, this item is out of stock', 'warning');
-        return false;
-    }
-
-    // 3. Check cumulative quantity (In Cart + New Request)
+    // 2. Update localStorage with complete product info
     let cart = JSON.parse(localStorage.getItem('andham_cart') || '[]');
     const existingIndex = cart.findIndex(item => item.id === productId || item.product_id === productId);
-    const currentInCart = existingIndex >= 0 ? cart[existingIndex].quantity : 0;
-    const totalRequested = currentInCart + quantity;
 
-    if (totalRequested > product.quantity) {
-        showToast(`Only ${product.quantity} units available. You already have ${currentInCart} in cart.`, 'warning');
-        return false;
-    }
-
-    // 4. Update localStorage
     if (existingIndex >= 0) {
-        cart[existingIndex].quantity = totalRequested;
+        cart[existingIndex].quantity += quantity;
     } else {
         cart.push({
             id: productId,
@@ -951,17 +907,27 @@ async function addToCart(productId, quantity = 1) {
     }
 
     localStorage.setItem('andham_cart', JSON.stringify(cart));
+
+    // 3. Update UI IMMEDIATELY (before database call)
     updateCartUI();
     updateCartBadge();
 
-    // 5. Sync to Database if logged in
+    // 4. If user logged in, save to database (async, don't wait)
     if (user) {
-        supabaseClient.from('cart').upsert({
-            user_id: user.user_id,
-            product_id: productId,
-            quantity: totalRequested,
-            updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,product_id' }).catch(err => console.error(err));
+        try {
+            await supabaseClient
+                .from('cart')
+                .upsert({
+                    user_id: user.user_id,
+                    product_id: productId,
+                    quantity: cart.find(item => item.id === productId)?.quantity || quantity,
+                    updated_at: new Date().toISOString()
+                }, {
+                    onConflict: 'user_id,product_id'
+                });
+        } catch (err) {
+            console.error('Database save error:', err);
+        }
     }
 
     showToast('Added to cart!', 'success');
@@ -1026,23 +992,12 @@ async function getCart() {
 
     return cartItems;
 }
+// (removeFromCart is defined above — the duplicate async version has been removed)
 
 // Update quantity
 async function updateCartQuantity(productId, quantity) {
-if (quantity < 1) {
+    if (quantity < 1) {
         removeFromCart(productId);
-        return;
-    }
-
-    // 1. Double check stock before updating
-    const { data: product } = await supabaseClient
-        .from('products')
-        .select('quantity')
-        .eq('product_id', productId)
-        .single();
-
-    if (product && quantity > product.quantity) {
-        showToast(`Sorry, only ${product.quantity} units left in stock.`, 'warning');
         return;
     }
 
@@ -1236,32 +1191,25 @@ async function renderCartDrawer() {
     let total = 0;
 
     cartContainer.innerHTML = cartItems.map(item => {
-        const product = item.product || {};
-        const availableStock = product.quantity || 0; // Get available stock from DB
-        const itemTotal = (product.price || 0) * item.quantity;
+        const itemTotal = item.product.price * item.quantity;
         total += itemTotal;
-
-        // Validation for the "+" button
-        const isAtMax = item.quantity >= availableStock;
 
         return `
             <div class="cart-item">
-                <img src="${product.image}" class="cart-item-image" alt="${product.title}">
+                <img src="${item.product.image}" class="cart-item-image" alt="${item.product.title}">
                 <div class="cart-item-details">
-                    <div class="cart-item-title">${product.title}</div>
-                    <div class="cart-item-price">Rs. ${(product.price || 0).toLocaleString()}</div>
+                    <div class="cart-item-title">${item.product.title}</div>
+                    <div class="cart-item-price">Rs. ${item.product.price.toLocaleString()}</div>
                     <div class="qty-selector">
                         <button class="qty-btn" onclick="updateCartQuantity('${item.product_id}', ${item.quantity - 1})">−</button>
                         <span class="qty-value">${item.quantity}</span>
-                        <button class="qty-btn" 
-                                onclick="${isAtMax ? `showToast('Only ${availableStock} units available', 'warning')` : `updateCartQuantity('${item.product_id}', ${item.quantity + 1})`}"
-                                style="${isAtMax ? 'opacity: 0.5; cursor: not-allowed;' : ''}">+</button>
+                        <button class="qty-btn" onclick="updateCartQuantity('${item.product_id}', ${item.quantity + 1})">+</button>
                     </div>
                     <span class="remove-icon" onclick="removeFromCart('${item.product_id}')" style="cursor:pointer;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff4d4d" viewBox="0 0 24 24">
-                            <path d="M9 3V4H4V6H5V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V6H20V4H15V3H9ZM7 6H17V20H7V6ZM9 8V18H11V8H9ZM13 8V18H15V8H13Z"/>
-                        </svg>
-                    </span>
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ff4d4d" viewBox="0 0 24 24">
+    <path d="M9 3V4H4V6H5V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V6H20V4H15V3H9ZM7 6H17V20H7V6ZM9 8V18H11V8H9ZM13 8V18H15V8H13Z"/>
+  </svg>
+</span>
                 </div>
             </div>
         `;
@@ -1447,6 +1395,8 @@ async function syncCartFromDatabase() {
 
         updateCartUI();
         updateCartBadge();
+        console.log('Cart synced from DB:', mergedCart.length, 'items');
+
     } catch (err) {
         console.error('Failed to sync cart:', err);
         updateCartUI();
@@ -1481,7 +1431,7 @@ function displaySearchResults(products) {
                     ${p.title}
                 </div>
 
-                <div style="color:#8b0000;">
+                <div style="color:#8b0000;font-weight:600;">
                     Rs. ${p.price}
                 </div>
             </div>
@@ -1489,202 +1439,3 @@ function displaySearchResults(products) {
         </div>
     `).join("");
 }
-
-async function loadSimilarProducts() {
-
-    const product = window.currentProduct;
-    if (!product) return;
-
-    const { data, error } = await supabaseClient
-        .from("products")
-        .select("*")
-        .eq("category", product.category)
-        .neq("product_id", product.id)
-        .limit(6);
-
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    const grid = document.getElementById("similarProductsGrid");
-
-    if (!data || data.length === 0) {
-        grid.innerHTML = `<p style="text-align:center; color:#888;">No similar products found.</p>`;
-        return;
-    }
-
-    grid.innerHTML = data.map(p => {
-
-        const isOutOfStock = p.stock === 'out';
-
-        return `
-        <div class="product-card ${isOutOfStock ? 'out' : ''}">
-
-            <div class="product-image-wrapper">
-
-                ${!isOutOfStock ? `
-                <a href="product.html?id=${encodeURIComponent(p.product_id)}">
-                ` : ''}
-
-                    <img src="${p.image}" class="product-img" alt="${p.title}">
-
-                ${!isOutOfStock ? `</a>` : ''}
-
-                ${isOutOfStock ? `
-                <div class="stock-overlay">
-                    Out of Stock
-                </div>
-                ` : ''}
-
-            </div>
-
-            <div class="product-info">
-
-                <h3 class="product-title">${p.title}</h3>
-
-                <div class="product-price-row">
-
-                    <span class="price-current">
-                        Rs. ${p.price.toLocaleString()}
-                    </span>
-
-                    ${isOutOfStock ? '' : `
-                    <button class="add-cart-btn" onclick="addToCart('${p.product_id}')">
-                        +
-                    </button>
-                    `}
-
-                </div>
-
-            </div>
-
-        </div>
-        `;
-
-    }).join("");
-}
-
-function goToImage(index){
-
-    const slider = document.getElementById('imageSlider');
-    const width = slider.clientWidth;
-
-    slider.scrollTo({
-        left: width * index,
-        behavior: "smooth"
-    });
-
-    document.querySelectorAll('.thumbnail-wrapper').forEach(el=>{
-        el.classList.remove("active");
-    });
-
-    document.querySelectorAll('.thumbnail-wrapper')[index].classList.add("active");
-}
-
-// Add this helper to script.js to handle the return from Google
-async function initGoogleSession() {
-    // 1. Get the session from Supabase after the redirect back
-    const { data: { session } } = await supabaseClient.auth.getSession();
-
-    if (session && session.user) {
-        // 2. Check if local storage is already set to avoid loops
-        if (!localStorage.getItem('andham_user')) {
-            const gUser = session.user;
-            
-            // 3. Try to fetch additional profile info from your custom users table
-            const { data: profile } = await supabaseClient
-                .from('users')
-                .select('*')
-                .eq('email', gUser.email)
-                .maybeSingle();
-
-            // 4. Create the standard andham_user object your code expects
-            const userData = {
-                user_id: profile ? profile.user_id : gUser.id,
-                user_name: profile ? profile.user_name : gUser.user_metadata.full_name,
-                email: gUser.email,
-                phone: profile ? profile.phone : null,
-                address: profile ? profile.address : null,
-                city: profile ? profile.city : null,
-                login_at: new Date().toISOString()
-            };
-
-            // 5. SET LOCAL STORAGE - Now your other code will work
-            localStorage.setItem('andham_user', JSON.stringify(userData));
-
-            // 6. Refresh UI
-            await syncCartFromDatabase();
-            updateHeaderAccount();
-            showToast(`Welcome, ${userData.user_name}!`, 'success');
-        }
-    }
-}
-
-// Ensure this runs on every page load
-document.addEventListener('DOMContentLoaded', initGoogleSession);
-// Add this to script.js
-async function handleGoogleRedirectSession() {
-    // 1. Get the current session from Supabase
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-    if (session && session.user) {
-        // 2. Check if we already have the local storage set to prevent redundant DB calls
-        if (localStorage.getItem('andham_user')) return;
-
-        const gUser = session.user;
-        console.log("Processing Google login for:", gUser.email);
-
-        try {
-            // 3. Fetch the full profile from your 'users' table using the Google email
-            const { data: profile, error: profileError } = await supabaseClient
-                .from('users')
-                .select('*')
-                .eq('email', gUser.email)
-                .maybeSingle();
-
-            let userData;
-
-            if (profile) {
-                // 4. Set localStorage with full database details
-                userData = {
-                    user_id:           profile.user_id,
-                    user_name:         profile.user_name,
-                    email:             profile.email,
-                    phone:             profile.phone,
-                    address:           profile.address || null,
-                    secondary_address: profile.secondary_address || null,
-                    city:              profile.city || null,
-                    state:             profile.state || null,
-                    pincode:           profile.pincode || null,
-                    country:           profile.country || 'India',
-                    login_at:          new Date().toISOString()
-                };
-            } else {
-                // Fallback if the user exists in Auth but not yet in your custom 'users' table
-                userData = {
-                    user_id:   gUser.id,
-                    user_name: gUser.user_metadata.full_name || 'User',
-                    email:     gUser.email,
-                    login_at:  new Date().toISOString()
-                };
-            }
-
-            // 5. SET THE STORAGE - Required for your other code to function
-            localStorage.setItem('andham_user', JSON.stringify(userData));
-            
-            // 6. Refresh UI elements
-            await syncCartFromDatabase();
-            updateHeaderAccount();
-            showToast(`Welcome, ${userData.user_name}!`, 'success');
-
-        } catch (err) {
-            console.error("Error syncing Google profile:", err);
-        }
-    }
-}
-
-// Ensure this runs when any page finishes loading
-document.addEventListener('DOMContentLoaded', () => {
-    handleGoogleRedirectSession();
-});
