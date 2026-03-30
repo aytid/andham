@@ -1290,3 +1290,186 @@ canvas {
     max-width: 100%;
     height: auto;
 }
+
+
+
+
+
+
+
+/* ============================================
+   ADD PRODUCT - IMAGE PREVIEW STYLES
+   ============================================ */
+
+/* Upload Areas */
+.upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    position: relative;
+}
+
+.upload-area:hover,
+.upload-area.dragover {
+    border-color: #8b0000;
+    background: #fef2f2;
+}
+
+.upload-area p {
+    color: #6b7280;
+    margin: 0;
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Preview Grids */
+.preview-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    min-height: 100px;
+}
+
+.preview-item {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.preview-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Remove Button - ALWAYS VISIBLE on mobile */
+.remove-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    background: #ef4444;
+    color: white;
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1; /* ALWAYS VISIBLE */
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.remove-btn:hover,
+.remove-btn:active {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+/* Image Label */
+.image-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 8px 4px 4px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+/* Empty state */
+.preview-grid:empty::before {
+    content: 'No images selected';
+    color: #9ca3af;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100px;
+    border: 2px dashed #e5e7eb;
+    border-radius: 8px;
+}
+
+/* ============================================
+   MOBILE SPECIFIC STYLES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .preview-item {
+        width: 100px;
+        height: 100px;
+    }
+    
+    /* Make delete button larger and always visible on touch devices */
+    .remove-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 18px;
+        opacity: 1 !important; /* Force visible */
+        top: 4px;
+        right: 4px;
+        background: rgba(239, 68, 68, 0.95); /* Slightly transparent */
+    }
+    
+    /* Add touch feedback */
+    .remove-btn:active {
+        transform: scale(0.95);
+        background: #b91c1c;
+    }
+    
+    .upload-area {
+        padding: 30px 15px;
+    }
+    
+    .preview-grid {
+        gap: 8px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .preview-item {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .remove-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 14px;
+    }
+}

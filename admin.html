@@ -468,7 +468,8 @@
                     Customers
                 </li>
                 <li class="nav-item" onclick="adminLogout()">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                         <polyline points="16 17 21 12 16 7"></polyline>
                         <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -1042,64 +1043,74 @@
     </div>
 
     <!-- Edit Product Modal -->
-<div class="modal" id="editModal">
-    <div class="modal-content" style="max-width: 800px;">
-        <div class="modal-header">
-            <h3>Edit Product</h3>
-            <button class="close-modal" onclick="closeModal()">&times;</button>
-        </div>
-        <form id="editForm" onsubmit="updateProduct(event)">
-            <input type="hidden" id="editProductId">
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 2;">
-                    <label>Title</label>
-                    <input type="text" id="editTitle" required>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label>Category</label>
-                    <select id="editCategory">
-                        <option value="Kanchipattu">Kanchipattu</option>
-                        <option value="Gadwal">Gadwal</option>
-                        <option value="Banaras">Banaras</option>
-                        <option value="Fancy">Fancy</option>
-                    </select>
-                </div>
+    <div class="modal" id="editModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Edit Product</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
             </div>
+            <form id="editForm" onsubmit="updateProduct(event)">
+                <input type="hidden" id="editProductId">
 
-            <div class="form-row">
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label>Title</label>
+                        <input type="text" id="editTitle" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Category</label>
+                        <select id="editCategory">
+                            <option value="Kanchipattu">Kanchipattu</option>
+                            <option value="Gadwal">Gadwal</option>
+                            <option value="Banaras">Banaras</option>
+                            <option value="Fancy">Fancy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹)</label>
+                        <input type="number" id="editPrice" required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label>Price (₹)</label>
-                    <input type="number" id="editPrice" required>
+                    <label>Main Product Image</label>
+                    <div id="editMainPreview" class="image-preview" style="margin-bottom: 10px; position: relative;">
+                        <img id="editMainImg" style="max-width:120px; border-radius:6px;">
+                        <button type="button" onclick="removeMainImage()"
+                            style="position:absolute;top:-8px;right:-8px;background:red;color:white;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;">
+                            ×
+                        </button>
+                    </div>
+                    <input type="file" id="editMainFileInput" accept="image/*">
+                    <p style="font-size: 11px; color: #666; margin-top: 5px;">Uploading a new file will replace the
+                        current image.</p>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label>Main Product Image</label>
-                <div id="editMainPreview" class="image-preview" style="margin-bottom: 10px;"></div>
-                <input type="file" id="editMainFileInput" accept="image/*">
-                <p style="font-size: 11px; color: #666; margin-top: 5px;">Uploading a new file will replace the current image.</p>
-            </div>
+                <div class="form-group">
+                    <label>Additional Gallery Images</label>
+                    <div id="editAdditionalPreview" class="image-preview"
+                        style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                    </div>
+                    <input type="file" id="editGalleryFileInput" accept="image/*" multiple>
+                    <button type="button" class="btn btn-danger btn-small" onclick="clearGallerySelection()"
+                        style="margin-top: 5px;">Remove All Gallery Images</button>
+                </div>
 
-            <div class="form-group">
-                <label>Additional Gallery Images</label>
-                <div id="editAdditionalPreview" class="image-preview" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;"></div>
-                <input type="file" id="editGalleryFileInput" accept="image/*" multiple>
-                <button type="button" class="btn btn-danger btn-small" onclick="clearGallerySelection()" style="margin-top: 5px;">Remove All Gallery Images</button>
-            </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editDescription" style="height: 100px;"></textarea>
+                </div>
 
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="editDescription" style="height: 100px;"></textarea>
-            </div>
-
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-            </div>
-        </form>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
     <!-- Order Detail Modal -->
     <div class="modal order-detail-modal" id="orderDetailModal">

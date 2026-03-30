@@ -326,15 +326,67 @@ function removeBullet(btn) {
 
 function previewImage(url, containerId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = url ? `<img src="${url}" style="max-width: 100%; max-height: 150px; margin-top: 10px; border-radius: 4px;" onerror="this.style.display='none'">` : '';
+
+    if (!url) {
+        container.innerHTML = "";
+        return;
+    }
+
+    container.innerHTML = `
+        <div style="position:relative; display:inline-block;">
+            <img src="${url}" 
+                 style="max-width:150px; border-radius:6px;"
+                 onerror="this.style.display='none'">
+
+            <button onclick="removeMainImage()" 
+                style="
+                    position:absolute;
+                    top:-8px;
+                    right:-8px;
+                    width:24px;
+                    height:24px;
+                    border:none;
+                    border-radius:50%;
+                    background:red;
+                    color:white;
+                    font-size:14px;
+                    cursor:pointer;
+                ">
+                ×
+            </button>
+        </div>
+    `;
 }
 
 function previewMultipleImages(urls, containerId) {
+
     const container = document.getElementById(containerId);
+
     const urlArray = urls.split(',').map(u => u.trim()).filter(u => u);
-    container.innerHTML = urlArray.map(url =>
-        `<img src="${url}" style="width: 80px; height: 80px; object-fit: cover; margin: 5px; border-radius: 4px;" onerror="this.style.display='none'">`
-    ).join('');
+
+    container.innerHTML = urlArray.map((url, i) => `
+        <div style="position:relative; display:inline-block;">
+            <img src="${url}"
+                style="width:90px;height:90px;object-fit:cover;border-radius:6px">
+
+            <button onclick="this.parentElement.remove()"
+                style="
+                    position:absolute;
+                    top:-6px;
+                    right:-6px;
+                    width:20px;
+                    height:20px;
+                    border:none;
+                    border-radius:50%;
+                    background:red;
+                    color:white;
+                    font-size:12px;
+                    cursor:pointer;
+                ">
+                ×
+            </button>
+        </div>
+    `).join('');
 }
 
 async function generateProductId(category) {
@@ -405,99 +457,94 @@ async function generateAndSetProductId() {
     }
 }
 // Save product - using URLs only, no file upload
-async function saveProduct(e) {
-    e.preventDefault();
-
-    const productId = document.getElementById('newProductID').value;
-
-    if (!productId) {
-        showToast('Please select a category first to generate Product ID');
-        return;
-    }
-
+async function saveProduct(event) {
+    event.preventDefault();
+    
+    const saveBtn = event.target.querySelector('button[type="submit"]');
+    const originalText = saveBtn.textContent;
+    saveBtn.textContent = 'Saving...';
+    saveBtn.disabled = true;
+    
     try {
-        const imageInput = document.getElementById("newProductImage");
-        const galleryInput = document.getElementById("newProductImages");
-        const mainFile = imageInput.files[0];
-
-        if (!mainFile) {
-            showToast("Please upload a main product image!");
+        // Get form values
+        const productId = document.getElementById('newProductID').value;
+        const title = document.getElementById('newProductTitle').value;
+        const category = document.getElementById('newProductCategory').value;
+        const price = parseFloat(document.getElementById('newProductPrice').value);
+        const description = document.getElementById('newProductDescription').value;
+        
+        // Validate required fields
+        if (!productId || !title || !category || !price) {
+            showToast('Please fill all required fields');
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
             return;
         }
-
-        // Upload main image
-        const mainFileName = `${Date.now()}-${mainFile.name}`;
-        const { error: mainUploadError } = await supabaseClient
-            .storage
-            .from("product-images")
-            .upload(mainFileName, mainFile);
-
-        if (mainUploadError) throw mainUploadError;
-
-        const { data: mainUrlData } = supabaseClient
-            .storage
-            .from("product-images")
-            .getPublicUrl(mainFileName);
-
-        const mainImageUrl = mainUrlData.publicUrl;
-
-        // Upload gallery images
-        let galleryUrls = [];
-        if (galleryInput.files.length > 0) {
-            for (const file of galleryInput.files) {
-                const fileName = `${Date.now()}-${file.name}`;
-                const { error } = await supabaseClient
-                    .storage
-                    .from("product-images")
-                    .upload(fileName, file);
-
-                if (error) {
-                    console.error(error);
-                    continue;
-                }
-
-                const { data } = supabaseClient
-                    .storage
-                    .from("product-images")
-                    .getPublicUrl(fileName);
-
-                galleryUrls.push(data.publicUrl);
-            }
+        
+        // Check if main image is selected
+        if (mainImageFiles.length === 0) {
+            showToast('Please select a main product image');
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+            return;
         }
-
-        // Get bullet points
-        const bullets = Array.from(document.querySelectorAll('.bullet-point'))
-            .map(input => input.value.trim())
-            .filter(val => val)
-            .join(',');
-
-        // Insert product with generated ID
-        const { error } = await supabaseClient.from("products").insert({
-            product_id: productId,  // Use the generated ID
-            title: document.getElementById('newProductTitle').value,
-            price: parseInt(document.getElementById('newProductPrice').value),
-            original_price: parseInt(document.getElementById('newProductOriginalPrice').value) || null,
-            image: mainImageUrl,
-            images: galleryUrls.length ? galleryUrls.join(",") : null,
-            category: document.getElementById('newProductCategory').value,
-            description: document.getElementById('newProductDescription').value || null,
-            bullets: bullets || null,
-            stock: true,
-            available_for_customer: true,
-            quantity: 1
-        });
-
+        
+        // Upload main image
+        let mainImageUrl = null;
+        const mainFile = mainImageFiles[0];
+        mainImageUrl = await uploadToStorage(mainFile, 'products/main');
+        
+        if (!mainImageUrl) {
+            showToast('Failed to upload main image');
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+            return;
+        }
+        
+        // Upload gallery images
+        const galleryUrls = [];
+        for (let file of galleryImageFiles) {
+            const url = await uploadToStorage(file, 'products/gallery');
+            if (url) galleryUrls.push(url);
+        }
+        
+        // Save product to database
+        const { data, error } = await supabaseClient
+            .from('products')
+            .insert([{
+                product_id: productId,
+                title: title,
+                category: category,
+                price: price,
+                description: description,
+                image: mainImageUrl,
+                gallery_images: galleryUrls.length > 0 ? galleryUrls : null,
+                in_stock: true,
+                quantity: 0,
+                available: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            }]);
+        
         if (error) throw error;
-
-        showToast("Product saved successfully!");
-        logActivity('Added product', productId, 'New product created');
-        await loadProductsFromSupabase();
+        
+        showToast('Product saved successfully!');
+        
+        // Clear form and images
         clearForm();
+        
+        // Switch to products section
         showSection('products');
-
+        
+        // Refresh product list
+        loadProducts();
+        
     } catch (err) {
-        showToast("Error: " + err.message);
-        console.error(err);
+        console.error('Save product error:', err);
+        showToast('Error saving product: ' + err.message);
+    } finally {
+        saveBtn.textContent = originalText;
+        saveBtn.disabled = false;
     }
 }
 function clearForm() {
@@ -506,6 +553,7 @@ function clearForm() {
     document.getElementById('newProductID').placeholder = 'Select category to generate ID';
     document.getElementById('mainPreviewGrid').innerHTML = '';
     document.getElementById('galleryPreviewGrid').innerHTML = '';
+    clearAllImages();
     document.getElementById('bulletInputs').innerHTML = `
         <div class="bullet-row">
             <input type="text" placeholder="Feature 1" class="bullet-point">
@@ -1779,3 +1827,227 @@ async function loadAllAnalytics() {
 
 // Auto-refresh every 5 minutes
 setInterval(loadAllAnalytics, 300000);
+
+let removedGalleryImages = [];
+let removedMainImage = false;
+
+function removeMainImage() {
+    document.getElementById("editMainPreview").innerHTML = "";
+    document.getElementById("editMainFileInput").value = "";
+}
+
+function removeGalleryImage(imgUrl, index) {
+    removedGalleryImages.push(imgUrl);
+
+    const container = document.getElementById("editAdditionalPreview");
+    container.children[index].remove();
+}
+
+
+
+
+
+
+
+
+
+
+
+// ============================================
+// ADD PRODUCT - IMAGE PREVIEW & DELETE
+// ============================================
+
+let mainImageFiles = [];
+let galleryImageFiles = [];
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    setupImagePreviews();
+});
+
+function setupImagePreviews() {
+    // ========== MAIN IMAGE ==========
+    const mainInput = document.getElementById('newProductImage');
+    const mainArea = document.getElementById('mainUploadArea');
+    
+    if (mainInput && mainArea) {
+        // Handle file selection
+        mainInput.addEventListener('change', (e) => {
+            handleMainImages(e.target.files);
+        });
+        
+        // Drag & drop effects
+        mainArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            mainArea.classList.add('dragover');
+        });
+        
+        mainArea.addEventListener('dragleave', () => {
+            mainArea.classList.remove('dragover');
+        });
+        
+        mainArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            mainArea.classList.remove('dragover');
+            handleMainImages(e.dataTransfer.files);
+        });
+    }
+    
+    // ========== GALLERY IMAGES ==========
+    const galleryInput = document.getElementById('newProductImages');
+    const galleryArea = document.getElementById('galleryUploadArea');
+    
+    if (galleryInput && galleryArea) {
+        // Handle file selection
+        galleryInput.addEventListener('change', (e) => {
+            handleGalleryImages(e.target.files);
+        });
+        
+        // Drag & drop effects
+        galleryArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            galleryArea.classList.add('dragover');
+        });
+        
+        galleryArea.addEventListener('dragleave', () => {
+            galleryArea.classList.remove('dragover');
+        });
+        
+        galleryArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            galleryArea.classList.remove('dragover');
+            handleGalleryImages(e.dataTransfer.files);
+        });
+    }
+}
+
+// Handle main image files
+function handleMainImages(files) {
+    const validFiles = Array.from(files).filter(file => {
+        if (!file.type.startsWith('image/')) {
+            showToast(`${file.name} is not an image`);
+            return false;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            showToast(`${file.name} is too large (max 5MB)`);
+            return false;
+        }
+        return true;
+    });
+    
+    // Keep only 1 main image
+    mainImageFiles = validFiles.slice(0, 1);
+    renderMainPreviews();
+}
+
+// Handle gallery image files
+function handleGalleryImages(files) {
+    const validFiles = Array.from(files).filter(file => {
+        if (!file.type.startsWith('image/')) {
+            showToast(`${file.name} is not an image`);
+            return false;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            showToast(`${file.name} is too large (max 5MB)`);
+            return false;
+        }
+        return true;
+    });
+    
+    galleryImageFiles = [...galleryImageFiles, ...validFiles];
+    renderGalleryPreviews();
+}
+
+// Show main image preview
+function renderMainPreviews() {
+    const grid = document.getElementById('mainPreviewGrid');
+    if (!grid) return;
+    
+    if (mainImageFiles.length === 0) {
+        grid.innerHTML = '';
+        return;
+    }
+    
+    const file = mainImageFiles[0];
+    const url = URL.createObjectURL(file);
+    
+    grid.innerHTML = `
+        <div class="preview-item">
+            <img src="${url}" alt="Main Image">
+            <button type="button" class="remove-btn" onclick="removeMainImage()" title="Remove">×</button>
+            <span class="image-label">Main</span>
+        </div>
+    `;
+}
+
+// Show gallery image previews
+function renderGalleryPreviews() {
+    const grid = document.getElementById('galleryPreviewGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = galleryImageFiles.map((file, index) => {
+        const url = URL.createObjectURL(file);
+        return `
+            <div class="preview-item">
+                <img src="${url}" alt="Gallery ${index + 1}">
+                <button type="button" class="remove-btn" onclick="removeGalleryImage(${index})" title="Remove">×</button>
+                <span class="image-label">${index + 1}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+// Remove main image
+function removeMainImage() {
+    mainImageFiles = [];
+    document.getElementById('newProductImage').value = '';
+    renderMainPreviews();
+}
+
+// Remove single gallery image
+function removeGalleryImage(index) {
+    galleryImageFiles.splice(index, 1);
+    renderGalleryPreviews();
+    
+    // Clear input if no images left
+    if (galleryImageFiles.length === 0) {
+        document.getElementById('newProductImages').value = '';
+    }
+}
+
+// Clear all images (call this in your existing clearForm function)
+function clearAllImages() {
+    mainImageFiles = [];
+    galleryImageFiles = [];
+    document.getElementById('newProductImage').value = '';
+    document.getElementById('newProductImages').value = '';
+    document.getElementById('mainPreviewGrid').innerHTML = '';
+    document.getElementById('galleryPreviewGrid').innerHTML = '';
+}
+async function uploadToStorage(file, folder) {
+    try {
+        const ext = file.name.split('.').pop();
+        const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
+        
+        const { data, error } = await supabaseClient
+            .storage
+            .from('product-images')
+            .upload(fileName, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
+        
+        if (error) throw error;
+        
+        const { data: { publicUrl } } = supabaseClient
+            .storage
+            .from('product-images')
+            .getPublicUrl(fileName);
+        
+        return publicUrl;
+        
+    } catch (err) {
+        console.error('Upload error:', err);
+        return null;
+    }
+}
