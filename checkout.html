@@ -14,42 +14,48 @@
     <script src="script.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
-        /* ── Layout ─────────────────────────────────────────── */
+        /* ───────── Layout ───────── */
+
         .checkout-container {
-            max-width: 920px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
             padding: 80px 16px 60px;
             display: grid;
             grid-template-columns: 1fr 340px;
-            gap: 20px;
+            gap: 24px;
             align-items: start;
         }
-        @media (max-width: 720px) {
-            .checkout-container { grid-template-columns: 1fr; }
+
+        /* mobile layout */
+        @media (max-width:768px) {
+
+            .checkout-container {
+                grid-template-columns: 1fr;
+                padding: 20px 14px 120px;
+                gap: 16px;
+            }
+
+            .checkout-right {
+                order: 1;
+            }
+            .checkout-left {
+                order: 2;
+            }
+
+            .order-summary {
+                position: static;
+                margin-top: 10px;
+            }
+
         }
 
-        /* ── Section card ────────────────────────────────────── */
-        .checkout-section {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 10px;
-            padding: 16px 18px;
+        /* ───────── Form layout ───────── */
+
+        .form-group {
             margin-bottom: 12px;
         }
-        .checkout-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0 0 14px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
 
-        /* ── Form groups ─────────────────────────────────────── */
-        .form-group { margin-bottom: 12px; }
         .form-group label {
             display: block;
             font-size: 10px;
@@ -59,6 +65,7 @@
             margin-bottom: 5px;
             color: #888;
         }
+
         .form-group input,
         .form-group textarea,
         .form-group select {
@@ -71,8 +78,8 @@
             background: #fafafa;
             color: #222;
             outline: none;
-            transition: border-color 0.2s, background 0.2s;
         }
+
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
@@ -85,53 +92,166 @@
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
-        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
 
-        /* ── Order summary (right col) ───────────────────────── */
+        @media (max-width:480px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ───────── Improved checkout cards ───────── */
+
+        .co-card {
+            width: 100%;
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all .2s ease;
+        }
+
+        .co-card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        }
+
+        .co-card-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 12px;
+        }
+
+        .co-card-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .co-card-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .co-card-primary {
+            font-size: 15px;
+            font-weight: 500;
+            color: #222;
+        }
+
+        .co-card-primary.empty {
+            color: #bbb;
+            font-style: italic;
+        }
+
+        .co-card-secondary {
+            font-size: 13px;
+            color: #777;
+            margin-top: 3px;
+        }
+
+        .co-edit-btn {
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .co-edit-btn:hover {
+            border-color: #999;
+        }
+
+        /* mobile card layout */
+
+        @media (max-width:768px) {
+
+            .co-card {
+                padding: 14px;
+            }
+
+            .co-card-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .co-edit-btn {
+                align-self: flex-end;
+            }
+
+        }
+
+        /* ───────── Order summary ───────── */
+
         .order-summary {
             background: #fff;
-            border: 1px solid #e8e8e8;
+            border: 2px solid #8b0000;
             border-radius: 10px;
             padding: 16px 18px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.07);
             position: sticky;
             top: 80px;
             height: fit-content;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .order-summary h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin: 0 0 12px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #f0f0f0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .order-summary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        /* ── Cart items in summary ───────────────────────────── */
+        .order-summary h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        /* ───────── Cart items ───────── */
+
         .cart-summary-item {
             display: flex;
             gap: 10px;
             padding: 10px 0;
             border-bottom: 1px solid #f5f5f5;
-            cursor: pointer;
-            transition: background 0.15s;
         }
-        .cart-summary-item:last-child { border-bottom: none; }
+
         .cart-summary-item img {
             width: 44px;
             height: 58px;
             object-fit: cover;
             border-radius: 4px;
-            flex-shrink: 0;
         }
-        .cart-summary-details { flex: 1; min-width: 0; }
-        .cart-summary-title { font-size: 12px; font-weight: 500; color: #222; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .cart-summary-meta  { font-size: 11px; color: #888; }
-        .cart-summary-price { font-size: 12px; font-weight: 600; color: #8b0000; margin-top: 2px; }
 
-        /* ── Totals ──────────────────────────────────────────── */
+        .cart-summary-details {
+            flex: 1;
+        }
+
+        .cart-summary-title {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .cart-summary-meta {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .cart-summary-price {
+            font-size: 12px;
+            font-weight: 600;
+            color: #8b0000;
+        }
+
+        /* ───────── Totals ───────── */
+
         .summary-row {
             display: flex;
             justify-content: space-between;
@@ -139,38 +259,35 @@
             font-size: 13px;
             color: #555;
         }
+
         .summary-row.total {
             font-size: 15px;
             font-weight: 700;
-            color: #1a1a1a;
             border-top: 1.5px solid #222;
             margin-top: 8px;
             padding-top: 10px;
         }
 
-        /* ── Place order button ──────────────────────────────── */
+        /* ───────── Place order button ───────── */
+
         .place-order-btn {
             width: 100%;
-            padding: 13px;
+            padding: 14px;
             background: #8b0000;
             color: #fff;
             border: none;
-            border-radius: 7px;
-            font-family: 'Inter', sans-serif;
+            border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
             cursor: pointer;
             margin-top: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.2s;
         }
-        .place-order-btn:hover    { background: #6b0000; }
-        .place-order-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .place-order-btn:hover {
+            background: #6b0000;
+        }
+
+        /* ───────── Secure badge ───────── */
 
         .secure-badge {
             display: flex;
@@ -182,177 +299,88 @@
             color: #aaa;
         }
 
-        /* ── Loading spinner (inside button) ─────────────────── */
-        .loading-spinner {
-            display: none;
-            width: 16px; height: 16px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* ───────── Empty cart ───────── */
 
-        /* ── Address toggle ──────────────────────────────────── */
-        .address-toggle { margin-top: 8px; }
-        .address-checkbox {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #555;
-            cursor: pointer;
-        }
-        .address-checkbox input { width: 14px; height: 14px; cursor: pointer; }
-
-        /* ── Empty cart ──────────────────────────────────────── */
-        .empty-cart { text-align: center; padding: 60px 20px; }
-        .empty-cart a { color: #8b0000; text-decoration: underline; }
-
-        /* ── Validation ──────────────────────────────────────── */
-        .form-group.error input,
-        .form-group.error select,
-        .form-group.error textarea {
-            border-color: #dc2626;
-            background-color: #fef2f2;
-        }
-        .form-group.error label { color: #dc2626; }
-        .form-group.success input,
-        .form-group.success select { border-color: #16a34a; }
-
-        .error-shake { animation: shake 0.5s ease-in-out; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25%       { transform: translateX(-4px); }
-            75%       { transform: translateX(4px); }
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
         }
 
-        .toast.validation-toast { background: #dc2626; color: #fff; font-weight: 500; }
-        .toast.validation-toast::before { content: '⚠️ '; margin-right: 6px; }
+        /* ───────── Mobile small devices ───────── */
 
-        .inline-error {
-            color: #dc2626;
-            font-size: 11px;
-            margin-top: 4px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            opacity: 0;
-            transform: translateY(-6px);
-            transition: all 0.2s ease;
-        }
-        .form-group.error .inline-error { opacity: 1; transform: translateY(0); }
-        .inline-error::before { content: '•'; font-size: 8px; }
+        @media (max-width:480px) {
 
-        html { scroll-behavior: smooth; }
+            .checkout-container {
+                padding: 16px 8px 120px;
+            }
 
-        /* ── Step badge on card headings ─────────────────────── */
-        .step-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 20px; height: 20px;
-            background: #8b0000;
-            color: #fff;
-            border-radius: 50%;
-            font-size: 11px;
-            font-weight: 700;
-            margin-right: 8px;
-            font-family: 'Inter', sans-serif;
-            flex-shrink: 0;
-        }
-        .checkout-section h2 {
-            display: flex;
-            align-items: center;
-        }
+            .cart-summary-item img {
+                width: 36px;
+                height: 48px;
+            }
 
-        /* ── Account-style info cards ────────────────────────── */
-        .co-card {
-            background: #fff;
-            border: 1px solid #e8e8e8;
-            border-radius: 10px;
-            padding: 14px 16px;
-            margin-bottom: 12px;
-        }
-        .co-card-label {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #aaa;
-            margin-bottom: 10px;
-        }
-        .co-card-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .co-card-info { flex: 1; min-width: 0; }
-        .co-card-primary {
-            font-size: 14px;
-            font-weight: 500;
-            color: #1a1a1a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .co-card-primary.empty { color: #bbb; font-style: italic; font-weight: 400; }
-        .co-card-secondary { font-size: 12px; color: #888; margin-top: 2px; }
-        .co-addr-name { font-size: 13px; font-weight: 600; color: #1a1a1a; margin-bottom: 2px; }
-        .co-edit-btn {
-            flex-shrink: 0;
-            background: transparent;
-            border: 1.5px solid #ddd;
-            border-radius: 6px;
-            padding: 6px 12px;
-            font-size: 11px;
-            font-weight: 500;
-            color: #555;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            transition: all 0.18s;
-            white-space: nowrap;
-        }
-        .co-edit-btn:hover { border-color: #999; color: #222; }
+            .summary-row {
+                font-size: 12px;
+            }
 
-        /* ── Edit panel (like account.html) ──────────────────── */
-        .co-edit-panel {
-            display: none;
-            border-top: 1px solid #f0f0f0;
-            margin-top: 12px;
-            padding-top: 4px;
-            animation: coFadeDown 0.18s ease;
+            .summary-row.total {
+                font-size: 14px;
+            }
+
         }
-        .co-edit-panel.open { display: block; }
-        @keyframes coFadeDown {
-            from { opacity: 0; transform: translateY(-4px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .co-panel-actions { display: flex; gap: 8px; margin-top: 10px; }
-        .co-confirm-btn {
-            padding: 8px 16px;
-            background: #8b0000;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            cursor: pointer;
-            transition: background 0.18s;
-        }
-        .co-confirm-btn:hover { background: #6b0000; }
-        .co-cancel-btn {
-            padding: 8px 14px;
-            background: transparent;
-            border: 1.5px solid #ddd;
-            border-radius: 6px;
-            font-size: 12px;
-            font-family: 'Inter', sans-serif;
-            color: #666;
-            cursor: pointer;
-        }
-        .co-cancel-btn:hover { border-color: #aaa; color: #333; }
+        /* Hide edit panels by default */
+.co-edit-panel{
+    display:none;
+    margin-top:12px;
+    border-top:1px solid #eee;
+    padding-top:12px;
+}
+
+/* show when opened */
+.co-edit-panel.open{
+    display:block;
+}
+
+/* panel button container */
+.co-panel-actions{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+}
+
+/* Use this button */
+.co-confirm-btn{
+    background:#8b0000;
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    font-size:12px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.co-confirm-btn:hover{
+    background:#6b0000;
+}
+
+/* Cancel button */
+.co-cancel-btn{
+    background:#fff;
+    border:1px solid #ccc;
+    padding:8px 14px;
+    font-size:12px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.co-cancel-btn:hover{
+    border-color:#999;
+}
+.co-edit-btn{
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
     </style>
 </head>
 
@@ -391,7 +419,8 @@
             <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
                     onclick="toggleNav()">Banaras
                     <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
         </div>
     </div>
 
@@ -495,7 +524,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Country</label>
-                                    <input type="text" value="India" readonly style="background:#f0f0f0;cursor:not-allowed;color:#888;">
+                                    <input type="text" value="India" readonly
+                                        style="background:#f0f0f0;cursor:not-allowed;color:#888;">
                                 </div>
                             </div>
                         </div>
@@ -514,8 +544,10 @@
                         </div>
 
                         <div class="co-panel-actions">
-                            <button type="button" class="co-confirm-btn" onclick="confirmAddress()">✓ Use this address</button>
-                            <button type="button" class="co-cancel-btn" onclick="toggleCoEdit('address')">Cancel</button>
+                            <button type="button" class="co-confirm-btn" onclick="confirmAddress()">✓ Use this
+                                address</button>
+                            <button type="button" class="co-cancel-btn"
+                                onclick="toggleCoEdit('address')">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -633,7 +665,8 @@
                 <div class="footer-social">
 
                     <!-- Instagram -->
-                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr" class="social-icon" target="_blank" aria-label="Instagram">
+                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr"
+                        class="social-icon" target="_blank" aria-label="Instagram">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="5"></rect>
                             <circle cx="12" cy="12" r="4"></circle>
@@ -720,13 +753,13 @@
         }
 
         function confirmAddress() {
-            const name   = document.getElementById('fullName').value.trim();
-            const addr   = document.getElementById('address1').value.trim();
-            const city   = document.getElementById('city').value.trim();
-            const state  = document.getElementById('state').value.trim();
-            const pin    = document.getElementById('pincode').value.trim();
+            const name = document.getElementById('fullName').value.trim();
+            const addr = document.getElementById('address1').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const pin = document.getElementById('pincode').value.trim();
             const useAlt = document.getElementById('useDifferentAddress').checked;
-            const alt    = document.getElementById('address2').value.trim();
+            const alt = document.getElementById('address2').value.trim();
 
             const nameEl = document.getElementById('cardName');
             const addrEl = document.getElementById('cardAddr');

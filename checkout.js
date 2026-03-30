@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             .single();
 
         if (data) {
+
             document.getElementById('email').value = data.email || '';
             document.getElementById('phone').value = data.phone || '';
             document.getElementById('fullName').value = data.user_name || '';
@@ -85,7 +86,16 @@ document.addEventListener('DOMContentLoaded', async function () {
             document.getElementById('city').value = data.city || '';
             document.getElementById('pincode').value = data.pincode || '';
             document.getElementById('state').value = data.state || '';
-            // Update card display after pre-filling
+
+            // ✅ trigger validation after autofill
+            validateField('email');
+            validateField('phone');
+            validateField('fullName');
+            validateField('address1');
+            validateField('city');
+            validateField('state');
+            validateField('pincode');
+
             if (typeof updateCheckoutCards === 'function') updateCheckoutCards();
         }
     }
@@ -451,11 +461,20 @@ async function placeOrder() {
         console.error(error);
         showToast("Payment failed");
 
-        btn.disabled = false;
-        spinner.style.display = 'none';
-        btnText.textContent = 'Place Order';
+        resetPlaceOrderUI();
     }
 }
+
+function resetPlaceOrderUI() {
+    const btn = document.getElementById('placeOrderBtn');
+    const spinner = document.getElementById('loadingSpinner');
+    const btnText = document.getElementById('btnText');
+
+    if (btn) btn.disabled = false;
+    if (spinner) spinner.style.display = 'none';
+    if (btnText) btnText.textContent = 'Place Order';
+}
+
 
 // Start Razorpay Payment
 function startRazorpayPayment(userId, orderNumber, amount) {
@@ -465,6 +484,12 @@ function startRazorpayPayment(userId, orderNumber, amount) {
         currency: "INR",
         name: "Andham",
         description: "Order " + orderNumber,
+        modal: {
+            ondismiss: function () {
+                console.warn('Payment modal dismissed');
+                resetPlaceOrderUI();
+            }
+        },
         handler: async function (response) {
             const paymentId = response.razorpay_payment_id;
 
@@ -479,6 +504,7 @@ function startRazorpayPayment(userId, orderNumber, amount) {
                 );
             } catch (error) {
                 showToast("Order creation failed");
+                resetPlaceOrderUI();
             }
         },
         prefill: {
@@ -492,6 +518,17 @@ function startRazorpayPayment(userId, orderNumber, amount) {
     };
 
     const rzp = new Razorpay(options);
+
+    rzp.on('payment.failed', function (response) {
+        console.error('Razorpay payment.failed', response);
+        showToast('Payment failed. Please try again.');
+        resetPlaceOrderUI();
+    });
+
+    rzp.on('payment.authorized', function (response) {
+        // No-op here because handler will be called after success.
+    });
+
     rzp.open();
 }
 
@@ -590,7 +627,7 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
                 // Update quantity and toggle stock off if 0
                 await supabaseClient
                     .from('products')
-                    .update({ 
+                    .update({
                         quantity: newQty,
                         stock: newQty > 0, // Automatically set stock to false if qty is 0
                         updated_at: new Date().toISOString()
@@ -636,6 +673,16 @@ function checkReturnFromPayment() {
     } else if (paymentStatus === 'failed') {
         showToast('Payment failed. Please try again.');
     }
+}
+
+function toggleCoEdit(section) {
+
+    const panel = document.getElementById(section + "Edit");
+
+    if (!panel) return;
+
+    panel.classList.toggle("open");
+
 }
 
 // Handle Visibility Change
