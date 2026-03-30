@@ -903,6 +903,7 @@ function getCurrentUser() {
 
 // Add to cart (database + localStorage backup)
 async function addToCart(productId, quantity = 1) {
+    toggleCart();
     const user = getCurrentUser();
 
     // 1. Fetch latest stock quantity directly from DB
@@ -931,7 +932,7 @@ async function addToCart(productId, quantity = 1) {
 
     if (totalRequested > product.quantity) {
         showToast(`Only ${product.quantity} units available. You already have ${currentInCart} in cart.`, 'warning');
-        toggleCart();
+        openCart(); // <-- CHANGED: Always open cart to show current items
         return false;
     }
 
@@ -966,7 +967,7 @@ async function addToCart(productId, quantity = 1) {
     }
 
     showToast('Added to cart!', 'success');
-    toggleCart();
+    openCart(); // <-- CHANGED: Use openCart instead of toggleCart
     return true;
 }
 // Get cart (merge database + localStorage)
