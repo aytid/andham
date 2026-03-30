@@ -183,11 +183,13 @@ async function loadCheckoutCart() {
 
 // Render Order Summary
 function renderOrderSummary() {
+
     const container = document.getElementById('orderItems');
     let subtotal = 0;
     let html = '';
 
     for (const item of checkoutCart) {
+
         const product = item.product || {};
         const price = parseFloat(product.price) || 0;
         const qty = parseInt(item.quantity) || 1;
@@ -195,18 +197,49 @@ function renderOrderSummary() {
 
         subtotal += itemTotal;
 
+        const itemId = item.product_id;
+
         html += `
-<div class="cart-summary-item" 
-     onclick="window.open('product.html?id=${item.product_id}', '_blank')" 
-     style="cursor:pointer">
-    <img src="${product.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}" 
-         alt="${product.title || 'Product'}"
-         onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'">
+<div class="cart-summary-item">
+
+    <img src="${product.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}"
+         alt="${product.title || 'Product'}">
+
     <div class="cart-summary-details">
+
         <div class="cart-summary-title">${product.title || 'Unknown'}</div>
-        <div class="cart-summary-meta">${product.category || ''} • Qty: ${qty}</div>
-        <div class="cart-summary-price">Rs. ${itemTotal.toLocaleString()}</div>
+
+        <div class="cart-summary-meta">${product.category || ''}</div>
+
+        <div class="cart-summary-price">
+            Rs. ${itemTotal.toLocaleString()}
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+
+            <div style="display:flex;border:1px solid #ddd;">
+
+                <button onclick="changeCheckoutQty('${itemId}', -1)"
+                        style="width:26px;height:26px;border:none;background:#f5f5f5;cursor:pointer;">−</button>
+
+                <span style="padding:0 10px;font-size:12px;display:flex;align-items:center;">
+                    ${qty}
+                </span>
+
+                <button onclick="changeCheckoutQty('${itemId}', 1)"
+                        style="width:26px;height:26px;border:none;background:#f5f5f5;cursor:pointer;">+</button>
+
+            </div>
+
+            <button onclick="removeCheckoutItem('${itemId}')"
+                    style="border:none;background:none;color:#ff4d4d;font-size:12px;cursor:pointer;">
+                Remove
+            </button>
+
+        </div>
+
     </div>
+
 </div>
 `;
     }
@@ -214,6 +247,7 @@ function renderOrderSummary() {
     container.innerHTML = html;
 
     const total = subtotal;
+
     document.getElementById('subtotal').textContent = `Rs. ${subtotal.toLocaleString()}`;
     document.getElementById('shipping').textContent = 'Free';
     document.getElementById('total').textContent = `Rs. ${total.toLocaleString()}`;
@@ -440,7 +474,7 @@ async function placeOrder() {
     const btnText = document.getElementById('btnText');
 
     btn.disabled = true;
-    spinner.style.display = 'inline-block';
+    if (spinner) spinner.style.display = 'inline-block';
     btnText.textContent = 'Opening Payment...';
 
     try {
@@ -696,3 +730,72 @@ function handleVisibilityChange() {
 }
 
 document.addEventListener('visibilitychange', handleVisibilityChange);
+
+let qtyUpdating = false;
+
+async function changeCheckoutQty(productId, change) {
+
+    if (qtyUpdating) return;
+    qtyUpdating = true;
+
+    const user = getCurrentUser();
+    if (!user) {
+        qtyUpdating = false;
+        return;
+    }
+
+    const item = checkoutCart.find(i => i.product_id === productId);
+    if (!item) {
+        qtyUpdating = false;
+        return;
+    }
+
+    const newQty = item.quantity + change;
+
+    if (newQty <= 0) {
+        await removeCheckoutItem(productId);
+        qtyUpdating = false;
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from('cart')
+        .update({
+            quantity: newQty,
+            updated_at: new Date().toISOString()
+        })
+        .eq('user_id', user.user_id)
+        .eq('product_id', productId);
+
+    if (!error) {
+        await loadCheckoutCart();
+
+        showToast(change > 0 ? 
+            "Item quantity increased" : 
+            "Item quantity decreased"
+        );
+    }
+
+    qtyUpdating = false;
+}
+async function removeCheckoutItem(productId) {
+
+    const user = getCurrentUser();
+    if (!user) return;
+
+    const { error } = await supabaseClient
+        .from('cart')
+        .delete()
+        .eq('user_id', user.user_id)
+        .eq('product_id', productId);
+
+    if (error) {
+        console.error(error);
+        showToast("Failed to remove item", "error");
+        return;
+    }
+
+    showToast("Item removed from cart", "warning");
+
+    await loadCheckoutCart();
+}
