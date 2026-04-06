@@ -379,7 +379,13 @@ function updateDetailQty(change) {
 }
 
 async function addToCartFromDetail() {
-
+    
+    const user = getCurrentUser();
+    // LOGIN CHECK
+    if (!user) {
+        showToast('Please login to add items to cart', 'warning');
+        return false;
+    }
     const qtyEl = document.getElementById('detailQty');
     const requestedQty = parseInt(qtyEl?.textContent) || 1;
     const product = window.currentProduct;
@@ -775,7 +781,6 @@ function renderHomeProducts() {
 
             <div style="position:relative; overflow:hidden;">
 
-                <!-- Out of Stock Overlay -->
                 ${isOutOfStock ? `
                 <div style="position:absolute; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:10;">
                     <span style="color:white; font-size:14px; text-transform:uppercase; letter-spacing:2px; font-weight:600;">
@@ -795,24 +800,30 @@ function renderHomeProducts() {
             ${isOutOfStock ? '' : `</a>`}
 
             <div style="padding:20px;">
+
                 <h3 style="font-family:var(--font-serif); font-size:16px; margin:10px 0;">
                     ${p.title}
                 </h3>
 
-<div style="display:flex; justify-content:space-between; align-items:center;">
+                <!-- Product Type -->
+                <div style="font-size:13px; color:#777; margin-bottom:8px; text-transform:capitalize;">
+                    ${p.type || ''}
+                </div>
 
-    <span style="color:${isOutOfStock ? '#999' : '#8b0000'};">
-        Rs. ${p.price.toLocaleString()}.00
-    </span>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
 
-    ${isOutOfStock ? '' : `
-    <button onclick="addToCart('${p.id}')" 
-        style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-        +
-    </button>
-    `}
+                    <span style="color:${isOutOfStock ? '#999' : '#8b0000'}; font-weight:500;">
+                        Rs. ${p.price.toLocaleString()}.00
+                    </span>
 
-</div>
+                    ${isOutOfStock ? '' : `
+                    <button onclick="addToCart('${p.id}')" 
+                        style="width:28px;height:28px;border:1px solid #ddd;background:#fff;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                        +
+                    </button>
+                    `}
+
+                </div>
 
             </div>
 
@@ -926,7 +937,13 @@ function getCurrentUser() {
 
 // Add to cart (database + localStorage backup)
 async function addToCart(productId, quantity = 1) {
+    
     const user = getCurrentUser();
+
+    if (!user) {
+        showToast('Please login to add items to cart', 'warning');
+        return;
+    }
 
     // 1. Fetch latest stock quantity directly from DB
     const { data: product, error: productError } = await supabaseClient

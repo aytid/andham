@@ -8,10 +8,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet">
+
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="index.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
+    <script src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
     <base target="_self">
 </head>
@@ -129,7 +131,31 @@
             <a href="#collections" class="hero-cta">Explore Collection</a>
         </div>
 
+        
     </section>
+    <section class="dual-video-section">
+
+    <div class="video-half">
+        <video autoplay muted loop playsinline>
+            <source src="demo_trim.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay-text">
+            <h3>Handwoven Heritage</h3>
+        </div>
+    </div>
+
+    <div class="video-half">
+        <video autoplay muted loop playsinline>
+            <source src="demo_trim.mp4" type="video/mp4">
+        </video>
+
+        <div class="video-overlay-text">
+            <h3>Modern Elegance</h3>
+        </div>
+    </div>
+
+</section>
 
 
     <!-- FIXED TITLE SECTION -->
@@ -187,18 +213,10 @@
         </div>
     </section>
 
-
-
-
-
-
-
-
-
     <!-- ANDHAM BRAND SHOWCASE SECTION - Tall with Sequential Reveal -->
     <section class="brand-showcase-section" id="brand-showcase">
         <div class="brand-content-wrapper">
-            <h1 class="brand-title">Andham</h1>
+            <h1 class="brand-title">అందం</h1>
             <p class="brand-description">
                 Discover the finest collection of traditional silk sarees, handwoven with heritage
                 and crafted for the modern woman. Each piece tells a story of artistry,
@@ -475,50 +493,90 @@
             renderHomeProducts();
             renderNewArrivals();
         }
+function renderHomeProducts() {
+    const grid = document.getElementById('homeProductsGrid');
+    if (!grid || !window.products) return;
 
-        function renderHomeProducts() {
-            const grid = document.getElementById('homeProductsGrid');
-            if (!grid || !window.products) return;
+    const productsToShow = window.products.slice(0, 10);
 
-            const productsToShow = window.products.slice(0, 10);
-            grid.innerHTML = productsToShow.map(product => `
-            <div class="product-card" onclick="window.location.href='product.html?id=${product.id}'">
-                <div class="product-image-wrapper">
-                    <img src="${product.image}" alt="${product.title}" class="product-img">
-                    ${product.stock === 'out' ? '<div class="stock-overlay">Out of Stock</div>' : ''}
-                </div>
-                <div class="product-info">
-                    <h3 class="product-title">${product.title}</h3>
-                    <div class="product-price-row">
-                        <span class="price-current">Rs. ${product.price}</span>
-                        <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart('${product.id}')">+</button>
-                    </div>
-                </div>
+    grid.innerHTML = productsToShow.map(product => `
+        <div class="horizontal-product-card" onclick="window.location.href='product.html?id=${product.id}'">
+
+            <div class="horizontal-product-image">
+                <img src="${product.image}" alt="${product.title}">
+                ${product.stock === 'out' ? '<div class="stock-overlay">Out of Stock</div>' : ''}
             </div>
-        `).join('');
-        }
 
+            <div class="horizontal-product-info">
+
+                <h4>${product.title}</h4>
+
+                <p class="horizontal-product-category">
+                    ${product.category || ''}
+                </p>
+
+                <div class="product-price-row" style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+
+                    <span class="horizontal-product-price">
+                        Rs. ${Number(product.price).toLocaleString()}
+                    </span>
+
+                    ${product.stock === 'out' ? '' : `
+                        <button class="add-cart-btn"
+                        onclick="event.stopPropagation(); addToCart('${product.id}')">
+                            +
+                        </button>
+                    `}
+
+                </div>
+
+            </div>
+
+        </div>
+    `).join('');
+}
+        
         function renderNewArrivals() {
             const container = document.getElementById('newArrivalsScroll');
             if (!container || !window.products) return;
 
             const newArrivals = window.products.slice(0, 8);
-            container.innerHTML = newArrivals.map(product => `
-            <div class="horizontal-product-card" onclick="window.location.href='product.html?id=${product.id}'">
-                <div class="horizontal-product-image">
-                    <img src="${product.image}" alt="${product.title}">
-                </div>
-                <div class="horizontal-product-info">
-                    <h4>${product.title}</h4>
-                    <p class="horizontal-product-category">${product.category}</p>
-                    <span class="horizontal-product-price">Rs. ${product.price}</span>
-                </div>
-            </div>
-        `).join('');
-        }
 
-        function addToCart(productId) {
-            showToast('Added to cart!');
+            container.innerHTML = newArrivals.map(product => `
+        <div class="horizontal-product-card" onclick="window.location.href='product.html?id=${product.id}'">
+
+            <div class="horizontal-product-image">
+                <img src="${product.image}" alt="${product.title}">
+                ${product.stock === 'out' ? '<div class="stock-overlay">Out of Stock</div>' : ''}
+            </div>
+
+            <div class="horizontal-product-info">
+
+                <h4>${product.title}</h4>
+
+                <p class="horizontal-product-category">
+                    ${product.category || ''}
+                </p>
+
+                <div class="product-price-row" style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
+
+                    <span class="horizontal-product-price">
+                        Rs. ${Number(product.price).toLocaleString()}
+                    </span>
+
+                    ${product.stock === 'out' ? '' : `
+                        <button class="add-cart-btn"
+                        onclick="event.stopPropagation(); addToCart('${product.id}')">
+                            +
+                        </button>
+                    `}
+
+                </div>
+
+            </div>
+
+        </div>
+    `).join('');
         }
 
         function showToast(message) {
