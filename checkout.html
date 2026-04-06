@@ -39,6 +39,7 @@
             .checkout-right {
                 order: 1;
             }
+
             .checkout-left {
                 order: 2;
             }
@@ -195,15 +196,16 @@
             border: 2px solid #8b0000;
             border-radius: 10px;
             padding: 16px 18px;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
             position: sticky;
             top: 80px;
             height: fit-content;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .order-summary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .order-summary h2 {
@@ -328,59 +330,61 @@
             }
 
         }
+
         /* Hide edit panels by default */
-.co-edit-panel{
-    display:none;
-    margin-top:12px;
-    border-top:1px solid #eee;
-    padding-top:12px;
-}
+        .co-edit-panel {
+            display: none;
+            margin-top: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
 
-/* show when opened */
-.co-edit-panel.open{
-    display:block;
-}
+        /* show when opened */
+        .co-edit-panel.open {
+            display: block;
+        }
 
-/* panel button container */
-.co-panel-actions{
-    display:flex;
-    gap:8px;
-    margin-top:12px;
-}
+        /* panel button container */
+        .co-panel-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
 
-/* Use this button */
-.co-confirm-btn{
-    background:#8b0000;
-    color:#fff;
-    border:none;
-    padding:8px 14px;
-    font-size:12px;
-    border-radius:6px;
-    cursor:pointer;
-}
+        /* Use this button */
+        .co-confirm-btn {
+            background: #8b0000;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
 
-.co-confirm-btn:hover{
-    background:#6b0000;
-}
+        .co-confirm-btn:hover {
+            background: #6b0000;
+        }
 
-/* Cancel button */
-.co-cancel-btn{
-    background:#fff;
-    border:1px solid #ccc;
-    padding:8px 14px;
-    font-size:12px;
-    border-radius:6px;
-    cursor:pointer;
-}
+        /* Cancel button */
+        .co-cancel-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 8px 14px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
 
-.co-cancel-btn:hover{
-    border-color:#999;
-}
-.co-edit-btn{
-    display:flex;
-    align-items:center;
-    gap:4px;
-}
+        .co-cancel-btn:hover {
+            border-color: #999;
+        }
+
+        .co-edit-btn {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 
@@ -576,15 +580,15 @@
                     <span id="total">Rs. 0.00</span>
                 </div>
 
-<button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
+                <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">
 
-    <span id="btnText">Place Order</span>
+                    <span id="btnText">Place Order</span>
 
-    <span id="loadingSpinner" style="display:none;margin-left:8px;">
-        ⏳
-    </span>
+                    <span id="loadingSpinner" style="display:none;margin-left:8px;">
+                        ⏳
+                    </span>
 
-</button>
+                </button>
 
                 <div class="secure-badge">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

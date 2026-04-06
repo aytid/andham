@@ -42,6 +42,7 @@
             </div>
 
             <a href="index.html" class="logo">Andham</a>
+
         </div>
     </header>
 
@@ -53,11 +54,16 @@
             <button class="close-btn" onclick="toggleNav()">×</button>
         </div>
         <div class="nav-content">
-            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link" onclick="toggleNav()">Kanchipattu <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link" onclick="toggleNav()">Banaras <span>›</span></a></div>
-            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
         </div>
     </div>
 
@@ -66,14 +72,21 @@
         <button class="search-close" onclick="toggleSearch()">×</button>
         <div class="search-container">
             <div class="search-input-wrapper">
-                <input type="text" class="search-input" placeholder="Search products..." id="searchInput" onkeyup="handleSearch(event)">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
             </div>
-            <div style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">Popular Searches</div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                <button onclick="quickSearch('Kanchipattu')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
-                <button onclick="quickSearch('Gadwal')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
-                <button onclick="quickSearch('Banaras')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
-                <button onclick="quickSearch('Fancy')" style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
             </div>
             <div id="search-results-list" style="margin-top:20px;"></div>
         </div>
@@ -125,12 +138,12 @@
             <h2>Our Collections</h2>
             <p style="font-family: 'Parisienne', cursive;">Handpicked sarees for every occasion</p>
         </div>
-        
+
         <!-- Collection Cards - 4 in a row -->
         <div class="collections-showcase">
             <div class="collection-card-large" onclick="window.location.href='collection.html?filter=Kanchipattu'">
                 <div class="collection-image-wrapper">
-                    <img src="img/kanchi.webp"Kanchipattu">
+                    <img src="img/kanchi.webp" Kanchipattu">
                 </div>
                 <div class="collection-card-content">
                     <h3>Kanchipattu</h3>
@@ -138,7 +151,7 @@
                     <span class="shop-link">Shop Now</span>
                 </div>
             </div>
-            
+
             <div class="collection-card-large" onclick="window.location.href='collection.html?filter=Gadwal'">
                 <div class="collection-image-wrapper">
                     <img src="img/gadwal.jpg" alt="Gadwal">
@@ -149,7 +162,7 @@
                     <span class="shop-link">Shop Now</span>
                 </div>
             </div>
-            
+
             <div class="collection-card-large" onclick="window.location.href='collection.html?filter=Banaras'">
                 <div class="collection-image-wrapper">
                     <img src="img/banaras.webp" alt="Banaras">
@@ -160,7 +173,7 @@
                     <span class="shop-link">Shop Now</span>
                 </div>
             </div>
-            
+
             <div class="collection-card-large" onclick="window.location.href='collection.html?filter=Fancy'">
                 <div class="collection-image-wrapper">
                     <img src="img/fancy.webp" alt="Fancy">
@@ -183,32 +196,32 @@
 
 
     <!-- ANDHAM BRAND SHOWCASE SECTION - Tall with Sequential Reveal -->
-<section class="brand-showcase-section" id="brand-showcase">
-    <div class="brand-content-wrapper">
-        <h1 class="brand-title">Andham</h1>
-        <p class="brand-description">
-            Discover the finest collection of traditional silk sarees, handwoven with heritage 
-            and crafted for the modern woman. Each piece tells a story of artistry, 
-            elegance, and timeless beauty.
-        </p>
-    </div>
-    
-    <!-- Floating Images Container -->
-    <div class="floating-images-container" id="brandFloatingImages">
-        <div class="floating-image image-left" data-speed="0.8">
-            <img src="img/floating1.webp" alt="Traditional Saree">
+    <section class="brand-showcase-section" id="brand-showcase">
+        <div class="brand-content-wrapper">
+            <h1 class="brand-title">Andham</h1>
+            <p class="brand-description">
+                Discover the finest collection of traditional silk sarees, handwoven with heritage
+                and crafted for the modern woman. Each piece tells a story of artistry,
+                elegance, and timeless beauty.
+            </p>
         </div>
-        <div class="floating-image image-right" data-speed="1.2">
-            <img src="img/floating2.webp" alt="Silk Saree">
+
+        <!-- Floating Images Container -->
+        <div class="floating-images-container" id="brandFloatingImages">
+            <div class="floating-image image-left" data-speed="0.8">
+                <img src="img/floating1.webp" alt="Traditional Saree">
+            </div>
+            <div class="floating-image image-right" data-speed="1.2">
+                <img src="img/floating2.webp" alt="Silk Saree">
+            </div>
+            <div class="floating-image image-bottom-left" data-speed="0.6">
+                <img src="img/floating3.webp" alt="Banarasi Saree">
+            </div>
+            <div class="floating-image image-bottom-right" data-speed="1.0">
+                <img src="img/floating4.webp" alt="Designer Saree">
+            </div>
         </div>
-        <div class="floating-image image-bottom-left" data-speed="0.6">
-            <img src="img/floating3.webp" alt="Banarasi Saree">
-        </div>
-        <div class="floating-image image-bottom-right" data-speed="1.0">
-            <img src="img/floating4.webp" alt="Designer Saree">
-        </div>
-    </div>
-</section>
+    </section>
 
 
 
@@ -220,7 +233,7 @@
             <h2 class="section-title-new">New Arrivals</h2>
             <!-- <a href="collection.html" class="view-all-link">View All</a> -->
         </div>
-        
+
         <div class="horizontal-scroll-container">
             <div class="horizontal-scroll" id="newArrivalsScroll">
                 <!-- Products will be loaded here -->
@@ -238,17 +251,18 @@
         </div>
         <div class="products-grid" id="homeProductsGrid"></div>
     </section>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
             <div class="footer-block">
                 <h3 class="footer-logo">Andham</h3>
                 <p class="footer-text">
-                    Discover timeless elegance with our curated collection of handcrafted sarees. Designed with tradition and styled for modern women.
+                    Discover timeless elegance with our curated collection of handcrafted sarees. Designed with
+                    tradition and styled for modern women.
                 </p>
                 <div class="footer-social">
-                    <a href="https://www.instagram.com/_andham__" class="social-icon" target="_blank" aria-label="Instagram">
+                    <a href="https://www.instagram.com/_andham__" class="social-icon" target="_blank"
+                        aria-label="Instagram">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="5"></rect>
                             <circle cx="12" cy="12" r="4"></circle>
@@ -257,12 +271,14 @@
                     </a>
                     <a href="https://www.youtube.com/@Andhamm" class="social-icon" target="_blank" aria-label="YouTube">
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 15.5v-7l6 3.5-6 3.5z"/>
+                            <path
+                                d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 15.5v-7l6 3.5-6 3.5z" />
                         </svg>
                     </a>
                     <a href="https://wa.me/918106662341" class="social-icon" target="_blank" aria-label="WhatsApp">
                         <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.13 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                            <path
+                                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.13 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                         </svg>
                     </a>
                 </div>
@@ -300,148 +316,151 @@
     <div class="mobile-nav">
         <a href="index.html" class="mobile-nav-item active">
             <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2.1L2 10v11h8v-7h4v7h8V10L12 2.1z"/>
+                <path d="M12 2.1L2 10v11h8v-7h4v7h8V10L12 2.1z" />
             </svg>
             <span>Home</span>
         </a>
         <button class="mobile-nav-item" onclick="toggleSearch()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
             <span>Search</span>
         </button>
         <button class="mobile-nav-item" onclick="toggleCart()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 0 1-8 0"/>
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
             </svg>
             <span>Cart</span>
         </button>
         <button class="mobile-nav-item" onclick="handleAccountClick()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
             </svg>
             <span>Profile</span>
         </button>
     </div>
-<script>
-    // Toggle functions
-    function toggleNav() {
-        document.getElementById('navDrawer').classList.toggle('active');
-        document.getElementById('navOverlay').classList.toggle('active');
-    }
-
-    function toggleCart() {
-        document.getElementById('cartDrawer').classList.toggle('active');
-        document.getElementById('cartOverlay').classList.toggle('active');
-    }
-
-    function toggleSearch() {
-        document.getElementById('searchModal').classList.toggle('active');
-        if (document.getElementById('searchModal').classList.contains('active')) {
-            document.getElementById('searchInput').focus();
+    <script>
+        // Toggle functions
+        function toggleNav() {
+            document.getElementById('navDrawer').classList.toggle('active');
+            document.getElementById('navOverlay').classList.toggle('active');
         }
-    }
 
-    function handleAccountClick() {
-        window.location.href = 'account.html';
-    }
-
-    // ============================================
-    // HEADER LOGO SHOW/HIDE BASED ON SCROLL
-    // ============================================
-    
-    const heroSection = document.querySelector('.hero-section');
-    const headerLogo = document.querySelector('.header .logo');
-    
-    function updateHeaderLogo() {
-        if (!heroSection || !headerLogo) return;
-        
-        const scrolled = window.pageYOffset;
-        const heroHeight = heroSection.offsetHeight;
-        
-        // Hide logo when in hero section (within first 90% of hero height)
-        // Show logo when scrolled past hero section
-        if (scrolled < heroHeight * 0.9) {
-            headerLogo.style.opacity = '0';
-            headerLogo.style.pointerEvents = 'none';
-            headerLogo.style.visibility = 'hidden';
-        } else {
-            headerLogo.style.opacity = '1';
-            headerLogo.style.pointerEvents = 'auto';
-            headerLogo.style.visibility = 'visible';
+        function toggleCart() {
+            document.getElementById('cartDrawer').classList.toggle('active');
+            document.getElementById('cartOverlay').classList.toggle('active');
         }
-    }
 
-    // Header scroll effect + logo visibility
-    window.addEventListener('scroll', () => {
-        const header = document.getElementById('mainHeader');
-        const scrolled = window.scrollY;
-        
-        // Existing header background effect
-        if (scrolled > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        function toggleSearch() {
+            document.getElementById('searchModal').classList.toggle('active');
+            if (document.getElementById('searchModal').classList.contains('active')) {
+                document.getElementById('searchInput').focus();
+            }
         }
-        
-        // Update logo visibility
+
+        function handleAccountClick() {
+            window.location.href = 'account.html';
+        }
+
+        // ============================================
+        // HEADER LOGO SHOW/HIDE BASED ON SCROLL
+        // ============================================
+
+        const heroSection = document.querySelector('.hero-section');
+        const headerLogo = document.querySelector('.header .logo');
+
+        function updateHeaderLogo() {
+
+            // Skip effect on mobile
+            if (window.innerWidth <= 768) {
+                headerLogo.style.opacity = "1";
+                return;
+            }
+
+            if (!heroSection || !headerLogo) return;
+
+            const scrolled = window.pageYOffset;
+            const heroHeight = heroSection.offsetHeight;
+
+            const revealPoint = heroHeight * 0.7;
+
+            if (scrolled > revealPoint) {
+                headerLogo.style.opacity = "1";
+            } else {
+                headerLogo.style.opacity = "0";
+            }
+        }
+
+        // Header scroll effect + logo visibility
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('mainHeader');
+            const scrolled = window.scrollY;
+
+            // Existing header background effect
+            if (scrolled > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+
+            // Update logo visibility
+            updateHeaderLogo();
+        }, { passive: true });
+
+        // Initial call
         updateHeaderLogo();
-    }, { passive: true });
 
-    // Initial call
-    updateHeaderLogo();
+        // Horizontal scroll progress
+        const scrollContainer = document.getElementById('newArrivalsScroll');
+        const progressBar = document.getElementById('scrollProgress');
 
-    // Horizontal scroll progress
-    const scrollContainer = document.getElementById('newArrivalsScroll');
-    const progressBar = document.getElementById('scrollProgress');
-    
-    if (scrollContainer && progressBar) {
-        scrollContainer.addEventListener('scroll', () => {
-            const scrollWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-            const scrolled = (scrollContainer.scrollLeft / scrollWidth) * 100;
-            progressBar.style.width = scrolled + '%';
-        });
-    }
-
-    // Load products from Supabase
-    async function loadProductsFromSupabase() {
-        const { data, error } = await supabaseClient
-            .from('products')
-            .select('*')
-            .order('created_at', { ascending: false });
-
-        if (error) {
-            console.error("Error loading products:", error);
-            return;
+        if (scrollContainer && progressBar) {
+            scrollContainer.addEventListener('scroll', () => {
+                const scrollWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                const scrolled = (scrollContainer.scrollLeft / scrollWidth) * 100;
+                progressBar.style.width = scrolled + '%';
+            });
         }
 
-        window.products = data
-            .filter(p => p.available_for_customer)
-            .map(p => ({
-                id: p.product_id,
-                title: p.title,
-                price: p.price,
-                originalPrice: p.original_price,
-                category: p.category,
-                image: p.image,
-                stock: p.stock ? "in" : "out",
-                created_at: p.created_at
-            }));
+        // Load products from Supabase
+        async function loadProductsFromSupabase() {
+            const { data, error } = await supabaseClient
+                .from('products')
+                .select('*')
+                .order('created_at', { ascending: false });
 
-        renderHomeProducts();
-        renderNewArrivals();
-    }
+            if (error) {
+                console.error("Error loading products:", error);
+                return;
+            }
 
-    function renderHomeProducts() {
-        const grid = document.getElementById('homeProductsGrid');
-        if (!grid || !window.products) return;
-        
-        const productsToShow = window.products.slice(0, 10);
-        grid.innerHTML = productsToShow.map(product => `
+            window.products = data
+                .filter(p => p.available_for_customer)
+                .map(p => ({
+                    id: p.product_id,
+                    title: p.title,
+                    price: p.price,
+                    originalPrice: p.original_price,
+                    category: p.category,
+                    image: p.image,
+                    stock: p.stock ? "in" : "out",
+                    created_at: p.created_at
+                }));
+
+            renderHomeProducts();
+            renderNewArrivals();
+        }
+
+        function renderHomeProducts() {
+            const grid = document.getElementById('homeProductsGrid');
+            if (!grid || !window.products) return;
+
+            const productsToShow = window.products.slice(0, 10);
+            grid.innerHTML = productsToShow.map(product => `
             <div class="product-card" onclick="window.location.href='product.html?id=${product.id}'">
                 <div class="product-image-wrapper">
                     <img src="${product.image}" alt="${product.title}" class="product-img">
@@ -456,14 +475,14 @@
                 </div>
             </div>
         `).join('');
-    }
+        }
 
-    function renderNewArrivals() {
-        const container = document.getElementById('newArrivalsScroll');
-        if (!container || !window.products) return;
-        
-        const newArrivals = window.products.slice(0, 8);
-        container.innerHTML = newArrivals.map(product => `
+        function renderNewArrivals() {
+            const container = document.getElementById('newArrivalsScroll');
+            if (!container || !window.products) return;
+
+            const newArrivals = window.products.slice(0, 8);
+            container.innerHTML = newArrivals.map(product => `
             <div class="horizontal-product-card" onclick="window.location.href='product.html?id=${product.id}'">
                 <div class="horizontal-product-image">
                     <img src="${product.image}" alt="${product.title}">
@@ -475,173 +494,174 @@
                 </div>
             </div>
         `).join('');
-    }
-
-    function addToCart(productId) {
-        showToast('Added to cart!');
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    function quickSearch(term) {
-        document.getElementById('searchInput').value = term;
-        handleSearch({key: 'Enter'});
-    }
-
-    function handleSearch(e) {
-        if (e.key === 'Enter') {
-            const term = document.getElementById('searchInput').value;
-            window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
         }
-    }
 
-    
+        function addToCart(productId) {
+            showToast('Added to cart!');
+        }
 
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
 
+        function quickSearch(term) {
+            document.getElementById('searchInput').value = term;
+            handleSearch({ key: 'Enter' });
+        }
 
-
-// ============================================
-// BRAND SHOWCASE - STRICT ALTERNATING SEQUENTIAL REVEAL
-// Order: Left → Right → Bottom-Left → Bottom-Right
-// Each waits for previous to finish before starting
-// ============================================
-
-const brandSection = document.querySelector('.brand-showcase-section');
-const brandTitle = document.querySelector('.brand-title');
-const brandDescription = document.querySelector('.brand-description');
-
-let ticking = false;
-
-function updateBrandSectionOnScroll() {
-    if (!brandSection) return;
-    
-    const rect = brandSection.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    
-    // Calculate progress through section (0 to 1)
-    const progressStart = windowHeight; 
-    const progressEnd = -rect.height + windowHeight;
-    const current = rect.top;
-    
-    let progress = (progressStart - current) / (progressStart - progressEnd);
-    progress = Math.max(0, Math.min(1, progress));
-    
-    const leftImage = document.querySelector('.brand-showcase-section .image-left');
-    const rightImage = document.querySelector('.brand-showcase-section .image-right');
-    const bottomLeftImage = document.querySelector('.brand-showcase-section .image-bottom-left');
-    const bottomRightImage = document.querySelector('.brand-showcase-section .image-bottom-right');
-    
-    // --- TITLE: Show immediately ---
-    if (progress > 0.02 && progress < 0.98) {
-        brandTitle?.classList.add('revealed');
-        brandDescription?.classList.add('revealed');
-    } else {
-        brandTitle?.classList.remove('revealed');
-        brandDescription?.classList.remove('revealed');
-    }
-    
-    // Define strict sequential stages (each gets 20% of scroll, no overlap)
-    // 0-20%:   Image 1 (Left) rises
-    // 20-25%:  Pause
-    // 25-45%:  Image 2 (Right) rises
-    // 45-50%:  Pause
-    // 50-70%:  Image 3 (Bottom-Left) rises
-    // 70-75%:  Pause
-    // 75-95%:  Image 4 (Bottom-Right) rises
-    
-    // --- IMAGE 1: Left - Stage 1 (0% - 20%) ---
-    if (leftImage) {
-        let p1 = (progress - 0) / 0.20;
-        if (p1 < 0) p1 = 0;
-        if (p1 > 1) p1 = 1;
-        
-        // Only visible during its stage
-        const visible = progress >= 0 && progress <= 0.25;
-        
-        // Start below viewport (100vh), end at final position (15vh)
-        const startY = 100;
-        const endY = 15;
-        const y = startY - (p1 * (startY - endY));
-        const rotate = -8 + (p1 * 4); // -8deg to -4deg
-        
-        leftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-        leftImage.style.opacity = visible ? 1 : (progress > 0.25 ? 1 : 0);
-    }
-    
-    // --- IMAGE 2: Right - Stage 2 (25% - 45%) ---
-    if (rightImage) {
-        let p2 = (progress - 0.25) / 0.20;
-        if (p2 < 0) p2 = 0;
-        if (p2 > 1) p2 = 1;
-        
-        const visible = progress >= 0.25 && progress <= 0.50;
-        
-        const startY = 100;
-        const endY = 20;
-        const y = startY - (p2 * (startY - endY));
-        const rotate = 6 - (p2 * 4); // 6deg to 2deg
-        
-        rightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-        rightImage.style.opacity = visible ? 1 : (progress > 0.50 ? 1 : 0);
-    }
-
-    // --- IMAGE 3: Bottom-Left - Stage 3 (50% - 70%) ---
-if (bottomLeftImage) {
-    let p3 = (progress - 0.50) / 0.20;
-    if (p3 < 0) p3 = 0;
-    if (p3 > 1) p3 = 1;
-
-    const visible = progress >= 0.50;
-
-    const startY = 100;
-    const endY = 55;
-    const y = startY - (p3 * (startY - endY));
-    const rotate = -4 + (p3 * 4);
-
-    bottomLeftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-    bottomLeftImage.style.opacity = visible ? 1 : 0;
-}
+        function handleSearch(e) {
+            if (e.key === 'Enter') {
+                const term = document.getElementById('searchInput').value;
+                window.location.href = `collection.html?search=${encodeURIComponent(term)}`;
+            }
+        }
 
 
-// --- IMAGE 4: Bottom-Right - SAME STAGE (50% - 70%) ---
-if (bottomRightImage) {
-    let p4 = (progress - 0.50) / 0.20;
-    if (p4 < 0) p4 = 0;
-    if (p4 > 1) p4 = 1;
-
-    const visible = progress >= 0.50;
-
-    const startY = 100;
-    const endY = 60;
-    const y = startY - (p4 * (startY - endY));
-    const rotate = 5 - (p4 * 4);
-
-    bottomRightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-    bottomRightImage.style.opacity = visible ? 1 : 0;
-}
-    ticking = false;
-}
-
-// Throttled scroll listener
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(updateBrandSectionOnScroll);
-        ticking = true;
-    }
-}, { passive: true });
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    loadProductsFromSupabase();
-    updateBrandSectionOnScroll();
-});
 
 
-</script>
+
+
+        // ============================================
+        // BRAND SHOWCASE - STRICT ALTERNATING SEQUENTIAL REVEAL
+        // Order: Left → Right → Bottom-Left → Bottom-Right
+        // Each waits for previous to finish before starting
+        // ============================================
+
+        const brandSection = document.querySelector('.brand-showcase-section');
+        const brandTitle = document.querySelector('.brand-title');
+        const brandDescription = document.querySelector('.brand-description');
+
+        let ticking = false;
+
+        function updateBrandSectionOnScroll() {
+            if (!brandSection) return;
+
+            const rect = brandSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+
+            // Calculate progress through section (0 to 1)
+            const progressStart = windowHeight;
+            const progressEnd = -rect.height + windowHeight;
+            const current = rect.top;
+
+            let progress = (progressStart - current) / (progressStart - progressEnd);
+            progress = Math.max(0, Math.min(1, progress));
+
+            const leftImage = document.querySelector('.brand-showcase-section .image-left');
+            const rightImage = document.querySelector('.brand-showcase-section .image-right');
+            const bottomLeftImage = document.querySelector('.brand-showcase-section .image-bottom-left');
+            const bottomRightImage = document.querySelector('.brand-showcase-section .image-bottom-right');
+
+            // --- TITLE: Show immediately ---
+            if (progress > 0.02 && progress < 0.98) {
+                brandTitle?.classList.add('revealed');
+                brandDescription?.classList.add('revealed');
+            } else {
+                brandTitle?.classList.remove('revealed');
+                brandDescription?.classList.remove('revealed');
+            }
+
+            // Define strict sequential stages (each gets 20% of scroll, no overlap)
+            // 0-20%:   Image 1 (Left) rises
+            // 20-25%:  Pause
+            // 25-45%:  Image 2 (Right) rises
+            // 45-50%:  Pause
+            // 50-70%:  Image 3 (Bottom-Left) rises
+            // 70-75%:  Pause
+            // 75-95%:  Image 4 (Bottom-Right) rises
+
+            // --- IMAGE 1: Left - Stage 1 (0% - 20%) ---
+            if (leftImage) {
+                let p1 = (progress - 0) / 0.20;
+                if (p1 < 0) p1 = 0;
+                if (p1 > 1) p1 = 1;
+
+                // Only visible during its stage
+                const visible = progress >= 0 && progress <= 0.25;
+
+                // Start below viewport (100vh), end at final position (15vh)
+                const startY = 100;
+                const endY = 15;
+                const y = startY - (p1 * (startY - endY));
+                const rotate = -8 + (p1 * 4); // -8deg to -4deg
+
+                leftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                leftImage.style.opacity = visible ? 1 : (progress > 0.25 ? 1 : 0);
+            }
+
+            // --- IMAGE 2: Right - Stage 2 (25% - 45%) ---
+            if (rightImage) {
+                let p2 = (progress - 0.25) / 0.20;
+                if (p2 < 0) p2 = 0;
+                if (p2 > 1) p2 = 1;
+
+                const visible = progress >= 0.25 && progress <= 0.50;
+
+                const startY = 100;
+                const endY = 20;
+                const y = startY - (p2 * (startY - endY));
+                const rotate = 6 - (p2 * 4); // 6deg to 2deg
+
+                rightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                rightImage.style.opacity = visible ? 1 : (progress > 0.50 ? 1 : 0);
+            }
+
+            // --- IMAGE 3: Bottom-Left - Stage 3 (50% - 70%) ---
+            if (bottomLeftImage) {
+                let p3 = (progress - 0.50) / 0.20;
+                if (p3 < 0) p3 = 0;
+                if (p3 > 1) p3 = 1;
+
+                const visible = progress >= 0.50;
+
+                const startY = 100;
+                const endY = 55;
+                const y = startY - (p3 * (startY - endY));
+                const rotate = -4 + (p3 * 4);
+
+                bottomLeftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                bottomLeftImage.style.opacity = visible ? 1 : 0;
+            }
+
+
+            // --- IMAGE 4: Bottom-Right - SAME STAGE (50% - 70%) ---
+            if (bottomRightImage) {
+                let p4 = (progress - 0.50) / 0.20;
+                if (p4 < 0) p4 = 0;
+                if (p4 > 1) p4 = 1;
+
+                const visible = progress >= 0.50;
+
+                const startY = 100;
+                const endY = 60;
+                const y = startY - (p4 * (startY - endY));
+                const rotate = 5 - (p4 * 4);
+
+                bottomRightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                bottomRightImage.style.opacity = visible ? 1 : 0;
+            }
+            ticking = false;
+        }
+
+        // Throttled scroll listener
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateBrandSectionOnScroll);
+                ticking = true;
+            }
+        }, { passive: true });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProductsFromSupabase();
+            updateBrandSectionOnScroll();
+        });
+
+
+    </script>
 </body>
+
 </html>

@@ -379,7 +379,7 @@ function updateDetailQty(change) {
 }
 
 async function addToCartFromDetail() {
-    
+
     const qtyEl = document.getElementById('detailQty');
     const requestedQty = parseInt(qtyEl?.textContent) || 1;
     const product = window.currentProduct;
@@ -440,12 +440,12 @@ async function addToCartFromDetail() {
     }
 
     localStorage.setItem('andham_cart', JSON.stringify(cart));
-    
+
     updateCartUI();
     updateCartBadge();
     showToast(`Added ${requestedQty} item(s) to cart`, "success");
-    
-    toggleCart(); 
+
+    toggleCart();
 }
 async function saveCartToDatabase(productId, quantity) {
     const user = getCurrentUser();
@@ -512,7 +512,7 @@ async function removeFromCart(id) {
     // Filter out by both possible ID keys to be safe
     cart = cart.filter(i => i.id !== id && i.product_id !== id);
     localStorage.setItem('andham_cart', JSON.stringify(cart));
-    
+
     // 2. Refresh the UI
     if (typeof updateCartUI === 'function') updateCartUI();
     if (typeof updateCartBadge === 'function') updateCartBadge();
@@ -542,10 +542,10 @@ async function removeFromCart(id) {
             showToast('Failed to remove item from cart database', 'error');
             throw error;
         }
-        
+
         console.log('Item removed from Supabase cart:', id);
         showToast('Item removed from cart', 'success');
-    
+
     } catch (err) {
         console.error('Failed to remove from database cart:', err);
         showToast('Error: Could not sync removal with database', 'error');
@@ -718,12 +718,12 @@ function showToast(message, type = 'info') {
 
     toast.textContent = message;
     toast.style.display = 'block'; // Ensure it's visible
-    toast.className = 'toast show'; 
+    toast.className = 'toast show';
 
     // Set colors based on type
-    if (type === 'warning') toast.style.backgroundColor = '#ff9800'; 
-    else if (type === 'success') toast.style.backgroundColor = '#16a34a'; 
-    else if (type === 'error') toast.style.backgroundColor = '#dc2626'; 
+    if (type === 'warning') toast.style.backgroundColor = '#ff9800';
+    else if (type === 'success') toast.style.backgroundColor = '#16a34a';
+    else if (type === 'error') toast.style.backgroundColor = '#dc2626';
     else toast.style.backgroundColor = '#1a1a1a';
 
     toast.style.zIndex = "10001"; // Stay above drawers
@@ -732,7 +732,7 @@ function showToast(message, type = 'info') {
     window.toastTimeout = setTimeout(() => {
         toast.classList.remove('show');
         // Wait for the CSS fade-out before hiding display
-        setTimeout(() => { toast.style.display = 'none'; }, 300); 
+        setTimeout(() => { toast.style.display = 'none'; }, 300);
     }, 3000);
 }
 
@@ -905,7 +905,7 @@ function cleanProductData() {
 function getCurrentUser() {
     const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
     if (!userStr) return null;
-    
+
     try {
         const user = JSON.parse(userStr);
         // Ensure we return null if the object exists but has no usable ID
@@ -1057,7 +1057,7 @@ async function getCart() {
 
 // Update quantity
 async function updateCartQuantity(productId, quantity) {
-if (quantity < 1) {
+    if (quantity < 1) {
         removeFromCart(productId);
         return;
     }
@@ -1603,7 +1603,7 @@ async function loadSimilarProducts() {
     }).join("");
 }
 
-function goToImage(index){
+function goToImage(index) {
 
     const slider = document.getElementById('imageSlider');
     const width = slider.clientWidth;
@@ -1613,7 +1613,7 @@ function goToImage(index){
         behavior: "smooth"
     });
 
-    document.querySelectorAll('.thumbnail-wrapper').forEach(el=>{
+    document.querySelectorAll('.thumbnail-wrapper').forEach(el => {
         el.classList.remove("active");
     });
 
@@ -1629,7 +1629,7 @@ async function initGoogleSession() {
         // 2. Check if local storage is already set to avoid loops
         if (!localStorage.getItem('andham_user')) {
             const gUser = session.user;
-            
+
             // 3. Try to fetch additional profile info from your custom users table
             const { data: profile } = await supabaseClient
                 .from('users')
@@ -1686,31 +1686,31 @@ async function handleGoogleRedirectSession() {
             if (profile) {
                 // 4. Set localStorage with full database details
                 userData = {
-                    user_id:           profile.user_id,
-                    user_name:         profile.user_name,
-                    email:             profile.email,
-                    phone:             profile.phone,
-                    address:           profile.address || null,
+                    user_id: profile.user_id,
+                    user_name: profile.user_name,
+                    email: profile.email,
+                    phone: profile.phone,
+                    address: profile.address || null,
                     secondary_address: profile.secondary_address || null,
-                    city:              profile.city || null,
-                    state:             profile.state || null,
-                    pincode:           profile.pincode || null,
-                    country:           profile.country || 'India',
-                    login_at:          new Date().toISOString()
+                    city: profile.city || null,
+                    state: profile.state || null,
+                    pincode: profile.pincode || null,
+                    country: profile.country || 'India',
+                    login_at: new Date().toISOString()
                 };
             } else {
                 // Fallback if the user exists in Auth but not yet in your custom 'users' table
                 userData = {
-                    user_id:   gUser.id,
+                    user_id: gUser.id,
                     user_name: gUser.user_metadata.full_name || 'User',
-                    email:     gUser.email,
-                    login_at:  new Date().toISOString()
+                    email: gUser.email,
+                    login_at: new Date().toISOString()
                 };
             }
 
             // 5. SET THE STORAGE - Required for your other code to function
             localStorage.setItem('andham_user', JSON.stringify(userData));
-            
+
             // 6. Refresh UI elements
             await syncCartFromDatabase();
             updateHeaderAccount();

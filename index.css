@@ -1451,3 +1451,69 @@ body {
     height: 320px;
     --rotation: 5deg;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== BOTTOM NAVIGATION ===== */
+
+.mobile-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+border-top:1px solid #e5e5e5;
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:10px 0;
+z-index:2000;
+}
+
+.mobile-nav-item{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:4px;
+font-size:12px;
+color:#444;
+text-decoration:none;
+border:none;
+background:none;
+cursor:pointer;
+}
+
+.mobile-nav-item svg{
+width:22px;
+height:22px;
+}
+
+.mobile-nav-item.active{
+color:#8b0000;
+}
+.logo{
+font-family: var(--font-serif);
+font-size: 28px;
+font-weight: 500;
+letter-spacing: 4px;
+text-transform: uppercase;
+text-decoration: none;
+color: #fff;
+
+/* ADD THIS */
+opacity: 0;
+transition: opacity 0.6s ease;
+}
