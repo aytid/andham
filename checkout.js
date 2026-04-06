@@ -735,62 +735,47 @@ let qtyUpdating = false;
 
 async function changeCheckoutQty(productId, change) {
 
-    if (qtyUpdating) return;
-    qtyUpdating = true;
+    const item = checkoutCart.find(i => i.product_id === productId);
+    if (!item) return;
 
-    const user = getCurrentUser();
-    if (!user) {
-        qtyUpdating = false;
-        return;
-    }
-
-    // 🔹 get latest quantity from DB
-    const { data, error } = await supabaseClient
-        .from("cart")
-        .select("quantity")
-        .eq("user_id", user.user_id)
-        .eq("product_id", productId)
-        .single();
-
-    if (error || !data) {
-        console.error("Failed to fetch quantity", error);
-        qtyUpdating = false;
-        return;
-    }
-
-    const currentQty = data.quantity || 1;
-    const newQty = currentQty + change;
+    const newQty = item.quantity + change;
 
     if (newQty <= 0) {
-        await removeCheckoutItem(productId);
-        qtyUpdating = false;
+        removeCheckoutItem(productId);
         return;
     }
 
-    const { error: updateError } = await supabaseClient
-        .from("cart")
-        .update({
-            quantity: newQty,
-            updated_at: new Date().toISOString()
-        })
-        .eq("user_id", user.user_id)
-        .eq("product_id", productId);
+    // 🔹 fetch stock from Supabase (same logic as cart)
+    const { data: product, error } = await supabaseClient
+        .from('products')
+        .select('quantity')
+        .eq('product_id', productId)
+        .single();
 
-    if (updateError) {
-        console.error("Update failed", updateError);
-        showToast("Failed to update quantity", "error");
-        qtyUpdating = false;
+    if (error || !product) {
+        showToast("Could not verify stock");
         return;
     }
 
-    await loadCheckoutCart();
+    if (newQty > product.quantity) {
+        showToast(`Only ${product.quantity} items available`, "warning");
+        return;
+    }
 
-    showToast(change > 0 ? 
-        "Item quantity increased" : 
-        "Item quantity decreased"
-    );
+    // update local object
+    item.quantity = newQty;
 
-    qtyUpdating = false;
+    // update database
+    const user = getCurrentUser();
+    if (user) {
+        await supabaseClient
+            .from('cart')
+            .update({ quantity: newQty })
+            .eq('user_id', user.user_id)
+            .eq('product_id', productId);
+    }
+
+    renderOrderSummary();
 }
 async function removeCheckoutItem(productId) {
 
