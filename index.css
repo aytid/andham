@@ -547,7 +547,8 @@ body {
 }
 
 .sticky-title h2 {
-    font-family: var(--font-serif);
+    /* font-family: var(--font-serif); */
+    font-family: "Parisienne", cursive;
     font-size: clamp(36px, 5vw, 56px);
     font-weight: 400;
     margin-bottom: 15px;
@@ -657,7 +658,7 @@ body {
 }
 
 .section-title-new {
-    font-family: var(--font-serif);
+    font-family: "Parisienne", cursive;
     font-size: clamp(32px, 4vw, 48px);
     font-weight: 400;
     color: var(--color-primary);
@@ -1198,9 +1199,9 @@ body {
         grid-template-columns: 1fr;
     }
     
-    .collection-card-large {
+    /* .collection-card-large {
         aspect-ratio: 16/10;
-    }
+    } */
     
     .horizontal-product-card {
         flex: 0 0 260px;
