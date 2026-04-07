@@ -151,7 +151,7 @@ body {
     width: 400px;
     max-width: 90vw;
     height: 100vh;
-    background: #fff;
+    background: #FFF4E8;
     z-index: 1002;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
@@ -330,7 +330,7 @@ body {
 .cart-footer {
     padding: 25px 30px;
     border-top: 1px solid var(--color-border);
-    background: #fafafa;
+    background: #FFF4E8;
     position: sticky;
     bottom: 0;
 }
@@ -486,7 +486,7 @@ body {
 .products-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 5px;
     max-width: 1400px;
     margin: 0 auto;
 }
@@ -494,7 +494,7 @@ body {
 @media (min-width: 1024px) {
     .products-grid {
         grid-template-columns: repeat(5, 1fr);
-        gap: 30px;
+        gap: 5px;
     }
 }
 
@@ -1944,7 +1944,7 @@ body {
     left: 0;
     right: 0;
     height: 60px;
-    background: #fff;
+    background: #FFF4E8;
     border-top: 1px solid #eee;
     display: flex;
     justify-content: space-around;
