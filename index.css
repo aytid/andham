@@ -13,7 +13,7 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     overflow-x: hidden;
-    background: #FFF4E8;
+    background: #FFFDF1;
 }
 
 /* ===== ANNOUNCEMENT BAR ===== */
@@ -41,7 +41,7 @@ body {
 }
 
 .header.scrolled {
-    background: #FFF4E8;
+    background: #FFFDF1;
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 2px 20px rgba(0,0,0,0.05);
@@ -173,7 +173,7 @@ body {
     width: 400px;
     max-width: 90vw;
     height: 100vh;
-    background: #FFF4E8;
+    background: #FFFDF1;
     z-index: 1002;
     transform: translateX(-100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -268,7 +268,7 @@ body {
     width: 420px;
     max-width: 90vw;
     height: 100vh;
-    background: #FFF4E8;
+    background: #FFFDF1;
     z-index: 1002;
     transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -296,7 +296,7 @@ body {
 .cart-footer {
     padding: 25px 30px;
     border-top: 1px solid var(--color-border);
-    background: #FFF4E8;
+    background: #FFFDF1;
 }
 
 .cart-subtotal {
@@ -524,7 +524,7 @@ body {
 .fixed-title-section {
     position: relative;
     padding: 100px 0;
-    background: #FFF4E8;
+    background: #FFFDF1;
 }
 
 .sticky-title {
@@ -630,7 +630,7 @@ body {
 /* ===== NEW ARRIVALS - HORIZONTAL SCROLL ===== */
 .new-arrivals-section {
     padding: 10px 0;
-    background: #FFF4E8;
+    background: #FFFDF1;
     overflow: hidden;
 }
 
@@ -840,7 +840,7 @@ body {
 /* ===== ALL PRODUCTS ===== */
 .all-products-section {
     padding: 10px 30px;
-    background: #FFF4E8;
+    background: #FFFDF1;
 }
 
 .products-grid {
@@ -938,103 +938,6 @@ body {
     border-color: var(--color-accent);
 }
 
-/* ===== FOOTER ===== */
-.footer {
-    background: #2C0901;
-    color: #fff;
-    padding: 80px 30px 40px;
-}
-
-.footer-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 60px;
-}
-
-.footer-block h3 {
-    font-family: var(--font-serif);
-    font-size: 18px;
-    margin-bottom: 25px;
-    letter-spacing: 1px;
-    font-weight: 400;
-}
-
-.footer-logo {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
-
-.footer-text {
-    color: #999;
-    font-size: 14px;
-    line-height: 1.8;
-    margin-bottom: 25px;
-    max-width: 300px;
-}
-
-.footer-social {
-    display: flex;
-    gap: 15px;
-}
-
-.social-icon {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #444;
-    border-radius: 50%;
-    color: #999;
-    transition: all 0.3s;
-}
-
-.social-icon svg {
-    width: 18px;
-    height: 18px;
-}
-
-.social-icon:hover {
-    background: #fff;
-    color: #000;
-    border-color: #fff;
-}
-
-.footer-links {
-    list-style: none;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: #999;
-    text-decoration: none;
-    font-size: 14px;
-    transition: color 0.2s;
-}
-
-.footer-links a:hover {
-    color: #fff;
-}
-
-.footer-bottom {
-    max-width: 1400px;
-    margin: 60px auto 0;
-    padding-top: 30px;
-    border-top: 1px solid #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footer-copyright {
-    color: #666;
-    font-size: 13px;
-}
 
 /* ===== MOBILE NAVIGATION ===== */
 .mobile-nav {
@@ -1043,7 +946,7 @@ body {
     left: 0;
     right: 0;
     height: 65px;
-    background: #FFF4E8;
+    background: #FFFDF1;
     border-top: 1px solid #eee;
     display: none;
     justify-content: space-around;
@@ -1099,7 +1002,7 @@ body {
 /* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 1200px) {
     .collections-showcase {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
     
     .products-grid {
@@ -1232,7 +1135,7 @@ body {
 .brand-showcase-section {
     position: relative;
     min-height: 350vh; /* Very tall for long scroll */
-    background: #FFF4E8;
+    background: #FFFDF1;
     overflow: visible;
 }
 
@@ -1472,7 +1375,7 @@ position:fixed;
 bottom:0;
 left:0;
 width:100%;
-background:#FFF4E8;
+background:#FFFDF1;
 border-top:1px solid #e5e5e5;
 display:flex;
 justify-content:space-around;

@@ -509,22 +509,22 @@ async function saveProduct(event) {
         }
         
         // Save product to database
-        const { data, error } = await supabaseClient
-            .from('products')
-            .insert([{
-                product_id: productId,
-                title: title,
-                category: category,
-                price: price,
-                description: description,
-                image: mainImageUrl,
-                gallery_images: galleryUrls.length > 0 ? galleryUrls : null,
-                in_stock: true,
-                quantity: 0,
-                available: true,
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString()
-            }]);
+const { data, error } = await supabaseClient
+.from('products')
+.insert([{
+    product_id: productId,
+    title: title,
+    category: category,
+    price: price,
+    description: description,
+    image: mainImageUrl,
+    images: galleryUrls.length > 0 ? galleryUrls.join(',') : null,
+    stock: true,
+    quantity: 1,
+    available_for_customer: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+}]);
         
         if (error) throw error;
         
@@ -537,7 +537,7 @@ async function saveProduct(event) {
         showSection('products');
         
         // Refresh product list
-        loadProducts();
+        await loadProductsFromSupabase();
         
     } catch (err) {
         console.error('Save product error:', err);
@@ -549,17 +549,30 @@ async function saveProduct(event) {
 }
 function clearForm() {
     document.getElementById('addProductForm').reset();
-    document.getElementById('newProductID').value = '';
-    document.getElementById('newProductID').placeholder = 'Select category to generate ID';
-    document.getElementById('mainPreviewGrid').innerHTML = '';
-    document.getElementById('galleryPreviewGrid').innerHTML = '';
+
+    const idField = document.getElementById('newProductID');
+    if (idField) {
+        idField.value = '';
+        idField.placeholder = 'Select category to generate ID';
+    }
+
+    const mainPreview = document.getElementById('mainPreviewGrid');
+    if (mainPreview) mainPreview.innerHTML = '';
+
+    const galleryPreview = document.getElementById('galleryPreviewGrid');
+    if (galleryPreview) galleryPreview.innerHTML = '';
+
     clearAllImages();
-    document.getElementById('bulletInputs').innerHTML = `
+
+    const bullets = document.getElementById('bulletInputs');
+    if (bullets) {
+        bullets.innerHTML = `
         <div class="bullet-row">
             <input type="text" placeholder="Feature 1" class="bullet-point">
             <button type="button" class="btn btn-danger btn-small" onclick="removeBullet(this)">×</button>
         </div>
-    `;
+        `;
+    }
 }
 
 function closeModal() {
@@ -620,6 +633,7 @@ function renderInventory(searchTerm = '') {
                     </td>
                     <td>
                         <button class="btn btn-secondary btn-small" onclick="openInventoryEdit('${p.id}')">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="confirmDeleteProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')">Delete</button>
                     </td>
                 </tr>
             `;

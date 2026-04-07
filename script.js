@@ -32,13 +32,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Collection Page Initialization
-function initCollectionPage() {
+async function initCollectionPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const filter = urlParams.get('filter');
     const search = urlParams.get('search');
     const id = urlParams.get('id');
 
-    let filteredProducts = products;
+    let filteredProducts = [];
+
+const { data, error } = await supabaseClient
+    .from("products")
+    .select("*")
+    .eq("available_for_customer", true);
+
+if (error) {
+    console.error(error);
+    return;
+}
+
+filteredProducts = data.map(p => ({
+    id: p.product_id,
+    title: p.title,
+    price: p.price,
+    category: p.category,
+    collection: p.collection,
+    image: p.image,
+    stock: p.stock,
+    created_at: p.created_at
+}));
     let title = "All Products";
     let description = "Explore our exquisite collection of traditional handwoven sarees.";
 

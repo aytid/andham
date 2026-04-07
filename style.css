@@ -28,6 +28,7 @@ body {
     color: var(--color-text);
     line-height: 1.6;
     overflow-x: hidden;
+    background-color: #FFFDF1;
 }
 
 /* Announcement Bar */
@@ -45,7 +46,7 @@ body {
 .header {
     position: sticky;
     top: 0;
-    background: #fff;
+    background: #FFFDF1;
     border-bottom: 1px solid var(--color-border);
     z-index: 1000;
 }
@@ -151,7 +152,7 @@ body {
     width: 400px;
     max-width: 90vw;
     height: 100vh;
-    background: #FFF4E8;
+    background: #FFFDF1;
     z-index: 1002;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow-y: auto;
@@ -330,7 +331,7 @@ body {
 .cart-footer {
     padding: 25px 30px;
     border-top: 1px solid var(--color-border);
-    background: #FFF4E8;
+    background: #FFFDF1;
     position: sticky;
     bottom: 0;
 }
@@ -414,14 +415,15 @@ body {
 /* Breadcrumb */
 .breadcrumb {
     max-width: 1400px;
-    margin: 20px auto;
+    margin: 10px auto;
     padding: 0 30px;
     font-size: 13px;
-    color: #666;
+    background-color: #fffdf1;
+    color: #8b0000;
 }
 
 .breadcrumb a {
-    color: #666;
+    color: #8b0000;
     text-decoration: none;
 }
 
@@ -430,7 +432,7 @@ body {
 }
 
 .breadcrumb span {
-    margin: 0 8px;
+    margin: 0 5px;
 }
 
 /* Page Views */
@@ -850,10 +852,10 @@ body {
 
 /* Footer */
 .footer {
-    background: #000;
-    color: #fff;
+    color: white;
+    background: #28160c;
     padding: 80px 30px 40px;
-    margin-top: 100px;
+    margin-top: 50px;
 }
 
 .footer-inner {
@@ -882,21 +884,22 @@ body {
 }
 
 .footer-links a {
-    color: #999;
+    color: white;
     text-decoration: none;
     font-size: 14px;
     transition: color 0.2s;
 }
 
 .footer-links a:hover {
-    color: #fff;
+    color: #b1a6a6;
 }
 
 .footer-text {
-    color: #999;
+    color: white;
     font-size: 14px;
     line-height: 1.8;
     margin-bottom: 20px;
+    max-width: 260px;
 }
 
 .newsletter-form {
@@ -940,7 +943,7 @@ body {
 }
 
 .footer-copyright {
-    color: #666;
+    color: white;
     font-size: 13px;
 }
 
@@ -1821,7 +1824,7 @@ body {
 /* Google Button */
 
 .primary-btn {
-    background: #111;
+    background: #29160c;
     color: #fff;
     border: none;
 }
@@ -1902,13 +1905,6 @@ body {
     margin-bottom: 10px;
 }
 
-.footer-text {
-    font-size: 14px;
-    color: #777;
-    line-height: 1.6;
-    max-width: 260px;
-}
-
 .footer-social {
     margin-top: 18px;
     display: flex;
@@ -1944,7 +1940,7 @@ body {
     left: 0;
     right: 0;
     height: 60px;
-    background: #FFF4E8;
+    background: #FFFDF1;
     border-top: 1px solid #eee;
     display: flex;
     justify-content: space-around;

@@ -85,13 +85,12 @@ body {
     align-items: center;
     justify-content: center;
     padding: 40px 20px;
-    background: var(--color-bg);
+    background: #fffdf1;
 }
 
 .auth-box {
     width: 100%;
     max-width: 480px;
-    background: #fff;
     padding: 40px;
     border-radius: 8px;
     box-shadow: 0 2px 20px rgba(0,0,0,0.08);
@@ -261,7 +260,7 @@ body {
 .auth-btn {
     width: 100%;
     padding: 16px;
-    background: var(--color-primary);
+    background: #29160c;
     color: #fff;
     border: none;
     border-radius: 4px;
