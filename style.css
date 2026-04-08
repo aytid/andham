@@ -994,12 +994,12 @@ body {
     }
 
     .home-section {
-        padding: 60px 20px;
+        padding: 50px 5px;
     }
 
     .products-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
+        gap: 10px;
     }
 }
 
@@ -2236,4 +2236,7 @@ body {
     background:#8b0000;
     color:white;
     border-color:#8b0000;
+}
+.horizontal-product-image {
+    position: relative;
 }

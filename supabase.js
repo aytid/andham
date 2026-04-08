@@ -24,6 +24,7 @@ async function loginWithGoogle() {
         showToast("Google login failed", "error");
     }
 }
+
 async function checkUser() {
     const { data: { user } } = await supabaseClient.auth.getUser();
 
@@ -33,9 +34,6 @@ async function checkUser() {
         console.log("No user logged in");
     }
 }
-
-
-
 
 async function getUserProfile() {
     const { data: { user } } = await supabaseClient.auth.getUser();

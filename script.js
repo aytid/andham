@@ -390,10 +390,27 @@ function changeMainImage(src, thumb) {
 }
 
 function updateDetailQty(change) {
-    const qtyEl = document.getElementById('detailQty');
+
+    const product = window.currentProduct;
+
+    if (!product) return;
+
+    /* STOP IF OUT OF STOCK */
+    if (!product.stock || product.stock === "out") {
+        showToast("This product is currently out of stock", "warning");
+
+        return;
+    }
+
+    const qtyEl = document.getElementById("detailQty");
     let newQty = parseInt(qtyEl.textContent) + change;
+
     if (newQty < 1) newQty = 1;
-    if (newQty > 10) newQty = 10;
+
+    if (newQty > 10) {
+        showToast("Maximum 10 items per order", "warning");
+        return;
+    }
 
     qtyEl.textContent = newQty;
     detailQuantity = newQty;
@@ -414,6 +431,10 @@ async function addToCartFromDetail() {
     if (!product) {
         console.error("DEBUG: window.currentProduct is NULL. Rendering failed.");
         showToast("Product data not loaded", "error");
+        return;
+    }
+    if (product.stock === 'out') {
+        showToast("This product is currently out of stock", "warning");
         return;
     }
 

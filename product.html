@@ -548,31 +548,6 @@
             thumbnailEl.classList.add('active');
         }
 
-        // Updated Quantity updater with Dynamic Stock Check
-
-        function updateDetailQty(change) {
-
-            const qtyElement = document.getElementById('detailQty');
-            let currentVal = parseInt(qtyElement.textContent) || 1;
-
-            const maxAvailable = (window.currentProduct && window.currentProduct.quantity)
-                ? window.currentProduct.quantity
-                : 1;
-
-
-            const nextVal = currentVal + change;
-
-            if (nextVal < 1) {
-                return;
-            }
-
-            if (nextVal > maxAvailable) {
-                showToast(`Only ${maxAvailable} items available in stock`, "warning");
-                return;
-            }
-
-            qtyElement.textContent = nextVal;
-        }
         function toggleAccordion(header) {
             const content = header.nextElementSibling;
             const icon = header.querySelector('.accordion-icon');
