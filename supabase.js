@@ -18,7 +18,7 @@ async function loginWithGoogle() {
             redirectTo: window.location.origin + '/index.html' 
         }
     });
-
+console.log(options);
     if (error) {
         console.error("Google login error:", error);
         showToast("Google login failed", "error");
