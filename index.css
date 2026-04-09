@@ -1085,7 +1085,7 @@ body {
     }
     
     .collections-showcase {
-        grid-template-columns: 1fr;
+        grid-template-columns: 2fr;
     }
     
     .horizontal-product-card {
@@ -1406,7 +1406,8 @@ body {
     font-size: clamp(80px, 15vw, 180px);
     font-weight: 400;
     letter-spacing: 0px;
-    color: rgb(231, 185, 18);
+    /* color: rgb(231, 185, 18); */
+    color: #682b0b;
     text-align: center;
     margin: 0;
     opacity: 0;
@@ -1521,6 +1522,7 @@ body {
     }
     .brand-title {
         letter-spacing: 0px;
+        margin-bottom: 20px;
         font-size: clamp(50px, 12vw, 100px);
     }
     .brand-showcase-section .floating-image {
