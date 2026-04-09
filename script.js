@@ -622,7 +622,7 @@ function updateCartUI() {
         itemsContainer.innerHTML = `
             <div class="cart-empty">
                 <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
-                <div style="font-family: 'Playfair Display', serif; font-style: italic;">Your cart is empty</div>
+                <div style="font-style: italic;">Your cart is empty</div>
             </div>
         `;
         if (totalEl) totalEl.textContent = 'Rs. 0.00';
@@ -645,9 +645,9 @@ function updateCartUI() {
                      alt="${item.title || 'Product'}"
                      onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'">
                 <div class="cart-item-details" style="flex: 1;">
-                    <div class="cart-item-category" style="font-size: 10px; color: #8b0000; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${item.category || ''}</div>
-                    <div class="cart-item-id" style="font-size: 10px; color: #999; margin-bottom: 3px;">${itemId}</div>
-                    <div class="cart-item-title" style="font-size: 14px; margin-bottom: 5px;">${item.title || 'Unknown Product'}</div>
+                    <div class="cart-item-category" style="font-size: 15px; color: #8b0000; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${item.category || ''}</div>
+                    <div class="cart-item-id" style="font-size: 15px; color: #999; margin-bottom: 3px;">${itemId}</div>
+                    <div class="cart-item-title" style="font-size: 15px; margin-bottom: 5px;">${item.title || 'Unknown Product'}</div>
                     <div class="cart-item-price" style="color: #8b0000; font-weight: 600; margin-bottom: 10px;">Rs. ${(item.price || 0).toLocaleString()}</div>
                     <div style="display: flex; align-items: center; gap: 15px;">
                         <div class="qty-selector" style="display: flex; align-items: center; border: 1px solid #ddd;">
@@ -1313,7 +1313,7 @@ async function renderCartDrawer() {
         cartContainer.innerHTML = `
             <div class="cart-empty">
                 <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
-                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+                <div style="font-style: italic;">Your cart is empty</div>
             </div>
         `;
         if (cartTotal) cartTotal.textContent = 'Rs. 0.00';

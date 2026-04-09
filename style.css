@@ -1,13 +1,10 @@
 @font-face {
     font-family: 'Fogtwono5';
     src: url('FogtwoNo5.otf') format('opentype');
-    /* src: url('Stardom/Fonts/OTF/Stardom-Regular.otf') format('opentype'); OK*/
-    /* src: url('Melodrama/Fonts/OTF/Melodrama-Medium.otf') format('opentype'); */
 }
 
 @font-face {
     font-family: 'TeluguBrand';
-    /* src: url('potti-sreeramulu-regular.otf') format('truetype'); */
     src: url('potti-sreeramulu-regular.otf') format('truetype');
 }
 
@@ -319,7 +316,7 @@ body {
 
 .qty-value {
     padding: 0 15px;
-    font-size: 13px;
+    font-size: 16px;
     min-width: 40px;
     text-align: center;
 }
@@ -430,7 +427,7 @@ body {
     max-width: 1400px;
     margin: 10px auto;
     padding: 0 30px;
-    font-size: 13px;
+    font-size: 18px;
     background-color: #fffdf1;
     color: #8b0000;
 }
@@ -884,7 +881,7 @@ body {
 
 .footer-block h3 {
     font-family: var(--font-main);
-    font-size: 16px;
+    font-size: 18px;
     margin-bottom: 25px;
     letter-spacing: 1px;
     text-transform: uppercase;
@@ -902,7 +899,7 @@ body {
 .footer-links a {
     color: white;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 16px;
     transition: color 0.2s;
 }
 
@@ -960,7 +957,7 @@ body {
 
 .footer-copyright {
     color: white;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 /* Toast */
