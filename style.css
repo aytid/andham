@@ -1,10 +1,13 @@
 @font-face {
     font-family: 'Fogtwono5';
     src: url('FogtwoNo5.otf') format('opentype');
+    /* src: url('Stardom/Fonts/OTF/Stardom-Regular.otf') format('opentype'); OK*/
+    /* src: url('Melodrama/Fonts/OTF/Melodrama-Medium.otf') format('opentype'); */
 }
 
 @font-face {
     font-family: 'TeluguBrand';
+    /* src: url('potti-sreeramulu-regular.otf') format('truetype'); */
     src: url('potti-sreeramulu-regular.otf') format('truetype');
 }
 
