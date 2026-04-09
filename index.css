@@ -1386,7 +1386,7 @@ body {
 
 .brand-showcase-section {
     position: relative;
-    min-height: 300vh; /* Very tall for long scroll */
+    min-height: 350vh; /* Very tall for long scroll */
     background: #FFFDF1;
     overflow: visible;
 }
@@ -1521,7 +1521,7 @@ body {
 
 @media (max-width: 900px) {
     .brand-showcase-section {
-        min-height: 300vh;
+        min-height: 350vh;
     }
     .brand-title {
         letter-spacing: 0px;
@@ -1540,7 +1540,7 @@ body {
 
 @media (max-width: 600px) {
     .brand-showcase-section {
-        min-height: 300vh;
+        min-height: 350vh;
     }
     .brand-title {
         letter-spacing: 0px;
