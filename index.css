@@ -1552,21 +1552,6 @@ body {
         display: none;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Remove the top: 100vh and bottom positioning from individual classes */
 .image-left {
     left: 3%;
@@ -1590,4 +1575,57 @@ body {
     width: 240px;
     height: 320px;
     --rotation: 5deg;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Horizontal positions for all 6 images */
+.image-left { left: 3%; --rotation: -8deg; }
+.image-right { right: 3%; --rotation: 6deg; }
+
+.image-bottom-left { 
+    left: 12%; 
+    width: 220px; 
+    height: 300px; 
+    --rotation: -4deg; 
+}
+
+.image-bottom-right { 
+    right: 8%; 
+    width: 240px; 
+    height: 320px; 
+    --rotation: 5deg; 
+}
+
+/* Positions for the new images */
+.image-5 { 
+    left: 25%; 
+    width: 210px; 
+    height: 290px; 
+    --rotation: -6deg; 
+}
+
+.image-6 { 
+    right: 22%; 
+    width: 230px; 
+    height: 310px; 
+    --rotation: 7deg; 
 }

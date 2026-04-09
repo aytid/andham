@@ -11,9 +11,13 @@
     <script src="supabase.js"></script>
     <script src="script.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Parisienne&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
 
     <base target="_self">
 </head>
@@ -131,31 +135,31 @@
             <a href="#collections" class="hero-cta">Explore Collection</a>
         </div>
 
-        
+
     </section>
     <section class="dual-video-section">
 
-    <div class="video-half">
-        <video autoplay muted loop playsinline>
-            <source src="videos/video2.mp4" type="video/mp4">
-        </video>
+        <div class="video-half">
+            <video autoplay muted loop playsinline>
+                <source src="videos/video2.mp4" type="video/mp4">
+            </video>
 
-        <div class="video-overlay-text">
-            <h3>Handwoven Heritage</h3>
+            <div class="video-overlay-text">
+                <h3>Handwoven Heritage</h3>
+            </div>
         </div>
-    </div>
 
-    <div class="video-half">
-        <video autoplay muted loop playsinline>
-            <source src="videos/video3.mp4" type="video/mp4">
-        </video>
+        <div class="video-half">
+            <video autoplay muted loop playsinline>
+                <source src="videos/video3.mp4" type="video/mp4">
+            </video>
 
-        <div class="video-overlay-text">
-            <h3>Modern Elegance</h3>
+            <div class="video-overlay-text">
+                <h3>Modern Elegance</h3>
+            </div>
         </div>
-    </div>
 
-</section>
+    </section>
 
 
     <!-- FIXED TITLE SECTION -->
@@ -225,7 +229,7 @@
         </div>
 
         <!-- Floating Images Container -->
-        <div class="floating-images-container" id="brandFloatingImages">
+        <!-- <div class="floating-images-container" id="brandFloatingImages">
             <div class="floating-image image-left" data-speed="0.8">
                 <img src="img/floating1.webp" alt="Traditional Saree">
             </div>
@@ -238,6 +242,15 @@
             <div class="floating-image image-bottom-right" data-speed="1.0">
                 <img src="img/floating4.webp" alt="Designer Saree">
             </div>
+        </div> -->
+        <div class="floating-images-container" id="brandFloatingImages">
+            <div class="floating-image image-left"><img src="img/floating1.webp"></div>
+            <div class="floating-image image-right"><img src="img/floating2.webp"></div>
+            <div class="floating-image image-bottom-left"><img src="img/floating3.webp"></div>
+            <div class="floating-image image-bottom-right"><img src="img/floating4.webp"></div>
+
+            <div class="floating-image image-5"><img src="img/floating5.webp"></div>
+            <div class="floating-image image-6"><img src="img/floating6.jpg"></div>
         </div>
     </section>
     <!-- NEW ARRIVALS - HORIZONTAL SCROLL -->
@@ -279,7 +292,8 @@
                 <div class="footer-social">
 
                     <!-- Instagram -->
-                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr" class="social-icon" target="_blank" aria-label="Instagram">
+                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr"
+                        class="social-icon" target="_blank" aria-label="Instagram">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="2" y="2" width="20" height="20" rx="5"></rect>
                             <circle cx="12" cy="12" r="4"></circle>
@@ -511,13 +525,13 @@
             renderHomeProducts();
             renderNewArrivals();
         }
-function renderHomeProducts() {
-    const grid = document.getElementById('homeProductsGrid');
-    if (!grid || !window.products) return;
+        function renderHomeProducts() {
+            const grid = document.getElementById('homeProductsGrid');
+            if (!grid || !window.products) return;
 
-    const productsToShow = window.products.slice(0, 10);
+            const productsToShow = window.products.slice(0, 10);
 
-    grid.innerHTML = productsToShow.map(product => `
+            grid.innerHTML = productsToShow.map(product => `
         <div class="horizontal-product-card" onclick="window.location.href='product.html?id=${product.id}'">
 
             <div class="horizontal-product-image">
@@ -552,8 +566,8 @@ function renderHomeProducts() {
 
         </div>
     `).join('');
-}
-        
+        }
+
         function renderNewArrivals() {
             const container = document.getElementById('newArrivalsScroll');
             if (!container || !window.products) return;
@@ -603,7 +617,7 @@ function renderHomeProducts() {
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
-        
+
         // ============================================
         // BRAND SHOWCASE - STRICT ALTERNATING SEQUENTIAL REVEAL
         // Order: Left → Right → Bottom-Left → Bottom-Right
@@ -669,7 +683,8 @@ function renderHomeProducts() {
                 const rotate = -8 + (p1 * 4); // -8deg to -4deg
 
                 leftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-                leftImage.style.opacity = visible ? 1 : (progress > 0.25 ? 1 : 0);
+                //leftImage.style.opacity = visible ? 1 : (progress > 0.25 ? 1 : 0);
+                leftImage.style.opacity = 1;
             }
 
             // --- IMAGE 2: Right - Stage 2 (25% - 45%) ---
@@ -686,7 +701,8 @@ function renderHomeProducts() {
                 const rotate = 6 - (p2 * 4); // 6deg to 2deg
 
                 rightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-                rightImage.style.opacity = visible ? 1 : (progress > 0.50 ? 1 : 0);
+                // rightImage.style.opacity = visible ? 1 : (progress > 0.50 ? 1 : 0);
+                rightImage.style.opacity = 1;
             }
 
             // --- IMAGE 3: Bottom-Left - Stage 3 (50% - 70%) ---
@@ -703,7 +719,8 @@ function renderHomeProducts() {
                 const rotate = -4 + (p3 * 4);
 
                 bottomLeftImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-                bottomLeftImage.style.opacity = visible ? 1 : 0;
+                // bottomLeftImage.style.opacity = visible ? 1 : 0;
+                bottomLeftImage.style.opacity = 1;
             }
 
 
@@ -721,8 +738,55 @@ function renderHomeProducts() {
                 const rotate = 5 - (p4 * 4);
 
                 bottomRightImage.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
-                bottomRightImage.style.opacity = visible ? 1 : 0;
+                // bottomRightImage.style.opacity = visible ? 1 : 0;
+                bottomRightImage.style.opacity = 1;
             }
+
+
+
+
+
+
+
+
+
+
+            // --- IMAGE 5: New - Stage 4 (65% - 85%) ---
+            const image5 = document.querySelector('.image-5');
+            if (image5) {
+                let p5 = (progress - 0.65) / 0.20;
+                p5 = Math.max(0, Math.min(1, p5));
+                const visible = progress >= 0.65;
+                const startY = 100;
+                const endY = 35;
+                const y = startY - (p5 * (startY - endY));
+                const rotate = -6 + (p5 * 3);
+
+                image5.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                // image5.style.opacity = visible ? 1 : 0;
+                image5.style.opacity = 1;
+            }
+
+            // --- IMAGE 6: New - Stage 4 (65% - 85%) ---
+            const image6 = document.querySelector('.image-6');
+            if (image6) {
+                let p6 = (progress - 0.65) / 0.20;
+                p6 = Math.max(0, Math.min(1, p6));
+                const visible = progress >= 0.65;
+                const startY = 100;
+                const endY = 40;
+                const y = startY - (p6 * (startY - endY));
+                const rotate = 7 - (p6 * 4);
+
+                image6.style.transform = `translate3d(0, ${y}vh, 0) rotate(${rotate}deg)`;
+                // image6.style.opacity = visible ? 1 : 0;
+                image6.style.opacity = 1;
+            }
+
+
+
+
+
             ticking = false;
         }
 
