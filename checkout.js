@@ -231,7 +231,7 @@ function renderOrderSummary() {
 
             </div>
 
-            <button onclick="removeCheckoutItem('${itemId}')"
+            <button class="btn-primary" onclick="removeCheckoutItem('${itemId}')"
                     style="border:none;background:none;color:#ff4d4d;font-size:12px;cursor:pointer;">
                 Remove
             </button>

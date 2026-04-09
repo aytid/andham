@@ -1,10 +1,18 @@
 @font-face {
+    font-family: 'Fogtwono5';
+    src: url('Fogtwono5/FogtwoNo5.otf') format('opentype');
+}
+
+@font-face {
     font-family: 'TeluguBrand';
     src: url('potti-sreeramulu-regular.otf') format('truetype');
 }
+
 :root {
-    --font-serif: 'Playfair Display', serif;
-    --font-sans: 'Inter', sans-serif;
+    --font-telugu: 'TeluguBrand', serif;
+    --font-main: 'Fogtwono5', serif;
+    --font-serif: 'Fogtwono5', serif;
+    --font-sans: 'Fogtwono5', serif;
     --color-primary: #1a1a1a;
     --color-text: #333;
     --color-text-light: #666;
@@ -24,9 +32,10 @@ html {
 }
 
 body {
-    font-family: var(--font-sans);
+    font-family: var(--font-main);
     color: var(--color-text);
     line-height: 1.6;
+    font-size: 20px;
     overflow-x: hidden;
     background-color: #FFFDF1;
 }
@@ -97,7 +106,7 @@ body {
 }
 
 .logo {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 24px;
     font-weight: 400;
     letter-spacing: 3px;
@@ -185,7 +194,7 @@ body {
 }
 
 .drawer-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 20px;
 }
 
@@ -272,7 +281,7 @@ body {
 }
 
 .cart-item-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 15px;
     margin-bottom: 5px;
 }
@@ -334,6 +343,7 @@ body {
     background: #FFFDF1;
     position: sticky;
     bottom: 0;
+    margin-bottom: 80px;
 }
 
 .cart-subtotal {
@@ -457,14 +467,14 @@ body {
 }
 
 .welcome__title {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 24px;
     font-weight: 400;
     margin-bottom: 25px;
 }
 
 .welcome__text {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 18px;
     font-style: italic;
     color: var(--color-text-light);
@@ -477,7 +487,7 @@ body {
 }
 
 .section-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 28px;
     font-weight: 400;
     font-style: italic;
@@ -545,7 +555,7 @@ body {
 }
 
 .product-title {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 15px;
     font-weight: 400;
     margin-bottom: 10px;
@@ -635,7 +645,7 @@ body {
 }
 
 .product-name {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 32px;
     font-weight: 400;
     line-height: 1.2;
@@ -698,6 +708,7 @@ body {
 }
 
 .btn-primary {
+    font-family: var(--font-main);
     width: 100%;
     padding: 18px;
     background: #fff;
@@ -717,6 +728,7 @@ body {
 }
 
 .btn-secondary {
+    font-family: var(--font-main);
     width: 100%;
     padding: 18px;
     background: #000;
@@ -736,6 +748,7 @@ body {
 
 /* Share */
 .share-btn {
+    font-family: var(--font-main);
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -763,7 +776,7 @@ body {
 }
 
 .product-description em {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-style: italic;
 }
 
@@ -816,7 +829,7 @@ body {
     border: none;
     cursor: pointer;
     font-size: 14px;
-    font-family: var(--font-sans);
+    font-family: var(--font-main);
     color: var(--color-text);
 }
 
@@ -867,7 +880,7 @@ body {
 }
 
 .footer-block h3 {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 16px;
     margin-bottom: 25px;
     letter-spacing: 1px;
@@ -1113,7 +1126,7 @@ body {
 }
 
 .collection-overlay span {
-    font-family: var(--font-serif);
+    font-family: var(--font-main);
     font-size: 22px;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -1369,7 +1382,7 @@ body {
     border: none;
     border-bottom: 3px solid transparent;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 14px;
     font-weight: 500;
     text-transform: uppercase;
@@ -1403,7 +1416,7 @@ body {
 }
 
 .profile-section h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-main);
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e5e5e5;
@@ -1449,7 +1462,7 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1499,7 +1512,7 @@ body {
 .form-group input {
     padding: 12px;
     border: 1px solid #e5e5e5;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 14px;
     border-radius: 4px;
 }
@@ -1521,7 +1534,7 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1534,7 +1547,7 @@ body {
     color: #666;
     border: 1px solid #e5e5e5;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1548,7 +1561,7 @@ body {
 }
 
 .orders-section h3 {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-main);
     margin-bottom: 25px;
     padding-bottom: 15px;
     border-bottom: 2px solid #e5e5e5;
@@ -1753,7 +1766,7 @@ body {
     border: 1px solid #333;
     background: none;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-main);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -1817,7 +1830,7 @@ body {
 }
 
 .drawer-title {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-main);
     font-size: 20px;
 }
 
@@ -1900,7 +1913,7 @@ body {
 /* Footer */
 
 .footer-logo {
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-main);
     font-size: 22px;
     margin-bottom: 10px;
 }
@@ -1987,7 +2000,7 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'Playfair Display', serif;
+    font-family: var(--font-main);
     font-size: 24px;
 }
 
@@ -2196,7 +2209,7 @@ body {
 }
 
 .product-title{
-    font-family:var(--font-serif);
+    font-family:var(--font-main);
     font-size:16px;
     margin-bottom:10px;
     line-height:1.4;
@@ -2239,4 +2252,27 @@ body {
 }
 .horizontal-product-image {
     position: relative;
+}
+/* Search modal font */
+.search-modal,
+.search-modal * {
+    font-family: var(--font-main);
+}
+/* Mobile bottom navigation font */
+.mobile-nav,
+.mobile-nav * {
+    font-family: var(--font-main);
+}
+#btnText{
+    font-family: var(--font-main);
+}
+.co-edit-btn{
+    font-family: var(--font-main);
+}
+/* Force custom font for all form controls */
+input,
+textarea,
+select,
+button {
+    font-family: var(--font-main) !important;
 }

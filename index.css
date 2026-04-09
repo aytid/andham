@@ -1351,7 +1351,6 @@ body {
     bottom: 40px;
     left: 40px;
     color: white;
-    font-family: 'Playfair Display', serif;
     font-size: 28px;
 }
 
@@ -1405,7 +1404,7 @@ body {
     font-family: 'TeluguBrand', serif;
     font-size: clamp(80px, 15vw, 180px);
     font-weight: 400;
-    letter-spacing: 20px;
+    letter-spacing: 0px;
     color: rgb(231, 185, 18);
     text-align: center;
     margin: 0;
@@ -1428,7 +1427,6 @@ body {
     color: var(--color-text-light);
     max-width: 800px;
     text-align: center;
-    margin-top: 40px;
     opacity: 0;
     transform: translateY(40px);
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
@@ -1520,7 +1518,7 @@ body {
         min-height: 300vh;
     }
     .brand-title {
-        letter-spacing: 10px;
+        letter-spacing: 0px;
         font-size: clamp(50px, 12vw, 100px);
     }
     .brand-showcase-section .floating-image {
@@ -1538,7 +1536,7 @@ body {
         min-height: 250vh;
     }
     .brand-title {
-        letter-spacing: 5px;
+        letter-spacing: 0px;
         font-size: clamp(40px, 15vw, 70px);
     }
     .brand-description {

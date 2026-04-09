@@ -646,7 +646,7 @@ function updateCartUI() {
                      onerror="this.src='https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'">
                 <div class="cart-item-details" style="flex: 1;">
                     <div class="cart-item-category" style="font-size: 10px; color: #8b0000; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">${item.category || ''}</div>
-                    <div class="cart-item-id" style="font-size: 10px; color: #999; font-family: monospace; margin-bottom: 3px;">${itemId}</div>
+                    <div class="cart-item-id" style="font-size: 10px; color: #999; margin-bottom: 3px;">${itemId}</div>
                     <div class="cart-item-title" style="font-size: 14px; margin-bottom: 5px;">${item.title || 'Unknown Product'}</div>
                     <div class="cart-item-price" style="color: #8b0000; font-weight: 600; margin-bottom: 10px;">Rs. ${(item.price || 0).toLocaleString()}</div>
                     <div style="display: flex; align-items: center; gap: 15px;">
