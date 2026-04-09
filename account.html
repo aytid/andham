@@ -1823,6 +1823,7 @@
                 }
 
                 renderProfile(userData);
+                await loadOrders();
             } catch (err) {
                 console.error('Error loading profile:', err);
                 // Use cached data if available
