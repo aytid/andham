@@ -1072,6 +1072,7 @@ body {
 @media (max-width: 600px) {
     .announcement {
         font-size: 10px;
+
         padding: 10px;
     }
     
@@ -1431,6 +1432,7 @@ body {
     transform: translateY(40px);
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
     pointer-events: auto;
+    margin-top: -70px;
 }
 
 .brand-description.revealed {
@@ -1537,9 +1539,10 @@ body {
     }
     .brand-title {
         letter-spacing: 0px;
-        font-size: clamp(40px, 15vw, 70px);
+        font-size: 80px;
     }
     .brand-description {
+        margin-top: -20px;
         font-size: 16px;
     }
     .brand-showcase-section .floating-image {
