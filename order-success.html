@@ -1099,6 +1099,7 @@
         </button>
 
     </div>
+    <div class="toast" id="toast"></div>
 
 
     <!-- Footer -->
@@ -1195,7 +1196,6 @@
                     'https://cxoammatkxhqizfjqhvs.supabase.co',
                     'sb_publishable_JiMcO6pY2vY5Np6PYNDhhw_lgRmO4e4'
                 );
-                console.log('Supabase initialized in order-success page');
             } else {
                 console.error('Supabase library not loaded');
             }
@@ -1216,7 +1216,6 @@
         // Fetch order details from Supabase with joined order_items and product images
         async function fetchOrderDetails(orderNum) {
             try {
-                console.log('Fetching order details for:', orderNum);
 
                 // Check if supabaseClient is available
                 if (typeof supabaseClient === 'undefined' || !supabaseClient) {
@@ -1227,7 +1226,6 @@
                             'https://cxoammatkxhqizfjqhvs.supabase.co',
                             'sb_publishable_JiMcO6pY2vY5Np6PYNDhhw_lgRmO4e4'
                         );
-                        console.log('Supabase client initialized dynamically');
                     } else {
                         throw new Error('Supabase client not available');
                     }
@@ -1240,7 +1238,6 @@
                     .eq('order_number', orderNum)
                     .single();
 
-                console.log('Order fetch result:', { order, error: orderError });
 
                 if (orderError) {
                     console.error('Error fetching order:', orderError);
@@ -1264,7 +1261,6 @@
                     .select('*')
                     .eq('order_id', order.order_id);
 
-                console.log('Order items fetch result:', { orderItems, error: itemsError });
 
                 if (itemsError) {
                     console.error('Error fetching order items:', itemsError);
@@ -1275,7 +1271,6 @@
 
                 // Get all product IDs from order items
                 const productIds = order.order_items.map(item => item.product_id);
-                console.log('Product IDs to fetch:', productIds);
 
                 // Fetch product images from products table
                 let productImages = {};
@@ -1285,7 +1280,6 @@
                         .select('product_id, image, title')
                         .in('product_id', productIds);
 
-                    console.log('Products fetch result:', { products, error: productsError });
 
                     if (!productsError && products) {
                         products.forEach(product => {
@@ -1304,7 +1298,6 @@
                     product_title: productImages[item.product_id]?.title || item.product_name
                 }));
 
-                console.log('Displaying order details with items:', enrichedItems);
                 displayOrderDetails(order, enrichedItems);
 
             } catch (err) {
@@ -1434,7 +1427,6 @@
         function updateTracking(status) {
             const trackingContainer = document.getElementById('orderTracking');
             if (!trackingContainer) {
-                console.log('Tracking container not found');
                 return;
             }
 
@@ -1482,7 +1474,6 @@
             // Try both button IDs for compatibility
             let editBtn = document.getElementById('editAddressBtn') || document.getElementById('editAddressBtn2');
             if (!editBtn) {
-                console.log('Edit button not found');
                 return;
             }
             if (!currentOrderData) return;
@@ -1498,7 +1489,7 @@
         /* Open address edit modal */
         function openAddressModal() {
             if (!currentOrderData || !currentOrderData.shipping_address) {
-                alert('No address to edit');
+                showToast('No address to edit');
                 return;
             }
 
@@ -1545,7 +1536,7 @@
             event.preventDefault();
 
             if (!currentOrderData) {
-                alert('No order data available');
+                showToast('No order data available');
                 return;
             }
 
@@ -1592,11 +1583,11 @@
                 // Close modal
                 closeAddressModal();
 
-                alert('Shipping address updated successfully!');
+                showToast('Shipping address updated successfully!');
 
             } catch (err) {
                 console.error('Error updating address:', err);
-                alert('Failed to update address. Please try again.');
+                showToast('Failed to update address. Please try again.');
             } finally {
                 const submitBtn = event.target.querySelector('button[type="submit"]');
                 if (submitBtn) {
