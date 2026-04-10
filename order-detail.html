@@ -1,0 +1,1605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Order Details - Andham</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script>
+        // Initialize Supabase immediately (inline to avoid loading issues)
+        (function () {
+            const SUPABASE_URL = 'https://cxoammatkxhqizfjqhvs.supabase.co';
+            const SUPABASE_ANON_KEY = 'sb_publishable_JiMcO6pY2vY5Np6PYNDhhw_lgRmO4e4';
+
+            if (typeof supabase !== 'undefined' && supabase.createClient) {
+                window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase initialized inline');
+            } else {
+                console.error('❌ Supabase library not loaded');
+            }
+        })();
+    </script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #8b0000;
+            --primary-dark: #5c0000;
+            --primary-light: #fff0f0;
+            --gold: #c9a962;
+            --gold-light: #f4e4bc;
+            --text-dark: #1a1a1a;
+            --text-medium: #4a4a4a;
+            --text-light: #888;
+            --border: #e5e5e5;
+            --bg-cream: #faf8f5;
+            --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 8px 30px rgba(139, 0, 0, 0.12);
+        }
+
+        body {
+            color: var(--text-dark);
+            font-size: 16px; /* Base font size increased */
+        }
+
+        .order-detail-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px 120px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 15px; /* Increased from 13px */
+            color: var(--text-light);
+        }
+
+        .breadcrumb a {
+            color: var(--text-medium);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .order-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .order-title-section h1 {
+            font-size: 32px; /* Increased from 28px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .order-number {
+            font-size: 16px; /* Increased from 14px */
+            color: var(--text-light);
+        }
+
+        .order-header-card,
+        .progress-section,
+        .items-section,
+        .info-card,
+        .payment-section {
+            background: #fff;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e5e5;
+            box-shadow: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px; /* Slightly increased padding */
+            border-radius: 20px;
+            font-size: 12px; /* Increased from 10px */
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-confirmed,
+        .status-paid,
+        .status-completed {
+            background: #e8f5e9;
+            color: var(--success);
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: var(--warning);
+        }
+
+        .status-processing {
+            background: #e3f2fd;
+            color: var(--info);
+        }
+
+        .status-cancelled {
+            background: #fce4ec;
+            color: #c62828;
+        }
+
+        .status-delivered,
+        .status-shipped {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .order-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .meta-label {
+            font-size: 13px; /* Increased from 11px */
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-light);
+        }
+
+        .meta-value {
+            font-size: 16px; /* Increased from 14px */
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .progress-section {
+            background: #fff;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 24px; /* Increased from 20px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            right: 40px;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            height: 2px;
+            background: var(--primary);
+            z-index: 1;
+            transition: width 0.5s ease;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #fff;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .step-icon svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-light);
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .step.active .step-icon,
+        .step.completed .step-icon {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .step.active .step-icon svg,
+        .step.completed .step-icon svg {
+            stroke: #fff;
+        }
+
+        .step-label {
+            font-size: 14px; /* Increased from 12px */
+            font-weight: 500;
+            color: var(--text-light);
+            text-align: center;
+        }
+
+        .step.active .step-label,
+        .step.completed .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .items-section {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+        }
+
+        .item-card {
+            display: flex;
+            gap: 14px;
+            padding: 14px 0;
+        }
+
+        .item-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .item-card:first-child {
+            padding-top: 0;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 125px;
+            object-fit: cover;
+            border-radius: 12px;
+            flex-shrink: 0;
+            background: var(--bg-cream);
+        }
+
+        .item-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .item-name {
+            font-size: 20px; /* Increased from 18px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .item-variant {
+            font-size: 15px; /* Increased from 13px */
+            color: var(--text-light);
+        }
+
+        .item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .item-quantity {
+            font-size: 15px; /* Increased from 13px */
+            color: var(--text-medium);
+        }
+
+        .item-price {
+            font-size: 18px; /* Increased from 16px */
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .summary-shipping-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .summary-shipping-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+        }
+
+        .info-card h2 {
+            font-size: 24px; /* Increased from 20px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .address-content {
+            font-size: 16px; /* Increased from 14px */
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+
+        .address-content strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            font-size: 16px; /* Increased from 14px */
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .summary-row.total {
+            margin-top: 8px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
+            border-bottom: none;
+            font-size: 22px; /* Increased from 18px */
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .summary-label {
+            color: var(--text-medium);
+        }
+
+        .summary-value {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .summary-row.total .summary-value {
+            color: var(--primary);
+        }
+
+        .payment-section {
+            background: #fff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border);
+        }
+
+        .payment-method {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-cream);
+            border-radius: 12px;
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            background: #fff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .payment-icon svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--primary);
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .payment-details h3 {
+            font-size: 18px; /* Increased from 16px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .payment-details p {
+            font-size: 15px; /* Increased from 13px */
+            color: var(--text-light);
+        }
+
+        .action-section {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 18px; /* Slightly increased padding */
+            border-radius: 6px;
+            font-size: 14px; /* Increased from 12px */
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.25);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: var(--text-medium);
+            border: 1.5px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: #ffebee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: #c62828;
+            fill: none;
+            stroke-width: 1.8;
+        }
+
+        .error-state h3 {
+            font-size: 26px; /* Increased from 22px */
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .error-state p {
+            font-size: 16px; /* Increased from 14px */
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+
+        /* Debug info */
+        .debug-info {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 20px;
+            font-size: 14px; /* Increased from 12px */
+            color: #666;
+            text-align: left;
+            display: none;
+        }
+
+        .debug-info.visible {
+            display: block;
+        }
+
+        #orderToast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--text-dark);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 16px; /* Increased from 14px */
+            font-weight: 500;
+            z-index: 5000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        #orderToast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .order-detail-wrapper {
+                padding: 20px 16px 100px;
+            }
+
+            .order-title-section h1 {
+                font-size: 26px; /* Increased from 22px */
+            }
+
+            .progress-steps::before,
+            .progress-line {
+                left: 20px;
+                right: 20px;
+            }
+
+            .step-label {
+                font-size: 12px; /* Increased from 10px */
+            }
+
+            .item-image {
+                width: 80px;
+                height: 100px;
+            }
+
+            .item-name {
+                font-size: 18px; /* Increased from 16px */
+            }
+        }
+
+        @media print {
+
+            .header,
+            .mobile-nav,
+            .action-section,
+            #orderToast,
+            .debug-info {
+                display: none !important;
+            }
+
+            .order-detail-wrapper {
+                padding: 0;
+            }
+
+            .order-header-card,
+            .progress-section,
+            .items-section,
+            .info-card,
+            .payment-section {
+                break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+        }
+</style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="header-inner">
+            <div class="header-left">
+                <button class="icon-btn" onclick="toggleNav()">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <a href="index.html" class="logo">Andham</a>
+        </div>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay" onclick="toggleNav()"></div>
+    <div class="nav-drawer" id="navDrawer">
+        <div class="drawer-header"><span class="drawer-title">Menu</span><button class="close-btn"
+                onclick="toggleNav()">×</button></div>
+        <div class="nav-content">
+            <div class="nav-item"><a href="index.html" class="nav-link" onclick="toggleNav()">Home <span>›</span></a>
+            </div>
+            <div class="nav-item"><a href="collection.html" class="nav-link" onclick="toggleNav()">All Products
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Kanchipattu" class="nav-link"
+                    onclick="toggleNav()">Kanchipattu <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Gadwal" class="nav-link" onclick="toggleNav()">Gadwal
+                    <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Banaras" class="nav-link"
+                    onclick="toggleNav()">Banaras <span>›</span></a></div>
+            <div class="nav-item"><a href="collection.html?filter=Fancy" class="nav-link" onclick="toggleNav()">Fancy
+                    <span>›</span></a></div>
+        </div>
+    </div>
+
+    <div id="orderToast"></div>
+
+    <main class="order-detail-wrapper" id="mainContent">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-container">
+            <div class="spinner"></div>
+            <p style="color: var(--text-light); font-size: 14px;">Loading order details...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state" style="display: none;">
+            <div class="error-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+            </div>
+            <h3>Order Not Found</h3>
+            <p id="errorMessage">We couldn't find the order you're looking for.</p>
+            <a href="account.html" class="btn btn-primary">Back to My Account</a>
+
+            <!-- Debug info (hidden by default, shown when needed) -->
+            <div id="debugInfo" class="debug-info"></div>
+        </div>
+
+        <!-- Order Content -->
+        <div id="orderContent" style="display: none;">
+            <nav class="breadcrumb">
+                <a href="account.html">My Account</a>
+                <span>/</span>
+                <a href="account.html#orders">My Orders</a>
+                <span>/</span>
+                <span id="breadcrumbOrderNum">Order Details</span>
+            </nav>
+
+            <div class="order-header-card">
+                <div class="order-header-top">
+                    <div class="order-title-section">
+                        <h1>Order <span id="displayOrderNumber">#-----</span></h1>
+                        <div class="order-number">Placed on <span id="displayOrderDate">---</span></div>
+                    </div>
+                    <span id="orderStatusBadge" class="status-badge status-pending">Pending</span>
+                </div>
+
+                <div class="order-meta-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Order Number</span>
+                        <span class="meta-value" id="metaOrderNumber">-----</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Order Date</span>
+                        <span class="meta-value" id="metaOrderDate">---</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Total Amount</span>
+                        <span class="meta-value" id="metaTotalAmount">Rs. 0</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Payment Status</span>
+                        <span class="meta-value" id="metaPaymentStatus">Pending</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section" id="progressSection">
+                <h2 class="section-title">Order Status</h2>
+                <div class="progress-steps" id="progressSteps">
+                    <div class="progress-line" style="width: 0%;"></div>
+                    <!-- Step 1: Order Placed (pending) -->
+                    <div class="step" data-step="placed">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                        </div>
+                        <span class="step-label">Order Placed</span>
+                    </div>
+                    <!-- Step 2: Confirmed (confirmed/processing) -->
+                    <div class="step" data-step="confirmed">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                <polyline points="22 4 12 14.01 9 11.01" />
+                            </svg>
+                        </div>
+                        <span class="step-label">Confirmed</span>
+                    </div>
+                    <!-- Step 3: Shipped -->
+                    <div class="step" data-step="shipped">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="1" y="3" width="15" height="13" />
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                                <circle cx="5.5" cy="18.5" r="2.5" />
+                                <circle cx="18.5" cy="18.5" r="2.5" />
+                            </svg>
+                        </div>
+                        <span class="step-label">Shipped</span>
+                    </div>
+                    <!-- Step 4: Delivered -->
+                    <div class="step" data-step="delivered">
+                        <div class="step-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                                <polyline points="9 22 9 12 15 12 15 22" />
+                            </svg>
+                        </div>
+                        <span class="step-label">Delivered</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="items-section">
+                <h2 class="section-title">Order Items</h2>
+                <div id="orderItemsList"></div>
+            </div>
+
+            <div class="summary-shipping-grid">
+                <div class="info-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="margin-bottom: 0;">Shipping Address</h2>
+                        <button id="editAddressBtn" class="btn btn-secondary" onclick="openAddressEdit()" style="display: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                            </svg>
+                            Edit
+                        </button>
+                    </div>
+                    <div class="address-content" id="shippingAddress">Loading...</div>
+                </div>
+
+                <div class="info-card">
+                    <h2>Order Summary</h2>
+                    <div class="summary-row">
+                        <span class="summary-label">Subtotal</span>
+                        <span class="summary-value" id="summarySubtotal">Rs. 0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">Shipping</span>
+                        <span class="summary-value" id="summaryShipping">Free</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span class="summary-label">Total</span>
+                        <span class="summary-value" id="summaryTotal">Rs. 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h2 class="section-title">Payment Information</h2>
+                <div class="payment-method">
+                    <div class="payment-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                    </div>
+                    <div class="payment-details">
+                        <h3 id="paymentMethod">Cash on Delivery</h3>
+                        <p id="paymentStatusText">Payment pending on delivery</p>
+                        <p id="paymentID"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-section">
+                <a href="account.html#orders" class="btn btn-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Back to Orders
+                </a>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9" />
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                        <rect x="6" y="14" width="12" height="8" />
+                    </svg>
+                    Print Order
+                </button>
+                <button class="btn btn-secondary" onclick="contactSupport()" style="margin-left: auto;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                    </svg>
+                    Need Help?
+                </button>
+            </div>
+        </div>
+    
+    <!-- Address Edit Modal -->
+    <div id="addressModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 6000; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: #fff; border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <button onclick="closeAddressModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-light);">×</button>
+            <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 24px; color: var(--text-dark);">Edit Shipping Address</h2>
+            <form id="addressForm" onsubmit="saveAddress(event)">
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">Full Name</label>
+                    <input type="text" id="editName" required style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; transition: border-color 0.2s;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">Phone Number</label>
+                    <input type="tel" id="editPhone" required style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px;transition: border-color 0.2s;">
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">Address</label>
+                    <textarea id="editAddress" required rows="3" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; resize: vertical; transition: border-color 0.2s;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">City</label>
+                        <input type="text" id="editCity" required style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px;  transition: border-color 0.2s;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">State</label>
+                        <input type="text" id="editState" required style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; transition: border-color 0.2s;">
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">Pincode</label>
+                        <input type="text" id="editPincode" required style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; transition: border-color 0.2s;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-light); margin-bottom: 6px;">Country</label>
+                        <input type="text" id="editCountry" value="India" style="width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px;transition: border-color 0.2s;">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button type="button" onclick="closeAddressModal()" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+    <!-- Mobile nav -->
+    <div class="mobile-nav">
+        <a href="index.html" class="mobile-nav-item">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 50 50">
+                <path
+                    d="M 24.960938 2.1015625 A 1.0001 1.0001 0 0 0 24.386719 2.3105469 L 1.3867188 20.210938 A 1.0001 1.0001 0 1 0 2.6132812 21.789062 L 4 20.708984 L 4 48 A 1.0001 1.0001 0 0 0 5 49 L 18.832031 49 A 1.0001 1.0001 0 0 0 19.158203 49 L 30.832031 49 A 1.0001 1.0001 0 0 0 31.158203 49 L 45 49 A 1.0001 1.0001 0 0 0 46 48 L 46 20.708984 L 47.386719 21.789062 A 1.0001 1.0001 0 1 0 48.613281 20.210938 L 25.613281 2.3105469 A 1.0001 1.0001 0 0 0 24.960938 2.1015625 z M 25 4.3671875 L 44 19.154297 L 44 47 L 32 47 L 32 29 A 1.0001 1.0001 0 0 0 31 28 L 19 28 A 1.0001 1.0001 0 0 0 18 29 L 18 47 L 6 47 L 6 19.154297 L 25 4.3671875 z M 20 30 L 30 30 L 30 47 L 20 47 L 20 30 z" />
+            </svg>
+            <span>Home</span>
+        </a>
+        <button class="mobile-nav-item" onclick="toggleSearch()">
+            <svg viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <span>Search</span>
+        </button>
+        <button class="mobile-nav-item" onclick="toggleCart()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round"
+                height="24" width="24">
+                <path d="M7 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
+                <path d="M18 21a1 1 0 1 0 2 0 1 1 0 1 0 -2 0" stroke-width="2"></path>
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"
+                    stroke-width="2"></path>
+            </svg>
+            <span>Cart</span>
+        </button>
+        <button class="mobile-nav-item" onclick="handleAccountClick()">
+            <svg viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.72 11.28 8.72 9.51C8.72 7.7 10.18 6.23 12 6.23C13.81 6.23 15.28 7.7 15.28 9.51C15.27 11.28 13.88 12.72 12.12 12.78Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path
+                    d="M18.74 19.38C16.96 21.01 14.6 22 12 22C9.4 22 7.04 21.01 5.26 19.38C5.36 18.44 5.96 17.52 7.03 16.8C9.77 14.98 14.25 14.98 16.97 16.8C18.04 17.52 18.64 18.44 18.74 19.38Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22Z"
+                    stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Profile</span>
+        </button>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-inner">
+
+            <!-- Brand -->
+            <div class="footer-block">
+                <h3 class="footer-logo">Andham</h3>
+                <p class="footer-text">
+                    Discover timeless elegance with our curated collection of
+                    handcrafted sarees. Designed with tradition and styled for
+                    modern women.
+                </p>
+                <div class="footer-social">
+
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/_andham__?igsh=MXVoeTVrcmxsNnpxeg%3D%3D&utm_source=qr"
+                        class="social-icon" target="_blank" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <circle cx="17.5" cy="6.5" r="1"></circle>
+                        </svg>
+                    </a>
+
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/@Andhamm" class="social-icon" target="_blank" aria-label="YouTube">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.5 6.2s-.2-1.7-.9-2.4c-.9-.9-1.9-.9-2.4-1C16.8 2.5 12 2.5 12 2.5s-4.8 
+            0-8.2.3c-.5.1-1.5.1-2.4 1C.7 4.5.5 6.2.5 6.2S.2 8.1.2 10v4c0 
+            1.9.3 3.8.3 3.8s.2 1.7.9 2.4c.9.9 2.1.9 2.6 1 1.9.2 8 .3 
+            8 .3s4.8 0 8.2-.3c.5-.1 1.5-.1 2.4-1 .7-.7.9-2.4.9-2.4s.3-1.9.3-3.8v-4c0-1.9-.3-3.8-.3-3.8zM9.5 
+            15.5v-7l6 3.5-6 3.5z" />
+                        </svg>
+                    </a>
+
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/918106662341?text=Hi%20Andham,%20I'm%20interested%20in%20your%20saree%20collection.%20Could%20you%20please%20share%20more%20details?"
+                        class="social-icon" target="_blank" aria-label="WhatsApp">
+
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-whatsapp" viewBox="0 0 16 16">
+                            <path
+                                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232" />
+                        </svg>
+
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Shop -->
+            <div class="footer-block">
+                <h3>Shop</h3>
+                <ul class="footer-links">
+                    <li><a href="collection.html?filter=Kanchipattu">Kanchipattu</a></li>
+                    <li><a href="collection.html?filter=Gadwal">Gadwal</a></li>
+                    <li><a href="collection.html?filter=Banaras">Banaras</a></li>
+                    <li><a href="collection.html?filter=Fancy">Fancy Sarees</a></li>
+                    <li><a href="collection.html">All Collections</a></li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div class="footer-block">
+                <h3>Customer Support</h3>
+                <ul class="footer-links">
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="shipping.html">Shipping & Returns</a></li>
+                    <li><a href="sizeguide.html">Size Guide</a></li>
+                </ul>
+            </div>
+
+
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="footer-copyright">
+                © 2026 Andham. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* Debug mode - set to true to see detailed errors */
+        const DEBUG = true;
+
+        /* Auth guard */
+        (function () {
+            const u = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+            if (!u) {
+                console.log('No user found, redirecting to login');
+                window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+            }
+        })();
+
+        let currentOrder = null;
+
+        /* Toast */
+        function toast(msg) {
+            const el = document.getElementById('orderToast');
+            el.textContent = msg;
+            el.classList.add('show');
+            setTimeout(() => el.classList.remove('show'), 3000);
+        }
+
+        /* Get URL parameter */
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const value = urlParams.get(name);
+            console.log('URL Parameter', name, ':', value);
+            return value;
+        }
+
+        /* Format currency */
+        function formatCurrency(amount) {
+            return 'Rs. ' + Number(amount || 0).toLocaleString('en-IN');
+        }
+
+        /* Format date */
+        function formatDate(dateString) {
+            if (!dateString) return '---';
+            try {
+                return new Date(dateString).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+            } catch (e) {
+                return dateString;
+            }
+        }
+
+        /* Show debug info */
+        function showDebug(info) {
+            if (!DEBUG) return;
+            const debugEl = document.getElementById('debugInfo');
+            if (debugEl) {
+                debugEl.textContent = typeof info === 'object' ? JSON.stringify(info, null, 2) : info;
+                debugEl.classList.add('visible');
+            }
+            console.log('Debug:', info);
+        }
+
+        /* Update progress tracker */
+        /* Update progress tracker - matches database schema statuses */
+        function updateProgress(status) {
+            // Define all possible steps in order
+            const allSteps = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+
+            // Handle cancelled status specially
+            if (status === 'cancelled') {
+                document.getElementById('progressSection').style.display = 'none';
+                return;
+            }
+
+            // Find current status index
+            const statusIndex = allSteps.indexOf((status || 'pending').toLowerCase());
+
+            console.log('Updating progress for status:', status, 'index:', statusIndex);
+
+            // Map database statuses to display steps
+            const stepMapping = {
+                'pending': 'placed',
+                'confirmed': 'confirmed',
+                'processing': 'confirmed', // Processing shows same as confirmed visually
+                'shipped': 'shipped',
+                'delivered': 'delivered'
+            };
+
+            const displayStatus = stepMapping[status] || 'placed';
+
+            // Update each step
+            const steps = ['placed', 'confirmed', 'shipped', 'delivered'];
+            steps.forEach((step, index) => {
+                const stepEl = document.querySelector(`[data-step="${step}"]`);
+                if (!stepEl) return;
+
+                stepEl.classList.remove('active', 'completed');
+
+                const stepIndex = steps.indexOf(step);
+                const currentDisplayIndex = steps.indexOf(displayStatus);
+
+                if (stepIndex < currentDisplayIndex) {
+                    stepEl.classList.add('completed');
+                } else if (stepIndex === currentDisplayIndex) {
+                    stepEl.classList.add('active');
+                }
+            });
+
+            // Update progress line
+            const progressLine = document.querySelector('.progress-line');
+            if (progressLine) {
+                const currentDisplayIndex = steps.indexOf(displayStatus);
+                const percentage = currentDisplayIndex <= 0 ? 0 : (currentDisplayIndex / (steps.length - 1)) * 100;
+                progressLine.style.width = Math.max(0, Math.min(100, percentage)) + '%';
+            }
+
+            // Update step labels to show current status
+            const stepLabels = {
+                'placed': 'Order Placed',
+                'confirmed': 'Confirmed',
+                'shipped': 'Shipped',
+                'delivered': 'Delivered'
+            };
+
+            // Special label for processing
+            if (status === 'processing') {
+                const confirmedStep = document.querySelector('[data-step="confirmed"] .step-label');
+                if (confirmedStep) confirmedStep.textContent = 'Processing';
+            }
+        }
+
+        /* Render order items */
+        function renderOrderItems(items) {
+            const container = document.getElementById('orderItemsList');
+
+            if (!items || !items.length) {
+                container.innerHTML = '<p style="color: var(--text-light); text-align: center; padding: 20px;">No items found</p>';
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <div class="item-card">
+                    <div class="item-details" style="flex: 1;">
+                        <div class="item-header">
+                            <div class="item-name">${item.product_name || 'Unknown Product'}</div>
+                            <div class="item-variant">Product ID: ${item.product_id || 'N/A'}</div>
+                        </div>
+                        <div class="item-footer">
+                            <span class="item-quantity">Qty: ${item.quantity || 0}</span>
+                            <span class="item-price">${formatCurrency(item.total_price)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* Render shipping address */
+        function renderShippingAddress(addressData) {
+            const container = document.getElementById('shippingAddress');
+
+            if (!addressData) {
+                container.innerHTML = '<em>No shipping address available</em>';
+                return;
+            }
+
+            // Handle JSONB object or string
+            let addr = addressData;
+            if (typeof addressData === 'string') {
+                try {
+                    addr = JSON.parse(addressData);
+                } catch (e) {
+                    addr = { full_address: addressData };
+                }
+            }
+
+            // Store parsed address in currentOrder for editing
+            if (currentOrder) {
+                currentOrder.shipping_address = addr;
+            }
+
+            console.log('Shipping address data:', addr);
+
+            const parts = [
+                addr.full_address || addr.address || addr.street,
+                addr.city,
+                addr.state,
+                addr.pincode,
+                addr.country
+            ].filter(Boolean);
+
+            if (parts.length === 0) {
+                container.innerHTML = '<em>Address information incomplete</em>';
+                return;
+            }
+
+            let html = '';
+            if (addr.name || addr.recipient_name) {
+                html += `<strong style="font-size: 17px;">${addr.name || addr.recipient_name}</strong><br>`;
+            }
+            if (addr.phone) {
+                html += `<span style="color: var(--text-light); font-size: 15px;">${addr.phone}</span><br><br>`;
+            }
+
+            html += parts.join(',<br>');
+            container.innerHTML = html;
+        }
+
+        /* Load order details with retry logic */
+        async function loadOrderDetails(attempt = 1) {
+            const orderId = getUrlParam('id');
+
+            console.log(`Loading order details (attempt ${attempt}), orderId:`, orderId);
+
+            if (!orderId) {
+                console.error('No order ID in URL');
+                showError('No order ID provided. Please check the URL.');
+                showDebug({ error: 'Missing order ID', url: window.location.href });
+                return;
+            }
+
+            // Check if supabase is ready
+            if (typeof supabase?.from !== 'function') {
+                console.warn('Supabase not ready, attempt:', attempt);
+                if (attempt < 5) {
+                    setTimeout(() => loadOrderDetails(attempt + 1), 500);
+                    return;
+                }
+                showError('Database connection failed. Please refresh the page.');
+                showDebug({ error: 'Supabase not initialized', supabase: typeof supabase });
+                return;
+            }
+
+            try {
+                // Get user from storage
+                const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
+                if (!userStr) {
+                    throw new Error('Not authenticated');
+                }
+
+                const user = JSON.parse(userStr);
+                console.log('Current user:', user.user_id || user.id);
+
+                // Fetch order - FIXED: use correct column names
+                console.log('Fetching order:', orderId);
+
+                const { data: order, error: orderError } = await supabase
+                    .from('orders')
+                    .select('*')
+                    .eq('order_id', orderId)
+                    .single();
+
+                console.log('Order query result:', { order, error: orderError });
+
+                if (orderError) {
+                    throw new Error(`Order error: ${orderError.message}`);
+                }
+
+                if (!order) {
+                    throw new Error('Order not found in database');
+                }
+
+                // Security check: ensure user owns this order or is admin
+                const orderUserId = order.user_id;
+                const currentUserId = user.user_id || user.id;
+
+                if (orderUserId !== currentUserId) {
+                    console.warn('Order user mismatch:', { orderUserId, currentUserId });
+                    // Uncomment below to enforce strict ownership check
+                    // throw new Error('You do not have permission to view this order');
+                }
+
+                // Fetch order items
+                console.log('Fetching items for order:', orderId);
+                const { data: items, error: itemsError } = await supabase
+                    .from('order_items')
+                    .select('*')
+                    .eq('order_id', orderId);
+
+                if (itemsError) {
+                    console.error('Items error:', itemsError);
+                }
+
+                console.log('Items query result:', { items, count: items?.length });
+
+                currentOrder = { ...order, items: items || [] };
+                renderOrder();
+
+            } catch (err) {
+                console.error('Error loading order:', err);
+                showError(err.message || 'Failed to load order details');
+                showDebug({
+                    error: err.message,
+                    stack: err.stack,
+                    orderId: orderId,
+                    supabaseReady: typeof supabase?.from === 'function'
+                });
+            }
+        }
+
+        /* Render order data */
+        function renderOrder() {
+            if (!currentOrder) {
+                console.error('No order data to render');
+                return;
+            }
+
+            console.log('Rendering order:', currentOrder);
+
+            // Hide loading, show content
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('orderContent').style.display = 'block';
+
+            // Update edit button visibility based on order status
+            updateEditButtonVisibility();
+
+            // Header info
+            document.getElementById('displayOrderNumber').textContent = currentOrder.order_number || 'N/A';
+            document.getElementById('breadcrumbOrderNum').textContent = currentOrder.order_number || 'Order Details';
+            document.getElementById('displayOrderDate').textContent = formatDate(currentOrder.created_at);
+
+            // Meta grid
+            document.getElementById('metaOrderNumber').textContent = currentOrder.order_number || 'N/A';
+            document.getElementById('metaOrderDate').textContent = formatDate(currentOrder.created_at);
+            document.getElementById('metaTotalAmount').textContent = formatCurrency(currentOrder.total_amount);
+
+            const paymentStatus = currentOrder.payment_status || 'pending';
+            document.getElementById('metaPaymentStatus').textContent =
+                paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1);
+
+            // Status badge
+            const statusBadge = document.getElementById('orderStatusBadge');
+            const status = (currentOrder.status || 'pending').toLowerCase();
+            statusBadge.className = `status-badge status-${status}`;
+            statusBadge.textContent = currentOrder.status || 'Pending';
+
+            // Progress tracker
+            updateProgress(status);
+
+            // Items
+            renderOrderItems(currentOrder.items);
+
+            // Shipping address
+            renderShippingAddress(currentOrder.shipping_address);
+
+            // Summary
+            const subtotal = currentOrder.items?.reduce((sum, item) => sum + Number(item.total_price || 0), 0) || 0;
+            document.getElementById('summarySubtotal').textContent = formatCurrency(subtotal);
+            document.getElementById('summaryTotal').textContent = formatCurrency(currentOrder.total_amount);
+
+            // Payment info
+            const paymentMethod = currentOrder.payment_method || 'Cash on Delivery';
+            document.getElementById('paymentMethod').textContent = paymentMethod;
+
+            const paymentStatusText = currentOrder.payment_status === 'paid'
+                ? 'Payment completed'
+                : paymentMethod === 'Cash on Delivery'
+                    ? 'Payment pending on delivery'
+                    : 'Payment pending';
+            document.getElementById('paymentStatusText').textContent = paymentStatusText;
+            
+            const paymentID = currentOrder.payment_id || 'ID not found!';
+            document.getElementById('paymentID').textContent = "Payment ID : "+ paymentID;
+
+
+        }
+
+        /* Show error state */
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            if (message) {
+                document.getElementById('errorMessage').textContent = message;
+            }
+        }
+
+        /* Contact support */
+        function contactSupport() {
+            const orderNum = currentOrder?.order_number || 'Unknown';
+            const message = `Hi Andham, I need help with my order ${orderNum}.`;
+            window.open(`https://wa.me/918106662341?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        /* Check if address can be edited based on order status */
+        function canEditAddress(status) {
+            const editableStatuses = ['pending', 'confirmed', 'processing', 'shipped'];
+            return editableStatuses.includes((status || 'pending').toLowerCase());
+        }
+
+        /* Show/hide edit address button based on status */
+        function updateEditButtonVisibility() {
+            const editBtn = document.getElementById('editAddressBtn');
+            if (!editBtn || !currentOrder) return;
+
+            const status = (currentOrder.status || 'pending').toLowerCase();
+            if (canEditAddress(status)) {
+                editBtn.style.display = 'inline-flex';
+            } else {
+                editBtn.style.display = 'none';
+            }
+        }
+
+        /* Open address edit modal */
+        function openAddressEdit() {
+            if (!currentOrder || !currentOrder.shipping_address) {
+                toast('No address to edit');
+                return;
+            }
+
+            // Parse address data
+            let addr = currentOrder.shipping_address;
+            if (typeof addr === 'string') {
+                try {
+                    addr = JSON.parse(addr);
+                } catch (e) {
+                    addr = { full_address: addr };
+                }
+            }
+
+            // Populate form fields
+            document.getElementById('editName').value = addr.name || addr.recipient_name || '';
+            document.getElementById('editPhone').value = addr.phone || '';
+            document.getElementById('editAddress').value = addr.full_address || addr.address || addr.street || '';
+            document.getElementById('editCity').value = addr.city || '';
+            document.getElementById('editState').value = addr.state || '';
+            document.getElementById('editPincode').value = addr.pincode || '';
+            document.getElementById('editCountry').value = addr.country || 'India';
+
+            // Show modal
+            const modal = document.getElementById('addressModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        /* Close address edit modal */
+        function closeAddressModal() {
+            const modal = document.getElementById('addressModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        /* Save updated address */
+        async function saveAddress(event) {
+            event.preventDefault();
+
+            if (!currentOrder) {
+                toast('No order data available');
+                return;
+            }
+
+            // Build updated address object
+            const updatedAddress = {
+                name: document.getElementById('editName').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                full_address: document.getElementById('editAddress').value.trim(),
+                city: document.getElementById('editCity').value.trim(),
+                state: document.getElementById('editState').value.trim(),
+                pincode: document.getElementById('editPincode').value.trim(),
+                country: document.getElementById('editCountry').value.trim()
+            };
+
+            try {
+                // Show loading state
+                const submitBtn = event.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Saving...';
+                submitBtn.disabled = true;
+
+                // Update in Supabase
+                const { data, error } = await supabase
+                    .from('orders')
+                    .update({ shipping_address: updatedAddress })
+                    .eq('order_id', currentOrder.order_id)
+                    .select()
+                    .single();
+
+                if (error) {
+                    throw new Error(`Update failed: ${error.message}`);
+                }
+
+                // Update local data
+                currentOrder.shipping_address = updatedAddress;
+
+                // Re-render address
+                renderShippingAddress(updatedAddress);
+
+                // Close modal
+                closeAddressModal();
+
+                toast('Shipping address updated successfully!');
+
+            } catch (err) {
+                console.error('Error updating address:', err);
+                toast('Failed to update address. Please try again.');
+                showDebug({ error: err.message, orderId: currentOrder?.order_id });
+            } finally {
+                const submitBtn = event.target.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Save Changes';
+                    submitBtn.disabled = false;
+                }
+            }
+        }
+
+        /* Close modal on overlay click */
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('addressModal');
+            if (e.target === modal) {
+                closeAddressModal();
+            }
+        });
+
+        /* Close modal on Escape key */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAddressModal();
+            }
+        });
+
+        /* Handle account click */
+        function handleAccountClick() {
+            window.location.href = 'account.html';
+        }
+
+        /* Initialize */
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Page loaded, starting initialization...');
+            console.log('Supabase available:', typeof supabase);
+            console.log('Supabase.from available:', typeof supabase?.from);
+
+            // Wait a bit for Supabase to be ready
+            setTimeout(loadOrderDetails, 100);
+        });
+    </script>
+</body>
+
+</html>
