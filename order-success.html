@@ -30,7 +30,7 @@
         }
 
         .thank-you-section p {
-            color: #666;
+            color: #000000;
             font-size: 16px;
             margin-bottom: 30px;
         }
@@ -44,7 +44,7 @@
 
         .order-number-label {
             font-size: 12px;
-            color: #666;
+            color: #000000;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
@@ -147,7 +147,7 @@
 
         .shipping-address-card p {
             margin: 5px 0;
-            color: #666;
+            color: #000000;
             font-size: 18px;
             line-height: 1.6;
         }
@@ -172,7 +172,7 @@
             justify-content: space-between;
             padding: 10px 0;
             font-size: 18px;
-            color: #666;
+            color: #000000;
         }
 
         .summary-row.total {
@@ -318,7 +318,7 @@
 
         .order-item-meta {
             font-size: 15px;
-            color: #666;
+            color: #000000;
             margin-bottom: 5px;
         }
 
@@ -331,12 +331,12 @@
 
         .order-item-qty {
             font-size: 15px;
-            color: #666;
+            color: #000000;
         }
 
         .click-hint {
             font-size: 15px;
-            color: #999;
+            color: #000000;
             margin-top: 8px;
             font-style: italic;
         }
@@ -378,7 +378,7 @@
 
         .shipping-info p {
             margin: 5px 0;
-            color: #666;
+            color: #000000;
             font-size: 14px;
         }
 
@@ -530,7 +530,7 @@
         .tracking-icon svg {
             width: 20px;
             height: 20px;
-            stroke: #999;
+            stroke: #000000;
             fill: none;
             stroke-width: 2;
         }
@@ -548,7 +548,7 @@
 
         .tracking-label {
             font-size: 11px;
-            color: #999;
+            color: #000000;
             text-align: center;
             max-width: 80px;
         }
@@ -612,7 +612,7 @@
             border: none;
             font-size: 24px;
             cursor: pointer;
-            color: #666;
+            color: #000000;
         }
 
         .form-group {
@@ -625,7 +625,7 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #666;
+            color: #000000;
             margin-bottom: 6px;
         }
 
@@ -660,7 +660,7 @@
         }
 
         .help-section p {
-            color: #666;
+            color: #000000;
             font-size: 14px;
             margin-bottom: 15px;
         }
@@ -970,7 +970,6 @@
         }
 
     </style>
-<base target="_blank">
 </head>
 
 <body>
@@ -1032,7 +1031,7 @@
                     onkeyup="handleSearch(event)">
             </div>
             <div
-                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                style="font-size: 12px; color: #000000; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
                 Popular Searches</div>
             <div style="display: flex; flex-wrap: wrap; gap: 10px;">
                 <button onclick="quickSearch('Kanchipattu')"
@@ -1214,7 +1213,7 @@
                         </button>
                     </div>
                     <p id="shippingName" style="font-family: 20px; font-weight: 600; color: #1a1a1a;"></p>
-                    <p id="shippingPhone" style="color: #999; font-size: 18px;"></p>
+                    <p id="shippingPhone" style="color: #000000; font-size: 18px;"></p>
                     <p id="shippingAddress"></p>
                     <p id="shippingCity"></p>
                 </div>
@@ -1668,7 +1667,7 @@
                     `;
                 });
             } else {
-                itemsHtml = '<div style="padding: 20px; text-align: center; color: #666;">No items found for this order</div>';
+                itemsHtml = '<div style="padding: 20px; text-align: center; color: #000000;">No items found for this order</div>';
             }
             itemsContainer.innerHTML = itemsHtml;
 
