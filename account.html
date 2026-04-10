@@ -1324,6 +1324,52 @@
             <span>Profile</span>
         </button>
     </div>
+    <!-- Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <button class="search-close" onclick="toggleSearch()">×</button>
+        <div class="search-container">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" placeholder="Search products..." id="searchInput"
+                    onkeyup="handleSearch(event)">
+            </div>
+            <div
+                style="font-size: 12px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 20px;">
+                Popular Searches</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                <button onclick="quickSearch('Kanchipattu')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Kanchipattu</button>
+                <button onclick="quickSearch('Gadwal')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Gadwal</button>
+                <button onclick="quickSearch('Banaras')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Banaras</button>
+                <button onclick="quickSearch('Fancy')"
+                    style="padding: 8px 16px; border: 1px solid #e5e5e5; background: none; cursor: pointer; font-size: 13px;">Fancy</button>
+            </div>
+            <div id="search-results-list" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="drawer-header">
+            <span class="drawer-title">Shopping Cart</span>
+            <button class="close-btn" onclick="toggleCart()">×</button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">
+                <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                <div style="font-family: var(--font-serif); font-style: italic;">Your cart is empty</div>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+        </div>
+    </div>
 
     <footer class="footer">
         <div class="footer-inner">
