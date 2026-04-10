@@ -2274,18 +2274,9 @@ select,
 button {
     font-family: var(--font-main) !important;
 }
-
-
-
-
-
-
-
-
-
-
-
-
+.form-group {
+    font-size: 18px;
+}
 
 .toast-btn {
     padding: 6px 12px;

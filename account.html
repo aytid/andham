@@ -1422,7 +1422,10 @@
             document.getElementById('tab' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
             document.getElementById(name + 'Tab').classList.add('active');
 
-            if (name === 'orders' && !document.getElementById('orderList').innerHTML) loadOrders();
+            localStorage.setItem('activeTab', name);
+            if (name === 'orders' && !document.getElementById('orderList').innerHTML) {
+                loadOrders();
+            }
         }
 
         /* Toggle profile edit */
@@ -1777,25 +1780,23 @@
         }
 
         /* Logout */
-async function logout() {
-    if (!confirm('Are you sure you want to sign out?')) return;
+        async function logout() {
+            if (!confirm('Are you sure you want to sign out?')) return;
 
-    localStorage.removeItem('andham_user');
-    sessionStorage.removeItem('andham_user');
+            localStorage.removeItem('andham_user');
+            sessionStorage.removeItem('andham_user');
 
-    if (typeof supabase !== 'undefined' && supabase.auth) {
-        await supabase.auth.signOut(); // IMPORTANT
-    }
+            if (typeof supabase !== 'undefined' && supabase.auth) {
+                await supabase.auth.signOut(); // IMPORTANT
+            }
 
-    window.location.href = 'index.html';
-}
+            window.location.href = 'index.html';
+        }
         /* Handle account click for mobile nav */
         function handleAccountClick() {
-            // Already on account page, scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* Initialize - FIXED: use user_id */
         async function init() {
             try {
                 const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
@@ -1810,7 +1811,7 @@ async function logout() {
                 const { data, error } = await supabase
                     .from('users')
                     .select('*')
-                    .eq('user_id', userData.user_id) // FIXED: user_id not id
+                    .eq('user_id', userData.user_id)
                     .single();
 
                 if (error) throw error;
@@ -1829,7 +1830,6 @@ async function logout() {
             }
         }
 
-        // Run on page load
         document.addEventListener('DOMContentLoaded', init);
 
         /* Navigation Toggle */
@@ -1842,6 +1842,15 @@ async function logout() {
             drawer.classList.toggle("open");
             overlay.classList.toggle("open");
         }
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedTab = localStorage.getItem('activeTab');
+
+            if (savedTab) {
+                switchTab(savedTab);
+            } else {
+                switchTab('profile');
+            }
+        });
     </script>
 </body>
 
