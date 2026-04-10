@@ -200,7 +200,9 @@ function renderOrderSummary() {
         const itemId = item.product_id;
 
         html += `
-<div class="cart-summary-item">
+<div class="cart-summary-item"
+     onclick="goToProduct('${itemId}')"
+     style="cursor:pointer;">
 
     <img src="${product.image || 'https://png.pngtree.com/png-vector/20190820/ourmid/pngtree-no-image-vector-illustration-isolated-png-image_1694547.jpg'}"
          alt="${product.title || 'Product'}">
@@ -219,19 +221,19 @@ function renderOrderSummary() {
 
             <div style="display:flex;border:1px solid #ddd;">
 
-                <button onclick="changeCheckoutQty('${itemId}', -1)"
+                <button onclick="event.stopPropagation(); changeCheckoutQty('${itemId}', -1)"
                         style="width:26px;height:26px;border:none;background:#f5f5f5;cursor:pointer;">−</button>
 
                 <span style="padding:0 10px;font-size:12px;display:flex;align-items:center;">
                     ${qty}
                 </span>
 
-                <button onclick="changeCheckoutQty('${itemId}', 1)"
+                <button onclick="event.stopPropagation(); changeCheckoutQty('${itemId}', 1)"
                         style="width:26px;height:26px;border:none;background:#f5f5f5;cursor:pointer;">+</button>
 
             </div>
 
-            <button class="btn-primary" onclick="removeCheckoutItem('${itemId}')"
+            <button onclick="event.stopPropagation(); removeCheckoutItem('${itemId}')"
                     style="border:none;background:none;color:#ff4d4d;font-size:12px;cursor:pointer;">
                 Remove
             </button>
@@ -797,4 +799,7 @@ async function removeCheckoutItem(productId) {
     showToast("Item removed from cart", "warning");
 
     await loadCheckoutCart();
+}
+function goToProduct(productId) {
+    window.location.href = `product.html?id=${productId}`;
 }
