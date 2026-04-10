@@ -611,7 +611,7 @@ async function createOrder(userId, orderNumber, total, paymentId, paymentMethod,
                 shipping_address: shippingAddress,
                 payment_method: paymentMethod,
                 payment_id: paymentId,
-                status: 'confirmed',
+                status: 'pending',
                 payment_status: paymentStatus
             });
 

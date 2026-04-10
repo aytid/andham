@@ -1016,7 +1016,7 @@
             </div>
 
             <!-- Payment Information Card -->
-            <div class="card-section" id="paymentDetails" style="display: none;">
+            <!-- <div class="card-section" id="paymentDetails" style="display: none;">
                 <div class="card-header">
                     <h3>Payment Information</h3>
                 </div>
@@ -1041,7 +1041,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Action Buttons -->
             <div class="action-buttons">
@@ -1266,6 +1266,7 @@
     <script src="script.js"></script>
 
     <script>
+        let currentOrderData = null;
         // Initialize Supabase if not already done
         if (typeof supabaseClient === 'undefined' || !supabaseClient) {
             if (typeof supabase !== 'undefined' && supabase.createClient) {
@@ -1484,23 +1485,31 @@
 
             const paymentStatusText = document.getElementById('paymentStatusText');
             const transactionIdRow = document.getElementById('transactionIdRow');
-
             if (status === 'paid') {
-                paymentStatusText.textContent = 'Paid';
+                if (paymentStatusText) paymentStatusText.textContent = 'Paid';
+
                 if (paymentId) {
-                    document.getElementById('transactionId').textContent = paymentId;
-                    transactionIdRow.style.display = 'block';
+                    const txn = document.getElementById('transactionId');
+                    if (txn) txn.textContent = paymentId;
+
+                    if (transactionIdRow) {
+                        transactionIdRow.style.display = 'block';
+                    }
                 }
             } else {
                 paymentStatusText.textContent = 'Verification Pending';
-                document.getElementById('statusIcon').className = 'success-icon pending-icon';
-                document.getElementById('statusIcon').textContent = '⏳';
+
+                const statusIcon = document.getElementById('statusIcon');
+                if (statusIcon) {
+                    statusIcon.className = 'success-icon pending-icon';
+                    statusIcon.textContent = '⏳';
+                }
+
                 document.querySelector('.thank-you-section h1').textContent = 'Order Received';
                 document.querySelector('.thank-you-section p').textContent = 'Payment verification in progress.';
             }
         }
 
-        let currentOrderData = null;
 
         function canEditAddress(status) {
             const editableStatuses = ['pending', 'processing', 'confirmed', 'processing', 'shipped'];
@@ -1512,8 +1521,8 @@
             const trackingContainer = document.getElementById('orderTracking');
             if (!trackingContainer) return;
 
-            const steps = ['placed', 'confirmed', 'processing', 'shipped', 'delivered'];
-            const normalizedStatus = (status || 'placed').toLowerCase();
+            const steps = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+            const normalizedStatus = (status || 'pending').toLowerCase();
             const statusIndex = steps.indexOf(normalizedStatus);
 
             if (normalizedStatus === 'cancelled') {

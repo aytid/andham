@@ -48,7 +48,7 @@ async function handleLogin(e) {
     await loadProductsFromSupabase();
     loadDashboard();
 }
-function adminLogout(){
+function adminLogout() {
     localStorage.removeItem("admin_user");
     location.reload();
 }
@@ -61,48 +61,48 @@ function logout() {
 async function showSection(sectionId, e) {
     localStorage.setItem('andham_admin_current_section', sectionId);
 
-    // 1. Ensure core product data is loaded before showing product-related sections
+    // Update title
+const titles = {
+    dashboard: "Dashboard",
+    orders: "Orders",
+    addProduct: "Add Product",
+    products: "Products",
+    inventory: "Inventory",
+    priceManager: "Price Manager",
+    analytics: "Analytics",
+    customers: "Customers"
+};
+
+document.getElementById('pageTitle').innerText = titles[sectionId] || "Dashboard";
+
+    // Load products if needed
     if (['dashboard', 'products', 'inventory', 'priceManager', 'analytics'].includes(sectionId)) {
         if (!products || products.length === 0) {
             await loadProductsFromSupabase();
         }
     }
 
-    // 2. UI Switching Logic
+    // Switch sections
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(sectionId).classList.add('active');
 
+    // Nav highlight
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    // (Keep your existing nav item highlighting logic here...)
+    if (e) e.currentTarget.classList.add('active');
 
-    // 3. Section-Specific Loading
+    // Section logic
     switch (sectionId) {
-        case 'dashboard':
-            loadDashboard();
-            break;
-        case 'products':
-            renderProductsTable();
-            break;
-        case 'inventory':
-            renderInventory();
-            break;
-        case 'priceManager':
-            renderPriceManager();
-            break;
-        case 'analytics':
-            loadAllAnalytics();
-            break;
-        case 'customers':
-            await loadCustomersFromSupabase();
-            break;
-        case 'orders':
-            await loadOrders();
-            break;
+        case 'dashboard': loadDashboard(); break;
+        case 'products': renderProductsTable(); break;
+        case 'inventory': renderInventory(); break;
+        case 'priceManager': renderPriceManager(); break;
+        case 'analytics': loadAllAnalytics(); break;
+        case 'customers': await loadCustomersFromSupabase(); break;
+        case 'orders': await loadOrders(); break;
     }
 
     closeSidebarMobile();
 }
-
 // Dashboard
 function loadDashboard() {
     if (typeof products === 'undefined') return;
@@ -459,12 +459,12 @@ async function generateAndSetProductId() {
 // Save product - using URLs only, no file upload
 async function saveProduct(event) {
     event.preventDefault();
-    
+
     const saveBtn = event.target.querySelector('button[type="submit"]');
     const originalText = saveBtn.textContent;
     saveBtn.textContent = 'Saving...';
     saveBtn.disabled = true;
-    
+
     try {
         // Get form values
         const productId = document.getElementById('newProductID').value;
@@ -472,7 +472,7 @@ async function saveProduct(event) {
         const category = document.getElementById('newProductCategory').value;
         const price = parseFloat(document.getElementById('newProductPrice').value);
         const description = document.getElementById('newProductDescription').value;
-        
+
         // Validate required fields
         if (!productId || !title || !category || !price) {
             showToast('Please fill all required fields');
@@ -480,7 +480,7 @@ async function saveProduct(event) {
             saveBtn.disabled = false;
             return;
         }
-        
+
         // Check if main image is selected
         if (mainImageFiles.length === 0) {
             showToast('Please select a main product image');
@@ -488,57 +488,57 @@ async function saveProduct(event) {
             saveBtn.disabled = false;
             return;
         }
-        
+
         // Upload main image
         let mainImageUrl = null;
         const mainFile = mainImageFiles[0];
         mainImageUrl = await uploadToStorage(mainFile, 'products/main');
-        
+
         if (!mainImageUrl) {
             showToast('Failed to upload main image');
             saveBtn.textContent = originalText;
             saveBtn.disabled = false;
             return;
         }
-        
+
         // Upload gallery images
         const galleryUrls = [];
         for (let file of galleryImageFiles) {
             const url = await uploadToStorage(file, 'products/gallery');
             if (url) galleryUrls.push(url);
         }
-        
+
         // Save product to database
-const { data, error } = await supabaseClient
-.from('products')
-.insert([{
-    product_id: productId,
-    title: title,
-    category: category,
-    price: price,
-    description: description,
-    image: mainImageUrl,
-    images: galleryUrls.length > 0 ? galleryUrls.join(',') : null,
-    stock: true,
-    quantity: 1,
-    available_for_customer: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-}]);
-        
+        const { data, error } = await supabaseClient
+            .from('products')
+            .insert([{
+                product_id: productId,
+                title: title,
+                category: category,
+                price: price,
+                description: description,
+                image: mainImageUrl,
+                images: galleryUrls.length > 0 ? galleryUrls.join(',') : null,
+                stock: true,
+                quantity: 1,
+                available_for_customer: true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            }]);
+
         if (error) throw error;
-        
+
         showToast('Product saved successfully!');
-        
+
         // Clear form and images
         clearForm();
-        
+
         // Switch to products section
         showSection('products');
-        
+
         // Refresh product list
         await loadProductsFromSupabase();
-        
+
     } catch (err) {
         console.error('Save product error:', err);
         showToast('Error saving product: ' + err.message);
@@ -607,20 +607,21 @@ function renderInventory(searchTerm = '') {
 
             return `
                 <tr>
+                    <td><img src="${p.image}" alt="${p.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></td>
                     <td><code style="font-size: 11px;">${p.id}</code></td>
                     <td>${p.title}</td>
+                    <td>${p.price}</td>
                     <td>${p.quantity || 0}</td>
                     <td>
-                        <span class="badge badge-${stockStatus === 'in' ? 'success' : 'danger'}">
-                            ${stockStatus === 'in' ? 'In Stock' : 'Out of Stock'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="stock-toggle" onclick="toggleStock('${p.id}')" title="Toggle stock status">
+                        <div style="display:flex;flex-direction:column;" class="stock-toggle" onclick="toggleStock('${p.id}')" title="Toggle stock status">
+                            <span class="badge badge-${stockStatus === 'in' ? 'success' : 'danger'}">
+                                ${stockStatus === 'in' ? 'In Stock' : 'Out of Stock'}
+                            </span>
                             <div class="toggle-switch ${p.stock ? 'active' : ''}"></div>
                             <span style="font-size: 11px; color: ${p.stock ? 'var(--success)' : 'var(--danger)'}">
                                 ${p.stock ? 'Active' : 'Inactive'}
                             </span>
+
                         </div>
                     </td>
                     <td>
@@ -633,7 +634,7 @@ function renderInventory(searchTerm = '') {
                     </td>
                     <td>
                         <button class="btn btn-secondary btn-small" onclick="openInventoryEdit('${p.id}')">Edit</button>
-                        <button class="btn btn-danger btn-small" onclick="confirmDeleteProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')">Delete</button>
+                        <button style="margin-top:10px;" class="btn btn-danger btn-small" onclick="confirmDeleteProduct('${p.id}', '${p.title.replace(/'/g, "\\'")}')">Delete</button>
                     </td>
                 </tr>
             `;
@@ -776,6 +777,7 @@ function renderPriceManager(searchTerm = '', categoryFilter = '') {
         const discount = p.originalPrice ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
         return `
             <tr>
+                <td><img src="${p.image}" alt="${p.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;"></td>
                 <td><code style="font-size: 11px;">${p.id}</code></td>
                 <td>${p.title}</td>
                 <td>₹${(p.price || 0).toLocaleString()}</td>
@@ -1477,6 +1479,7 @@ function openInventoryEdit(id) {
 
     document.getElementById("invEditProductId").value = product.id;
     document.getElementById("invEditDisplayId").value = product.id;
+    document.getElementById("invEditPrice").value = product.price;
     document.getElementById("invEditTitle").value = product.title;
     document.getElementById("invEditQuantity").value = product.quantity || 0;
     document.getElementById("invEditStock").checked = product.stock;
@@ -1496,6 +1499,7 @@ async function saveInventoryEdit(e) {
 
     const updatedData = {
         title: document.getElementById("invEditTitle").value,
+        price: document.getElementById("invEditPrice").value,
         quantity: parseInt(document.getElementById("invEditQuantity").value) || 0, // NEW: Quantity
         stock: document.getElementById("invEditStock").checked,
         available_for_customer: document.getElementById("invEditAvailable").checked
@@ -1883,50 +1887,50 @@ function setupImagePreviews() {
     // ========== MAIN IMAGE ==========
     const mainInput = document.getElementById('newProductImage');
     const mainArea = document.getElementById('mainUploadArea');
-    
+
     if (mainInput && mainArea) {
         // Handle file selection
         mainInput.addEventListener('change', (e) => {
             handleMainImages(e.target.files);
         });
-        
+
         // Drag & drop effects
         mainArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             mainArea.classList.add('dragover');
         });
-        
+
         mainArea.addEventListener('dragleave', () => {
             mainArea.classList.remove('dragover');
         });
-        
+
         mainArea.addEventListener('drop', (e) => {
             e.preventDefault();
             mainArea.classList.remove('dragover');
             handleMainImages(e.dataTransfer.files);
         });
     }
-    
+
     // ========== GALLERY IMAGES ==========
     const galleryInput = document.getElementById('newProductImages');
     const galleryArea = document.getElementById('galleryUploadArea');
-    
+
     if (galleryInput && galleryArea) {
         // Handle file selection
         galleryInput.addEventListener('change', (e) => {
             handleGalleryImages(e.target.files);
         });
-        
+
         // Drag & drop effects
         galleryArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             galleryArea.classList.add('dragover');
         });
-        
+
         galleryArea.addEventListener('dragleave', () => {
             galleryArea.classList.remove('dragover');
         });
-        
+
         galleryArea.addEventListener('drop', (e) => {
             e.preventDefault();
             galleryArea.classList.remove('dragover');
@@ -1948,7 +1952,7 @@ function handleMainImages(files) {
         }
         return true;
     });
-    
+
     // Keep only 1 main image
     mainImageFiles = validFiles.slice(0, 1);
     renderMainPreviews();
@@ -1967,7 +1971,7 @@ function handleGalleryImages(files) {
         }
         return true;
     });
-    
+
     galleryImageFiles = [...galleryImageFiles, ...validFiles];
     renderGalleryPreviews();
 }
@@ -1976,15 +1980,15 @@ function handleGalleryImages(files) {
 function renderMainPreviews() {
     const grid = document.getElementById('mainPreviewGrid');
     if (!grid) return;
-    
+
     if (mainImageFiles.length === 0) {
         grid.innerHTML = '';
         return;
     }
-    
+
     const file = mainImageFiles[0];
     const url = URL.createObjectURL(file);
-    
+
     grid.innerHTML = `
         <div class="preview-item">
             <img src="${url}" alt="Main Image">
@@ -1998,7 +2002,7 @@ function renderMainPreviews() {
 function renderGalleryPreviews() {
     const grid = document.getElementById('galleryPreviewGrid');
     if (!grid) return;
-    
+
     grid.innerHTML = galleryImageFiles.map((file, index) => {
         const url = URL.createObjectURL(file);
         return `
@@ -2022,7 +2026,7 @@ function removeMainImage() {
 function removeGalleryImage(index) {
     galleryImageFiles.splice(index, 1);
     renderGalleryPreviews();
-    
+
     // Clear input if no images left
     if (galleryImageFiles.length === 0) {
         document.getElementById('newProductImages').value = '';
@@ -2042,7 +2046,7 @@ async function uploadToStorage(file, folder) {
     try {
         const ext = file.name.split('.').pop();
         const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${ext}`;
-        
+
         const { data, error } = await supabaseClient
             .storage
             .from('product-images')
@@ -2050,16 +2054,16 @@ async function uploadToStorage(file, folder) {
                 cacheControl: '3600',
                 upsert: false
             });
-        
+
         if (error) throw error;
-        
+
         const { data: { publicUrl } } = supabaseClient
             .storage
             .from('product-images')
             .getPublicUrl(fileName);
-        
+
         return publicUrl;
-        
+
     } catch (err) {
         console.error('Upload error:', err);
         return null;

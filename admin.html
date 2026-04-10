@@ -406,7 +406,7 @@
                 <p>Admin Dashboard</p>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item active" onclick="showSection('dashboard')">
+                <li class="nav-item active" onclick="showSection('dashboard', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7" />
                         <rect x="14" y="3" width="7" height="7" />
@@ -415,14 +415,14 @@
                     </svg>
                     Dashboard
                 </li>
-                <li class="nav-item" onclick="showSection('orders')">
+                <li class="nav-item" onclick="showSection('orders', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     Orders
                 </li>
-                <li class="nav-item" onclick="showSection('addProduct')">
+                <li class="nav-item" onclick="showSection('addProduct', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10" />
                         <line x1="12" y1="8" x2="12" y2="16" />
@@ -430,14 +430,14 @@
                     </svg>
                     Add Product
                 </li>
-                <li class="nav-item" onclick="showSection('products')">
+                <li class="nav-item" onclick="showSection('products', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path
                             d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
                     </svg>
                     Products
                 </li>
-                <li class="nav-item" onclick="showSection('inventory')">
+                <li class="nav-item" onclick="showSection('inventory', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                         <polyline points="14 2 14 8 20 8" />
@@ -446,14 +446,14 @@
                     </svg>
                     Inventory
                 </li>
-                <li class="nav-item" onclick="showSection('priceManager')">
+                <li class="nav-item" onclick="showSection('priceManager', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="12" y1="1" x2="12" y2="23" />
                         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                     </svg>
                     Price Manager
                 </li>
-                <li class="nav-item" onclick="showSection('analytics')">
+                <li class="nav-item" onclick="showSection('analytics', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 20V10" />
                         <path d="M12 20V4" />
@@ -461,7 +461,7 @@
                     </svg>
                     Analytics
                 </li>
-                <li class="nav-item" onclick="showSection('customers')">
+                <li class="nav-item" onclick="showSection('customers', event)">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="7" r="4" />
                         <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
@@ -745,10 +745,11 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>ID</th>
                                 <th>Product</th>
+                                <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Status</th>
                                 <th>Stock</th>
                                 <th>Available to Customers</th>
                                 <th>Actions</th>
@@ -783,6 +784,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>ID</th>
                                 <th>Product</th>
                                 <th>Current</th>
@@ -1139,6 +1141,11 @@
                     <label>Product ID</label>
                     <input type="text" id="invEditDisplayId" required
                         style="background: #f5f5f5; width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px;">
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    <input type="text" id="invEditPrice" required
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 4px;">
                 </div>
 
                 <div class="form-group">
