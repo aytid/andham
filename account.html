@@ -1175,6 +1175,16 @@
             <div id="ordersSpinner" class="spinner-container" style="display:none;">
                 <div class="spinner"></div>
             </div>
+            <div style="margin-bottom: 16px;">
+                <input type="text" id="orderSearchInput" placeholder="Search orders by Order ID, product name..."
+                    oninput="filterOrders()" style="
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        ">
+            </div>
             <div id="orderList" class="orders-container"></div>
         </div>
 
@@ -1704,6 +1714,7 @@
         }
 
         /* Load orders - FIXED: fetch order_items separately and handle shipping_address JSONB */
+        /* Load orders with product images */
         async function loadOrders() {
             const spinner = document.getElementById('ordersSpinner');
             const list = document.getElementById('orderList');
@@ -1712,30 +1723,37 @@
             list.innerHTML = '';
 
             try {
-                // Get user from storage
                 const userStr = localStorage.getItem('andham_user') || sessionStorage.getItem('andham_user');
                 if (!userStr) throw new Error('No user found');
 
                 const user = JSON.parse(userStr);
 
-                // FIXED: Use user_id not id, select specific columns
                 const { data: orders, error } = await supabase
                     .from('orders')
                     .select('order_id, order_number, status, total_amount, shipping_address, payment_status, created_at')
-                    .eq('user_id', user.user_id) // FIXED: user_id not id
+                    .eq('user_id', user.user_id)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
-                // FIXED: Fetch order items for each order separately
+                // ✅ Fetch items + product image
                 const ordersWithItems = await Promise.all((orders || []).map(async (order) => {
                     const { data: items, error: itemsError } = await supabase
                         .from('order_items')
-                        .select('product_id, product_name, quantity, unit_price, total_price')
+                        .select(`
+                    product_id,
+                    product_name,
+                    quantity,
+                    unit_price,
+                    total_price,
+                    products (
+                        image
+                    )
+                `)
                         .eq('order_id', order.order_id);
 
                     if (itemsError) {
-                        console.error('Error fetching items for order', order.order_id, itemsError);
+                        console.error('Error fetching items:', itemsError);
                         return { ...order, items: [] };
                     }
 
@@ -1746,86 +1764,115 @@
                 document.getElementById('totalOrdersCount').textContent = allOrders.length;
 
                 renderOrders();
+
             } catch (err) {
                 console.error('Error loading orders:', err);
                 list.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                    </div>
-                    <h3>Unable to load orders</h3>
-                    <p>Please try refreshing the page</p>
-                </div>
-            `;
+            <div class="empty-state">
+                <h3>Unable to load orders</h3>
+                <p>Please try refreshing the page</p>
+            </div>
+        `;
             } finally {
                 spinner.style.display = 'none';
             }
         }
 
-        /* Render orders - FIXED: handle order_items structure and shipping_address JSONB */
-        function renderOrders() {
+
+        /* Render orders with product images */
+        function renderOrders(data = allOrders) {
             const list = document.getElementById('orderList');
 
-            if (!allOrders.length) {
+            if (!allOrders || !allOrders.length) {
                 list.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                    </div>
-                    <h3>No orders yet</h3>
-                    <p>You haven't placed any orders yet. Start shopping to see your orders here.</p>
-                    <a href="collection.html" class="empty-state-link">Browse Collection</a>
-                </div>
-            `;
+            <div class="empty-state">
+                <h3>No orders yet</h3>
+                <p>You haven't placed any orders yet.</p>
+                <a href="collection.html" class="empty-state-link">Browse Collection</a>
+            </div>
+        `;
                 return;
             }
 
-            list.innerHTML = allOrders.map(order => {
+            list.innerHTML = data.map(order => {
+
                 const date = new Date(order.created_at).toLocaleDateString('en-IN', {
-                    day: 'numeric', month: 'short', year: 'numeric'
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
                 });
 
                 const statusClass = 'status-' + (order.status || 'pending').toLowerCase();
 
-                // FIXED: Use order.items from the fetched data
                 let itemsHtml = '';
+
                 if (order.items && Array.isArray(order.items)) {
-                    itemsHtml = order.items.map(item => `
+                    itemsHtml = order.items.map(item => {
+
+                        // ✅ THIS IS THE FIX
+                        const imageUrl = item.products?.image || 'images/placeholder.png';
+
+                        return `
                     <div class="order-item">
-                        <div class="order-item-details" style="flex: 1;">
+
+                        <img 
+                            src="${imageUrl}" 
+                            alt="${item.product_name}" 
+                            class="order-item-img"
+                        >
+
+                        <div class="order-item-details">
                             <div class="order-item-name">${item.product_name}</div>
                             <div class="order-item-variant">Qty: ${item.quantity}</div>
                         </div>
-                        <div class="order-item-price">Rs. ${Number(item.total_price).toLocaleString('en-IN')}</div>
+
+                        <div class="order-item-price">
+                            Rs. ${Number(item.total_price).toLocaleString('en-IN')}
+                        </div>
+
                     </div>
-                `).join('');
+                `;
+                    }).join('');
                 }
 
-                // FIXED: Use order_id in URL, order_number for display, total_amount for total
                 return `
-                <div class="order-card">
-                    <div class="order-header">
-                        <div class="order-info">
-                            <h3>Order #${order.order_number}</h3>
-                            <div class="order-meta">
-                                <span>${date}</span>
-                                <span>•</span>
-                                <span>${order.items?.length || 0} items</span>
-                            </div>
+            <div class="order-card">
+
+                <div class="order-header">
+                    <div class="order-info">
+                        <h3>Order #${order.order_number}</h3>
+                        <div class="order-meta">
+                            <span>${date}</span>
+                            <span>•</span>
+                            <span>${order.items?.length || 0} items</span>
                         </div>
-                        <span class="status-badge ${statusClass}">${order.status || 'Pending'}</span>
                     </div>
-                    <div class="order-items">${itemsHtml}</div>
-                    <div class="order-footer">
-                        <div class="order-total">Total: <strong>Rs. ${Number(order.total_amount).toLocaleString('en-IN')}</strong></div>
-                        <a href="order-success.html?order=${order.order_number}" class="view-order-btn">View Details</a>
-                    </div>
+
+                    <span class="status-badge ${statusClass}">
+                        ${order.status || 'Pending'}
+                    </span>
                 </div>
-            `;
+
+                <div class="order-items">
+                    ${itemsHtml}
+                </div>
+
+                <div class="order-footer">
+                    <div class="order-total">
+                        Total: <strong>Rs. ${Number(order.total_amount).toLocaleString('en-IN')}</strong>
+                    </div>
+
+                    <a href="order-success.html?order=${order.order_number}" class="view-order-btn">
+                        View Details
+                    </a>
+                </div>
+
+            </div>
+        `;
             }).join('');
         }
 
-        /* Logout */
+
         async function logout() {
             if (!confirm('Are you sure you want to sign out?')) return;
 
@@ -1897,6 +1944,33 @@
                 switchTab('profile');
             }
         });
+        /* Filter Orders */
+        function filterOrders() {
+            const query = document.getElementById('orderSearchInput').value.toLowerCase();
+
+            if (!query) {
+                renderOrders(); // show all
+                return;
+            }
+
+            const filtered = allOrders.filter(order => {
+
+                // Match order number
+                if (order.order_number?.toLowerCase().includes(query)) return true;
+
+                // Match status
+                if (order.status?.toLowerCase().includes(query)) return true;
+
+                // Match items (product name)
+                if (order.items && order.items.some(item =>
+                    item.product_name?.toLowerCase().includes(query)
+                )) return true;
+
+                return false;
+            });
+
+            renderOrders(filtered);
+        } addEventListener
     </script>
 </body>
 

@@ -82,8 +82,3 @@ async function handleGoogleSession() {
     };
     localStorage.setItem("andham_user", JSON.stringify(userData));
 }
-
-// Note: checkUser() and handleGoogleSession() are NOT auto-called.
-// The app uses custom auth (users table), not Supabase OAuth.
-// Calling supabaseClient.auth.getUser() on every page causes noisy
-// "No user logged in" console errors since there is no OAuth session.
