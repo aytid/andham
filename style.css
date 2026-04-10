@@ -14,7 +14,8 @@
     --font-serif: 'Fogtwono5', serif;
     --font-sans: 'Fogtwono5', serif;
     --color-primary: #1a1a1a;
-    --color-text: #333;
+    /* --color-text: #333; */
+    --color-text: black;
     --color-text-light: #666;
     --color-accent: #8b0000;
     --color-border: #e5e5e5;
